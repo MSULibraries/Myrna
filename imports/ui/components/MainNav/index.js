@@ -57,11 +57,11 @@ function MainNav() {
       <LinkListContainer>
         <LinkList>
           <MainLink to="/">Home</MainLink>
+          <MainLink to="/about">About</MainLink>
           <MainLink to="/products">Product</MainLink>
-          {/*       <MainLink to="/order">Order</MainLink>
-          <MainLink to="/Policies">Policies</MainLink>
-          <MainLink to="/About">About</MainLink>
-          <MainLink to="/login">Login</MainLink>
+          <MainLink to="/policies">Policies</MainLink>
+          {/*<MainLink to="/login">Login</MainLink>
+                 <MainLink to="/order">Order</MainLink>
           <MainLink to="/admin">Admin</MainLink>
           <MainLink to="/cart">Cart</MainLink>*/}
         </LinkList>
