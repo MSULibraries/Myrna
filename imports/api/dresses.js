@@ -4,6 +4,13 @@ import { check } from "meteor/check";
 
 export const Dresses = new Mongo.Collection("dresses");
 
+if (Meteor.isServer) {
+  // This code only runs on the server
+  Meteor.publish("dresses", function dressesPublication() {
+    return Dresses.find({});
+  });
+}
+
 Meteor.methods({
   "dresses.insert"(
     arms,

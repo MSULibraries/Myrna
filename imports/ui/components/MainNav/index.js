@@ -8,6 +8,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
+import AccountsUIWrapper from "./../AccountsUIWrapper/index";
+
 const LogoContainer = styled.div`
   display: flex;
   flex-direction: row;
@@ -48,6 +50,9 @@ const MainNavContainer = styled.header`
 function MainNav() {
   return (
     <MainNavContainer>
+      <div id="asdf">
+        <AccountsUIWrapper />
+      </div>
       <LogoContainer>
         <img
           src="images/main_logo.png"

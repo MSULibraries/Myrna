@@ -4,6 +4,13 @@ import { check } from "meteor/check";
 
 export const ItemDesc = new Mongo.Collection("itemDesc");
 
+if (Meteor.isServer) {
+  // This code only runs on the server
+  Meteor.publish("itemDesc", function itemDescPublication() {
+    return ItemDesc.find({});
+  });
+}
+
 Meteor.methods({
   "itemDesc.insert"(
     oldId,
