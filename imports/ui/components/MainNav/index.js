@@ -73,6 +73,4 @@ const MainNav = () => {
   );
 };
 
-MainNav.propTypes = {};
-
 export default MainNav;

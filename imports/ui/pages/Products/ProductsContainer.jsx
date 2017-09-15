@@ -1,6 +1,7 @@
 import findIndex from "lodash/findIndex";
 import CircularProgress from "material-ui/CircularProgress";
 import { createContainer } from "meteor/react-meteor-data";
+import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { Container } from "react-grid-system";
 import StackGrid from "react-stack-grid";
@@ -56,6 +57,16 @@ class ProductsContainer extends Component {
     );
   }
 }
+
+ProductsContainer.defaultProps = {
+  dresses: [],
+  itemDesc: {}
+};
+
+ProductsContainer.proptypes = {
+  dresses: PropTypes.array,
+  itemDesc: PropTypes.object
+};
 
 export default (ProductsContainer = createContainer(() => {
   Meteor.subscribe("dresses");
