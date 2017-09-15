@@ -29,6 +29,7 @@ const PageDetailLink = styled.a`text-decoration: none;`;
 const ProductCard = ({
   addProductToCart,
   category,
+  isAuthed = false,
   name,
   oldId,
   description,
@@ -68,10 +69,12 @@ const ProductCard = ({
         </PageDetailLink>
       </DescriptionContainer>
       <CardActions>
-        <FlatButton
-          label="Add To Cart"
-          onClick={() => addProductToCart(oldId)}
-        />{" "}
+        {isAuthed && (
+          <FlatButton
+            label="Add To Cart"
+            onClick={() => addProductToCart(oldId)}
+          />
+        )}
       </CardActions>
     </Card>
   </Paper>

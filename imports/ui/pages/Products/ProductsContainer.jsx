@@ -46,6 +46,7 @@ class ProductsContainer extends Component {
               return (
                 <ProductCard
                   addProductToCart={this.addProductToCart}
+                  isAuthed={Meteor.user()}
                   {...product}
                   key={dress._id}
                 />
