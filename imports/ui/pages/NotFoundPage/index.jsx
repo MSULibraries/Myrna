@@ -2,6 +2,8 @@
 import React from "react";
 import { Container } from "react-grid-system";
 
+import Cart from "./../../../api/cart";
+
 const NotFound = () => (
   <Container>
     <h3>404 page not found</h3>

@@ -1,5 +1,6 @@
 import { Meteor } from "meteor/meteor";
 
+import "../imports/api/cart.js";
 import "../imports/api/dresses.js";
 import "../imports/api/itemDesc.js";
 

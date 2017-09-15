@@ -65,6 +65,7 @@ function MainNav() {
           <MainLink to="/about">About</MainLink>
           <MainLink to="/products">Product</MainLink>
           <MainLink to="/policies">Policies</MainLink>
+          <MainLink to="/cart">Cart</MainLink>
           {/*<MainLink to="/login">Login</MainLink>
                  <MainLink to="/order">Order</MainLink>
           <MainLink to="/admin">Admin</MainLink>

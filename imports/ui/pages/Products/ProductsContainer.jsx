@@ -1,7 +1,8 @@
-import React, { Component } from "react";
 import findIndex from "lodash/findIndex";
 import CircularProgress from "material-ui/CircularProgress";
 import { createContainer } from "meteor/react-meteor-data";
+import React, { Component } from "react";
+import { Container } from "react-grid-system";
 import StackGrid from "react-stack-grid";
 import ProductCard from "./../../components/ProductCard/";
 
@@ -28,12 +29,12 @@ class ProductsContainer extends Component {
 
   render() {
     return (
-      <div>
+      <Container>
         <h1>Products Container</h1>
 
         {this.props.dresses && (
           <StackGrid
-            columnWidth={320}
+            columnWidth={200}
             gutterWidth={20}
             gutterHeight={20}
             monitorImagesLoaded
@@ -51,7 +52,7 @@ class ProductsContainer extends Component {
             })}
           </StackGrid>
         )}
-      </div>
+      </Container>
     );
   }
 }
