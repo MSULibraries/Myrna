@@ -6,6 +6,7 @@ import MainNav from "./../../ui/components/MainNav/index";
 import AboutPage from "./../../ui/pages/AboutPage/index";
 import CartPage from "./../../ui/pages/CartPage/index";
 import HomePage from "./../../ui/pages/HomePage/index";
+import LoginPage from "./../../ui/pages/LoginPage/index";
 import NotFoundPage from "./../../ui/pages/NotFoundPage/index";
 import PoliciesPage from "./../../ui/pages/PoliciesPage/index";
 import ProductsContainer from "./../../ui/pages/Products/ProductsContainer";
@@ -17,9 +18,10 @@ const Routes = () => (
       <Switch>
         <Route exact path="/" component={HomePage} />
         <Route exact path="/about" component={AboutPage} />
-        <Route exact path="/products" component={ProductsContainer} />
-        <Route exact path="/policies" component={PoliciesPage} />
         <AuthRoute path="/cart" component={CartPage} />
+        <Route exact path="/login" component={LoginPage} />
+        <Route exact path="/policies" component={PoliciesPage} />
+        <Route exact path="/products" component={ProductsContainer} />
         <Route component={NotFoundPage} />
       </Switch>
     </div>

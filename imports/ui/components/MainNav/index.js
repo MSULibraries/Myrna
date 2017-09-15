@@ -47,12 +47,9 @@ const MainNavContainer = styled.header`
   padding-top: 10px;
 `;
 
-function MainNav() {
+const MainNav = () => {
   return (
     <MainNavContainer>
-      <div id="asdf">
-        <AccountsUIWrapper />
-      </div>
       <LogoContainer>
         <img
           src="images/main_logo.png"
@@ -66,15 +63,15 @@ function MainNav() {
           <MainLink to="/products">Product</MainLink>
           <MainLink to="/policies">Policies</MainLink>
           <MainLink to="/cart">Cart</MainLink>
-          {/*<MainLink to="/login">Login</MainLink>
-                 <MainLink to="/order">Order</MainLink>
+          <MainLink to="/login">{Meteor.user() ? "Logout" : "Login"}</MainLink>
+          {/*       <MainLink to="/order">Order</MainLink>
           <MainLink to="/admin">Admin</MainLink>
           <MainLink to="/cart">Cart</MainLink>*/}
         </LinkList>
       </LinkListContainer>
     </MainNavContainer>
   );
-}
+};
 
 MainNav.propTypes = {};
 
