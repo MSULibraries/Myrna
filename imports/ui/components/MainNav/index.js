@@ -64,9 +64,6 @@ const MainNav = () => {
           <MainLink to="/policies">Policies</MainLink>
           <MainLink to="/cart">Cart</MainLink>
           <MainLink to="/login">{Meteor.user() ? "Logout" : "Login"}</MainLink>
-          {/*       <MainLink to="/order">Order</MainLink>
-          <MainLink to="/admin">Admin</MainLink>
-          <MainLink to="/cart">Cart</MainLink>*/}
         </LinkList>
       </LinkListContainer>
     </MainNavContainer>

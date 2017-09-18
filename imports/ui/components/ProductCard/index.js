@@ -27,6 +27,7 @@ const CardMediaContainer = styled(CardMedia)`max-width: 320px;`;
 const PageDetailLink = styled.a`text-decoration: none;`;
 
 const ProductCard = ({
+  _id,
   addProductToCart,
   category,
   isAuthed = false,
@@ -72,7 +73,7 @@ const ProductCard = ({
         {isAuthed && (
           <FlatButton
             label="Add To Cart"
-            onClick={() => addProductToCart(oldId)}
+            onClick={() => addProductToCart(_id)}
           />
         )}
       </CardActions>

@@ -4,17 +4,30 @@ import { check } from "meteor/check";
 
 export const Cart = new Mongo.Collection("cart");
 
+Cart.allow({
+  insert() {
+    return true;
+  },
+  update() {
+    return true;
+  },
+  remove() {
+    return true;
+  }
+});
+
 if (Meteor.isServer) {
   // This code only runs on the server
   Meteor.publish("cart", function cartPublication() {
-    return Cart.find({});
+    //Only return a user's cart items
+    return Cart.find({ userId: Meteor.userId() });
   });
 }
 
 Meteor.methods({
   "cart.insert"(productId) {
     //Checking Input Var Types
-    check(productId, Number);
+    check(productId, String);
 
     // Make sure the user is logged in before inserting a task
     if (!Meteor.userId()) {
@@ -23,8 +36,8 @@ Meteor.methods({
 
     Cart.insert({
       productId,
-      customerId: Meteor.userId(),
-      addedAt: new Date()
+      userId: Meteor.userId(),
+      dateAdded: Date.now()
     });
   },
   "cart.remove"(productId) {

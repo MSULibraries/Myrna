@@ -7,19 +7,27 @@ import { Container } from "react-grid-system";
 import StackGrid from "react-stack-grid";
 import ProductCard from "./../../components/ProductCard/";
 
+import { Cart } from "./../../../api/cart";
 import { Dresses } from "./../../../api/dresses";
 import { ItemDesc } from "./../../../api/itemDesc";
 
 class ProductsContainer extends Component {
   constructor() {
     super();
-
+    this.state = { clothing: [] };
     this.addProductToCart = this.addProductToCart.bind(this);
     this.getAllProductInfo = this.getAllProductInfo.bind(this);
   }
 
-  addProductToCart() {
-    console.log("asdf");
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.dresses !== prevProps.dresses) {
+      this.setState({ clothing: this.props.dresses });
+    }
+  }
+
+  addProductToCart({ _str: id }) {
+    console.log("id: " + id);
+    Meteor.call("cart.insert", id);    
   }
 
   getAllProductInfo(item) {
@@ -32,28 +40,25 @@ class ProductsContainer extends Component {
     return (
       <Container>
         <h1>Products Container</h1>
-
-        {this.props.dresses && (
-          <StackGrid
-            columnWidth={200}
-            gutterWidth={20}
-            gutterHeight={20}
-            monitorImagesLoaded
-            width={"100%"}
-          >
-            {this.props.dresses.slice(0, 19).map(dress => {
-              const product = this.getAllProductInfo(dress);
-              return (
-                <ProductCard
-                  addProductToCart={this.addProductToCart}
-                  isAuthed={Meteor.user()}
-                  {...product}
-                  key={dress._id}
-                />
-              );
-            })}
-          </StackGrid>
-        )}
+        <StackGrid
+          columnWidth={200}
+          gutterWidth={20}
+          gutterHeight={20}
+          monitorImagesLoaded
+          width={"100%"}
+        >
+          {this.state.clothing.slice(0, 19).map(clothing => {
+            const product = this.getAllProductInfo(clothing);
+            return (
+              <ProductCard
+                addProductToCart={this.addProductToCart}
+                isAuthed={Meteor.user()}
+                {...product}
+                key={clothing._id}
+              />
+            );
+          })}
+        </StackGrid>
       </Container>
     );
   }
@@ -72,7 +77,10 @@ ProductsContainer.proptypes = {
 export default (ProductsContainer = createContainer(() => {
   Meteor.subscribe("dresses");
   Meteor.subscribe("itemDesc");
+  Meteor.subscribe("cart");
+
   return {
+    cart: Dresses.find({ customerId: Meteor.userId() }).fetch(),
     dresses: Dresses.find().fetch(),
     itemDesc: ItemDesc.find({ category: "Dress" }).fetch()
   };
