@@ -26,8 +26,7 @@ class ProductsContainer extends Component {
   }
 
   addProductToCart({ _str: id }) {
-    console.log("id: " + id);
-    Meteor.call("cart.insert", id);    
+    Meteor.call("cart.insert", id);
   }
 
   getAllProductInfo(item) {
@@ -53,8 +52,8 @@ class ProductsContainer extends Component {
               <ProductCard
                 addProductToCart={this.addProductToCart}
                 isAuthed={Meteor.user()}
-                {...product}
                 key={clothing._id}
+                {...product}
               />
             );
           })}
