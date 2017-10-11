@@ -1,18 +1,16 @@
-import { Meteor } from "meteor/meteor";
-import { Mongo } from "meteor/mongo";
-import { check } from "meteor/check";
+import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
+import { check } from 'meteor/check';
 
-export const Dresses = new Mongo.Collection("dresses");
+export const Dresses = new Mongo.Collection('dresses');
 
 if (Meteor.isServer) {
   // This code only runs on the server
-  Meteor.publish("dresses", function dressesPublication() {
-    return Dresses.find({});
-  });
+  Meteor.publish('dresses', () => Dresses.find({}));
 }
 
 Meteor.methods({
-  "dresses.insert"(
+  'dresses.insert': function dressesInsert(
     arms,
     bust,
     collar,
@@ -26,9 +24,9 @@ Meteor.methods({
     shoulders,
     shoulderToHem,
     waist,
-    waistToHem
+    waistToHem,
   ) {
-    //Checking Input Var Types
+    // Checking Input Var Types
     check(arms, Number);
     check(bust, Number);
     check(collar, Number);
@@ -46,7 +44,7 @@ Meteor.methods({
 
     // Make sure the user is logged in before inserting a task
     if (!Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
+      throw new Meteor.Error('not-authorized');
     }
 
     Dresses.insert({
@@ -65,12 +63,14 @@ Meteor.methods({
       shoulders,
       shoulderToHem,
       waist,
-      waistToHem
+      waistToHem,
     });
   },
-  "dresses.remove"(dressId) {
+  'dresses.remove': function dressesRemove(dressId) {
     check(dressId, String);
 
     Dresses.remove(dressId);
-  }
+  },
 });
+
+export default Dresses;

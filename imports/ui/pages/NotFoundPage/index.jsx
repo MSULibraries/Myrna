@@ -1,8 +1,8 @@
 // components/NotFound.js
-import React from "react";
-import { Container } from "react-grid-system";
+import React from 'react';
+import { Container } from 'react-grid-system';
 
-import Cart from "./../../../api/cart";
+import Cart from './../../../api/cart';
 
 const NotFound = () => (
   <Container>

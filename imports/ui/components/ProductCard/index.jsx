@@ -1,24 +1,18 @@
-import React from "react";
-import PropTypes from "prop-types";
-import {
-  Card,
-  CardActions,
-  CardMedia,
-  CardTitle,
-  CardText
-} from "material-ui/Card";
-import FlatButton from "material-ui/FlatButton";
-import Paper from "material-ui/Paper";
-import styled from "styled-components";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Card, CardActions, CardMedia, CardTitle, CardText } from 'material-ui/Card';
+import FlatButton from 'material-ui/FlatButton';
+import Paper from 'material-ui/Paper';
+import styled from 'styled-components';
 
 const DescriptionContainer = styled.div`padding: 10px;`;
 
 const ProductImage = styled.img`
-  filter: ${props => {
+  filter: ${(props) => {
     if (props.disabled) {
-      return "grayscale(100%)";
+      return 'grayscale(100%)';
     }
-    return "grayscale(0%)";
+    return 'grayscale(0%)';
   }};
 `;
 
@@ -36,29 +30,23 @@ const ProductCard = ({
   description,
   disabled = false,
   imgSrc,
-  shortDescription
+  shortDescription,
 }) => (
   <Paper zDepth={3}>
     <Card>
       <PageDetailLink>
         {disabled ? (
-          <CardMediaContainer overlay={<CardTitle subtitle={"Out Of Stock"} />}>
-            <ProductImage
-              disabled={disabled}
-              src={imgSrc}
-              alt={shortDescription}
-            />
+          <CardMediaContainer overlay={<CardTitle subtitle="Out Of Stock" />}>
+            <ProductImage disabled={disabled} src={imgSrc} alt={shortDescription} />
           </CardMediaContainer>
         ) : (
           <CardMediaContainer>
             <ProductImage
               disabled={disabled}
-              src={`images/clothing/${category}/${oldId}/small/${JSON.parse(
-                description
-              ).picture_1}`}
-              alt={`images/clothing/${category}/${oldId}/small/${JSON.parse(
-                description
-              ).picture_1}`}
+              src={`images/clothing/${category}/${oldId}/small/${JSON.parse(description)
+                .picture_1}`}
+              alt={`images/clothing/${category}/${oldId}/small/${JSON.parse(description)
+                .picture_1}`}
             />
           </CardMediaContainer>
         )}
@@ -70,26 +58,23 @@ const ProductCard = ({
         </PageDetailLink>
       </DescriptionContainer>
       <CardActions>
-        {isAuthed && (
-          <FlatButton
-            label="Add To Cart"
-            onClick={() => addProductToCart(_id)}
-          />
-        )}
+        {isAuthed && <FlatButton label="Add To Cart" onClick={() => addProductToCart(_id)} />}
       </CardActions>
     </Card>
   </Paper>
 );
 
 ProductCard.propTypes = {
+  _id: PropTypes.string,
   addProductToCart: PropTypes.func,
   category: PropTypes.string,
-  name: PropTypes.string,
-  oldId: PropTypes.number,
   description: PropTypes.string,
   disabled: PropTypes.string,
   imgSrc: PropTypes.string,
-  short_description: PropTypes.string
+  isAuthed: PropTypes.bool,
+  name: PropTypes.string,
+  oldId: PropTypes.number,
+  shortDescription: PropTypes.string,
 };
 
 export default ProductCard;

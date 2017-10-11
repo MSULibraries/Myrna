@@ -1,18 +1,16 @@
-import { Meteor } from "meteor/meteor";
-import { Mongo } from "meteor/mongo";
-import { check } from "meteor/check";
+import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
+import { check } from 'meteor/check';
 
-export const ItemDesc = new Mongo.Collection("itemDesc");
+export const ItemDesc = new Mongo.Collection('itemDesc');
 
 if (Meteor.isServer) {
   // This code only runs on the server
-  Meteor.publish("itemDesc", function itemDescPublication() {
-    return ItemDesc.find({});
-  });
+  Meteor.publish('itemDesc', () => ItemDesc.find({}));
 }
 
 Meteor.methods({
-  "itemDesc.insert"(
+  'itemDesc.insert': function itemDescInsert(
     oldId,
     name,
     description,
@@ -27,9 +25,9 @@ Meteor.methods({
     itemStatus,
     shortDescription,
     discr,
-    baseCost
+    baseCost,
   ) {
-    //Checking Input Var Types
+    // Checking Input Var Types
     check(oldId, String);
     check(name, String);
     check(description, String);
@@ -48,7 +46,7 @@ Meteor.methods({
 
     // Make sure the user is logged in before inserting a task
     if (!Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
+      throw new Meteor.Error('not-authorized');
     }
 
     ItemDesc.insert({
@@ -66,12 +64,14 @@ Meteor.methods({
       itemStatus,
       shortDescription,
       discr,
-      baseCost
+      baseCost,
     });
   },
-  "itemDesc.remove"(descId) {
+  'itemDesc.remove': function itemDescRemove(descId) {
     check(descId, String);
 
     ItemDesc.remove(descId);
-  }
+  },
 });
+
+export default ItemDesc;

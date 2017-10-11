@@ -1,15 +1,15 @@
-import findIndex from "lodash/findIndex";
-import CircularProgress from "material-ui/CircularProgress";
-import { createContainer } from "meteor/react-meteor-data";
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import { Container } from "react-grid-system";
-import StackGrid from "react-stack-grid";
-import ProductCard from "./../../components/ProductCard/";
+import findIndex from 'lodash/findIndex';
+import CircularProgress from 'material-ui/CircularProgress';
+import { createContainer } from 'meteor/react-meteor-data';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { Container } from 'react-grid-system';
+import StackGrid from 'react-stack-grid';
+import ProductCard from './../../components/ProductCard/index';
 
-import { Cart } from "./../../../api/cart";
-import { Dresses } from "./../../../api/dresses";
-import { ItemDesc } from "./../../../api/itemDesc";
+import Cart from './../../../api/cart';
+import Dresses from './../../../api/dresses';
+import ItemDesc from './../../../api/itemDesc';
 
 class ProductsContainer extends Component {
   constructor() {
@@ -26,7 +26,7 @@ class ProductsContainer extends Component {
   }
 
   addProductToCart({ _str: id }) {
-    Meteor.call("cart.insert", id);
+    Meteor.call('cart.insert', id);
   }
 
   getAllProductInfo(item) {
@@ -44,9 +44,9 @@ class ProductsContainer extends Component {
           gutterWidth={20}
           gutterHeight={20}
           monitorImagesLoaded
-          width={"100%"}
+          width="100%"
         >
-          {this.state.clothing.slice(0, 19).map(clothing => {
+          {this.state.clothing.slice(0, 19).map((clothing) => {
             const product = this.getAllProductInfo(clothing);
             return (
               <ProductCard
@@ -65,22 +65,22 @@ class ProductsContainer extends Component {
 
 ProductsContainer.defaultProps = {
   dresses: [],
-  itemDesc: {}
+  itemDesc: {},
 };
 
 ProductsContainer.proptypes = {
   dresses: PropTypes.array,
-  itemDesc: PropTypes.object
+  itemDesc: PropTypes.object,
 };
 
 export default (ProductsContainer = createContainer(() => {
-  Meteor.subscribe("dresses");
-  Meteor.subscribe("itemDesc");
-  Meteor.subscribe("cart");
+  Meteor.subscribe('dresses');
+  Meteor.subscribe('itemDesc');
+  Meteor.subscribe('cart');
 
   return {
     cart: Dresses.find({ customerId: Meteor.userId() }).fetch(),
     dresses: Dresses.find().fetch(),
-    itemDesc: ItemDesc.find({ category: "Dress" }).fetch()
+    itemDesc: ItemDesc.find({ category: 'Dress' }).fetch(),
   };
 }, ProductsContainer));

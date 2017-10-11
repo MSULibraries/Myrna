@@ -1,8 +1,8 @@
-import { Meteor } from "meteor/meteor";
+import { Meteor } from 'meteor/meteor';
 
-import "../imports/api/cart.js";
-import "../imports/api/dresses.js";
-import "../imports/api/itemDesc.js";
+import '../imports/api/cart';
+import '../imports/api/dresses';
+import '../imports/api/itemDesc';
 
 Meteor.startup(() => {
   // code to run on server at startup
