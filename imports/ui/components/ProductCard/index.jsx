@@ -65,7 +65,7 @@ const ProductCard = ({
 );
 
 ProductCard.propTypes = {
-  _id: PropTypes.string,
+  _id: PropTypes.object,
   addProductToCart: PropTypes.func,
   category: PropTypes.string,
   description: PropTypes.string,
