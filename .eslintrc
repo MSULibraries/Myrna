@@ -9,6 +9,7 @@
     "import/extensions": "off"
   },
   "globals": {
-    "Meteor": false
+    "Meteor": false,
+    "SimpleSchema": false
   }
 }

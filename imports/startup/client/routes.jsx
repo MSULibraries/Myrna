@@ -7,6 +7,7 @@ import AboutPage from './../../ui/pages/AboutPage/index';
 import CartPage from './../../ui/pages/CartPage/index';
 import HomePage from './../../ui/pages/HomePage/index';
 import LoginPage from './../../ui/pages/LoginPage/index';
+import OrdersPage from './../../ui/pages/OrdersPage/index';
 import NotFoundPage from './../../ui/pages/NotFoundPage/index';
 import PoliciesPage from './../../ui/pages/PoliciesPage/index';
 import ProductsContainer from './../../ui/pages/Products/ProductsContainer';
@@ -20,6 +21,7 @@ const Routes = () => (
         <Route exact path="/about" component={AboutPage} />
         <AuthRoute path="/cart" component={CartPage} />
         <Route exact path="/login" component={LoginPage} />
+        <Route exact path="/orders" component={OrdersPage} />
         <Route exact path="/policies" component={PoliciesPage} />
         <Route exact path="/products" component={ProductsContainer} />
         <Route component={NotFoundPage} />

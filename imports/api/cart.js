@@ -43,6 +43,24 @@ Meteor.methods({
     const currentCartProductIds = Cart.find({ userId: Meteor.userId() }).fetch();
     return currentCartProductIds;
   },
+  'cart.read.productIds': function cartReadProductIds() {
+    // Make sure the user is logged in before inserting a task
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    // Gets an array of string ids that are the product ids
+    const currentCartProductIds = Cart.find(
+      { userId: Meteor.userId() },
+      {
+        fields: { productId: 1 },
+      },
+    )
+      .fetch()
+      .map(item => item.productId);
+
+    return currentCartProductIds;
+  },
   'cart.insert': function cartInsert(productId) {
     // Checking Input Var Types
     check(productId, String);
