@@ -24,6 +24,25 @@ if (Meteor.isServer) {
 }
 
 Meteor.methods({
+  'cart.clear': function cartClear() {
+    // Make sure the user is logged in before inserting a task
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+    Cart.remove({ userId: Meteor.userId() });
+  },
+
+  /**
+   * Returns array of ids of products in the cart
+   */
+  'cart.read': function cartRead() {
+    // Make sure the user is logged in before inserting a task
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+    const currentCartProductIds = Cart.find({ userId: Meteor.userId() }).fetch();
+    return currentCartProductIds;
+  },
   'cart.insert': function cartInsert(productId) {
     // Checking Input Var Types
     check(productId, String);

@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 
 import '../imports/api/cart';
 import '../imports/api/dresses';
+import '../imports/api/orders';
 import '../imports/api/itemDesc';
 
 Meteor.startup(() => {
