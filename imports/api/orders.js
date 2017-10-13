@@ -64,7 +64,7 @@ function userLoggedIn() {
 
 Meteor.methods({
   'order.approve': function orderApprove(orderId) {
-    if (userLoggedIn) {
+    if (userLoggedIn()) {
       Order.update({ _id: orderId }, { $set: { status: 'Active' } });
     }
   },
@@ -74,7 +74,7 @@ Meteor.methods({
    * @param {string} orderId - id of the order
    */
   'order.cancel': function orderCancel(orderId) {
-    if (userLoggedIn) {
+    if (userLoggedIn()) {
       check(orderId, String);
 
       Order.update({ _id: orderId }, { $set: { status: 'Cancelled' } });
@@ -87,13 +87,15 @@ Meteor.methods({
    */
   'order.delete': function orderDelete(orderId) {
     check(orderId, String);
-    if (userLoggedIn) {
+    if (userLoggedIn()) {
       Order.remove({ _id: orderId });
     }
   },
 
   /**
    * Adds a new order to the collection
+   * Sets status to 'Un-Approved' by default so that
+   * a maintainer can approve the order
    */
   'order.insert': function orderInsert() {
     if (userLoggedIn()) {
