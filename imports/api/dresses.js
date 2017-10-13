@@ -69,6 +69,10 @@ Meteor.methods({
   'dresses.remove': function dressesRemove(dressId) {
     check(dressId, String);
 
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+
     Dresses.remove(dressId);
   },
 });
