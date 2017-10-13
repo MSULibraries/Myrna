@@ -72,7 +72,7 @@ if (Meteor.isServer) {
         // Set up a fake method invocation that looks like what the method expects
         const invocation = { userId };
 
-        const cartItemsIds = insertCart.apply(invocation, [productId]);
+        insertCart.apply(invocation, [productId]);
         assert.equal(Cart.find().count(), 2);
       });
     });
