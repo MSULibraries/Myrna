@@ -1,7 +1,7 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
-import Routes from "./../startup/client/routes";
+import Routes from './../startup/client/routes';
 
 // App component - represents the whole app
 export default class App extends Component {

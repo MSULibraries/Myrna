@@ -2,6 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 
+import roles from './../../lib/roles';
+
 export const Order = new Mongo.Collection('orders');
 
 const orderSchema = new SimpleSchema({
@@ -40,9 +42,16 @@ Order.allow({
 
 if (Meteor.isServer) {
   // This code only runs on the server
-  Meteor.publish('orders', () =>
+  Meteor.publish('orders', () => {
+    // If a maintainer, you get to see all the orders
+    if (Roles.userIsInRole(Meteor.userId(), roles.maintainers)) {
+      console.log('Maintainer');
+      return Order.find({});
+    }
     // Only return a user's ordered items
-    Order.find({ userId: Meteor.userId() }));
+    console.log('Normal User');
+    return Order.find({ userId: Meteor.userId() });
+  });
 }
 
 Meteor.methods({

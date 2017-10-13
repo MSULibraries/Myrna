@@ -47,6 +47,7 @@ class OrdersPage extends Component {
         <Table>
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
             <TableRow>
+              <TableHeaderColumn style={darkerTableHeaders}>Order Owner</TableHeaderColumn>
               <TableHeaderColumn style={darkerTableHeaders}>Order ID</TableHeaderColumn>
               <TableHeaderColumn style={darkerTableHeaders}>Ordered On</TableHeaderColumn>
               <TableHeaderColumn style={darkerTableHeaders}>Product Ids</TableHeaderColumn>
@@ -60,6 +61,7 @@ class OrdersPage extends Component {
           <TableBody displayRowCheckbox={false}>
             {this.props.orders.map(order => (
               <TableRow key={order._id}>
+                <TableRowColumn>{order.userId}</TableRowColumn>
                 <TableRowColumn>{order._id}</TableRowColumn>
                 <TableRowColumn>
                   {new Date(order.dateAdded).toLocaleDateString('en-US')}
