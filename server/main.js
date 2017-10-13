@@ -5,7 +5,7 @@ import '../imports/api/dresses';
 import '../imports/api/orders';
 import '../imports/api/itemDesc';
 
-import roles from './../lib/roles';
+import { roles } from './../lib/roles';
 
 Meteor.startup(() => {
   Roles.addUsersToRoles('T6QqPcncdheoJyRxG', [roles.maintainers]);

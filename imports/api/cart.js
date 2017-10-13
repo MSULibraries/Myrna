@@ -76,11 +76,6 @@ Meteor.methods({
       dateAdded: Date.now(),
     });
   },
-  'cart.remove': function cartRemove(productId) {
-    check(productId, String);
-
-    Cart.remove(productId);
-  },
 });
 
 export default Cart;

@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 
-import roles from './../../lib/roles';
+import { roles } from './../../lib/roles';
 
 export const Order = new Mongo.Collection('orders');
 
@@ -58,7 +58,6 @@ if (Meteor.isServer) {
 function userLoggedIn() {
   if (!Meteor.userId()) {
     throw new Meteor.Error('not-authorized');
-    return false;
   }
   return true;
 }
