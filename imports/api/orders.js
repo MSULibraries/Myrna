@@ -20,7 +20,7 @@ const orderSchema = new SimpleSchema({
     label: 'productIds',
   },
   status: {
-    allowedValues: ['Complete', 'Active', 'Cancelled'],
+    allowedValues: ['Active', 'Cancelled', 'Complete', 'Un-Approved'],
     type: String,
     label: 'status',
   },
@@ -45,24 +45,41 @@ if (Meteor.isServer) {
   Meteor.publish('orders', () => {
     // If a maintainer, you get to see all the orders
     if (Roles.userIsInRole(Meteor.userId(), roles.maintainers)) {
-      console.log('Maintainer');
       return Order.find({});
     }
     // Only return a user's ordered items
-    console.log('Normal User');
     return Order.find({ userId: Meteor.userId() });
   });
 }
 
+/**
+ * @returns {bool}
+ */
+function userLoggedIn() {
+  if (!Meteor.userId()) {
+    throw new Meteor.Error('not-authorized');
+    return false;
+  }
+  return true;
+}
+
 Meteor.methods({
+  'order.approve': function orderApprove(orderId) {
+    if (userLoggedIn) {
+      Order.update({ _id: orderId }, { $set: { status: 'Active' } });
+    }
+  },
+
   /**
    * Changes the status of an order to cancelled
    * @param {string} orderId - id of the order
    */
   'order.cancel': function orderCancel(orderId) {
-    check(orderId, String);
+    if (userLoggedIn) {
+      check(orderId, String);
 
-    Order.update({ _id: orderId }, { $set: { status: 'Cancelled' } });
+      Order.update({ _id: orderId }, { $set: { status: 'Cancelled' } });
+    }
   },
 
   /**
@@ -71,28 +88,27 @@ Meteor.methods({
    */
   'order.delete': function orderDelete(orderId) {
     check(orderId, String);
-
-    Order.remove({ _id: orderId });
+    if (userLoggedIn) {
+      Order.remove({ _id: orderId });
+    }
   },
 
   /**
    * Adds a new order to the collection
    */
   'order.insert': function orderInsert() {
-    // Make sure the user is logged in before inserting a task
-    if (!Meteor.userId()) {
-      throw new Meteor.Error('not-authorized');
-    }
+    if (userLoggedIn()) {
+      // Getting all item information from cart
+      const cartProductIds = Meteor.call('cart.read.productIds');
 
-    // Getting all item information from cart
-    const cartProductIds = Meteor.call('cart.read.productIds');
-    Order.insert({
-      userId: Meteor.userId(),
-      dateAdded: Date.now(),
-      productIds: cartProductIds,
-      status: 'Active',
-    });
-    Meteor.call('cart.clear');
+      Order.insert({
+        userId: Meteor.userId(),
+        dateAdded: Date.now(),
+        productIds: cartProductIds,
+        status: 'Un-Approved',
+      });
+      Meteor.call('cart.clear');
+    }
   },
 });
 
