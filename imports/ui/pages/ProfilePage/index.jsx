@@ -21,11 +21,14 @@ export class ProfilePage extends React.PureComponent {
         />
         <h1>Profile</h1>
         <List>
+          <Link style={{ textDecoration: 'none' }} to="/addresses">
+            <ListItem primaryText="Addresses" />
+          </Link>
           <Link style={{ textDecoration: 'none' }} to="/orders">
-            <ListItem primaryText="My Orders" />
+            <ListItem primaryText="Orders" />
           </Link>
           <Link style={{ textDecoration: 'none' }} to="/cart">
-            <ListItem primaryText="My Cart" />
+            <ListItem primaryText="Cart" />
           </Link>
         </List>
       </Container>

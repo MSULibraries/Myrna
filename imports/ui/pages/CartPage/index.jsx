@@ -1,6 +1,3 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Container } from 'react-grid-system';
 import FlatButton from 'material-ui/FlatButton';
 import {
   Table,
@@ -11,6 +8,9 @@ import {
   TableRowColumn,
 } from 'material-ui/Table';
 import { createContainer } from 'meteor/react-meteor-data';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { Container } from 'react-grid-system';
 
 import BreadCrumbs from './../../components/BreadCrumbs/index';
 import Cart from './../../../api/cart';

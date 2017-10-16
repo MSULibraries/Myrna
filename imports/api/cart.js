@@ -77,14 +77,13 @@ Meteor.methods({
     });
   },
 
-  'cart.remove': function cartRemove(productId) {
-    console.log('HERE: ', productId);
-    check(productId, String);
+  'cart.remove': function cartRemove(cartEntryId) {
+    check(cartEntryId, String);
     // Make sure the user is logged in before inserting a task
     if (!Meteor.userId()) {
       throw new Meteor.Error('not-authorized');
     }
-    Cart.remove(productId);
+    Cart.remove(cartEntryId);
   },
 });
 

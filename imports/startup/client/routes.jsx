@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import AuthRoute from './AuthRoute';
 import MainNav from './../../ui/components/MainNav/index';
 import AboutPage from './../../ui/pages/AboutPage/index';
+import AddressesPage from './../../ui/pages/AddressesPage/index';
 import CartPage from './../../ui/pages/CartPage/index';
 import HomePage from './../../ui/pages/HomePage/index';
 import LoginPage from './../../ui/pages/LoginPage/index';
@@ -20,6 +21,7 @@ const Routes = () => (
       <Switch>
         <Route exact path="/" component={HomePage} />
         <Route exact path="/about" component={AboutPage} />
+        <AuthRoute exact path="/addresses" component={AddressesPage} />
         <AuthRoute path="/cart" component={CartPage} />
         <Route exact path="/login" component={LoginPage} />
         <AuthRoute exact path="/orders" component={OrdersPage} />
