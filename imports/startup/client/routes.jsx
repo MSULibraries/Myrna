@@ -11,6 +11,7 @@ import OrdersPage from './../../ui/pages/OrdersPage/index';
 import NotFoundPage from './../../ui/pages/NotFoundPage/index';
 import PoliciesPage from './../../ui/pages/PoliciesPage/index';
 import ProductsContainer from './../../ui/pages/Products/ProductsContainer';
+import ProfilePage from './../../ui/pages/ProfilePage/index';
 
 const Routes = () => (
   <Router>
@@ -24,6 +25,7 @@ const Routes = () => (
         <AuthRoute exact path="/orders" component={OrdersPage} />
         <Route exact path="/policies" component={PoliciesPage} />
         <Route exact path="/products" component={ProductsContainer} />
+        <Route exact path="/profile" component={ProfilePage} />
         <Route component={NotFoundPage} />
       </Switch>
     </div>
