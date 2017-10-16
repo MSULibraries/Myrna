@@ -12,6 +12,7 @@ import {
 } from 'material-ui/Table';
 import { createContainer } from 'meteor/react-meteor-data';
 
+import BreadCrumbs from './../../components/BreadCrumbs/index';
 import roles from './../../../../lib/roles';
 import Order from './../../../api/orders';
 
@@ -53,6 +54,7 @@ class OrdersPage extends Component {
     return (
       <Container>
         <h1>Orders</h1>
+        <BreadCrumbs crumbs={['Profile', 'Orders']} />
 
         <Table>
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>

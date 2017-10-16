@@ -12,6 +12,7 @@ import {
 } from 'material-ui/Table';
 import { createContainer } from 'meteor/react-meteor-data';
 
+import BreadCrumbs from './../../components/BreadCrumbs/index';
 import Cart from './../../../api/cart';
 
 // Adjusted contrast to help with a11y
@@ -43,6 +44,7 @@ class CartPage extends Component {
     return (
       <Container>
         <h1>Cart</h1>
+        <BreadCrumbs crumbs={['Profile', 'Cart']} />
 
         <Table>
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>

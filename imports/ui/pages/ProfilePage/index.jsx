@@ -4,6 +4,7 @@
  *
  */
 
+import { List, ListItem } from 'material-ui/List';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Container } from 'react-grid-system';
@@ -19,14 +20,14 @@ export class ProfilePage extends React.PureComponent {
           meta={[{ name: 'description', content: 'Description of Policies' }]}
         />
         <h1>Profile</h1>
-        <ul>
-          <li>
-            <Link to="/orders">My Orders</Link>
-          </li>
-          <li>
-            <Link to="/cart">My Cart</Link>
-          </li>
-        </ul>
+        <List>
+          <Link style={{ textDecoration: 'none' }} to="/orders">
+            <ListItem primaryText="My Orders" />
+          </Link>
+          <Link style={{ textDecoration: 'none' }} to="/cart">
+            <ListItem primaryText="My Cart" />
+          </Link>
+        </List>
       </Container>
     );
   }
