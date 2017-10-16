@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Container } from 'react-grid-system';
 import FlatButton from 'material-ui/FlatButton';
-import TextField from 'material-ui/TextField';
 import { createContainer } from 'meteor/react-meteor-data';
 
+import NewAddressForm from './NewAddressForm';
 import Addresses from './../../../api/addresses';
 import BreadCrumbs from './../../components/BreadCrumbs/index';
 
@@ -20,12 +20,12 @@ class AddressesPage extends Component {
     this.toggleAddingNewAddress = this.toggleAddingNewAddress.bind(this);
   }
 
-  addNewAddress() {
-    console.log('addNewAddress');
+  addNewAddress(newAddress) {
+    console.log('addNewAddress: ', newAddress);
   }
 
   toggleAddingNewAddress() {
-    this.setState({ addingNewAddress: true });
+    this.setState({ addingNewAddress: !this.state.addingNewAddress });
   }
 
   render() {
@@ -47,20 +47,10 @@ class AddressesPage extends Component {
 
         {this.state.addingNewAddress && (
           <div>
-            <form>
-              <TextField hintText="Company" />
-              <br />
-              <TextField hintText="City" />
-              <br />
-              <TextField hintText="Street Address" />
-              <br />
-              <TextField hintText="State" />
-              <br />
-              <TextField hintText="Zip" />
-              <br />
-            </form>
-            <FlatButton primary onClick={() => this.addNewAddress()} label="Submit" />
-            <FlatButton secondary onClick={() => this.toggleAddingNewAddress()} label="Cancel" />
+            <NewAddressForm
+              submitForm={newAddress => this.addNewAddress(newAddress)}
+              cancelForm={() => this.toggleAddingNewAddress()}
+            />
           </div>
         )}
       </Container>

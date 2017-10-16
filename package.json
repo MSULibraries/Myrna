@@ -1,5 +1,5 @@
 {
-  "name": "Myrna_Meteor",
+  "name": "myrna_meteor",
   "private": true,
   "scripts": {
     "lint": "eslint .",
