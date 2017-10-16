@@ -91,7 +91,6 @@ if (Meteor.isServer) {
       });
       it('dresses.delete deletes', () => {
         const removeDress = Meteor.server.method_handlers['dresses.remove'];
-        // Set up a fake method invocation that looks like what the method expects
         const invocation = { userId };
 
         removeDress.apply(invocation, [mockDressId]);

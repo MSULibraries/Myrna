@@ -13,7 +13,7 @@ if (Meteor.isServer) {
       // Creating mock ids
       const userId = Random.id();
       const productId = Random.id();
-
+      let mockCartInsertId;
       beforeEach(() => {
         // Stubbing soome of meteors global functions
         const userIdStub = sinon.stub(Meteor, 'userId');
@@ -25,7 +25,7 @@ if (Meteor.isServer) {
         Cart.remove({});
 
         // Inserting a cart item
-        Cart.insert({
+        mockCartInsertId = Cart.insert({
           productId,
           createdAt: new Date(),
           userId,
@@ -54,6 +54,14 @@ if (Meteor.isServer) {
 
         const cartItems = readCart.apply(invocation, []);
         assert.deepEqual(Cart.find().fetch(), cartItems);
+      });
+
+      it('cart.remove removes', () => {
+        const removeProductFromCart = Meteor.server.method_handlers['cart.remove'];
+        const invocation = { userId };
+
+        removeProductFromCart.apply(invocation, [mockCartInsertId]);
+        assert.equal(Cart.find().count(), 0);
       });
 
       it('cart.read.productIds returns an array of productIds from cart', () => {
