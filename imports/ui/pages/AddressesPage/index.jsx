@@ -8,7 +8,7 @@ import NewAddressForm from './NewAddressForm';
 import Addresses from './../../../api/addresses';
 import BreadCrumbs from './../../components/BreadCrumbs/index';
 
-class AddressesPage extends Component {
+export class AddressesPage extends Component {
   constructor(props) {
     super(props);
 

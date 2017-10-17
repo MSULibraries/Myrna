@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-const BreadCrumbs = ({ crumbs }) => (
+export const BreadCrumbs = ({ crumbs }) => (
   <div>
     {crumbs.map((crumb, index, crumbs) => (
       <span key={crumb}>
