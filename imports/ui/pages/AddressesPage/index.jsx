@@ -2,11 +2,32 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Container } from 'react-grid-system';
 import FlatButton from 'material-ui/FlatButton';
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableHeaderColumn,
+  TableRow,
+  TableRowColumn,
+} from 'material-ui/Table';
 import { createContainer } from 'meteor/react-meteor-data';
-
 import NewAddressForm from './NewAddressForm';
 import Addresses from './../../../api/addresses';
 import BreadCrumbs from './../../components/BreadCrumbs/index';
+
+// Adjusted contrast to help with a11y
+const darkerTableHeaders = {
+  color: '#575757',
+};
+
+const alignCenter = {
+  textAlign: 'center',
+};
+
+const centerColumn = {
+  display: 'flex',
+  alignItems: 'center',
+};
 
 export class AddressesPage extends Component {
   constructor(props) {
@@ -20,10 +41,33 @@ export class AddressesPage extends Component {
     this.toggleAddingNewAddress = this.toggleAddingNewAddress.bind(this);
   }
 
-  addNewAddress(newAddress) {
-    console.log('addNewAddress: ', newAddress);
+  /**
+   * Takes in new address information and calls insert endpoint
+   * @param {String} city
+   * @param {String} company
+   * @param {String} name
+   * @param {String} state
+   * @param {String} streetAddress
+   * @param {String} zip
+   */
+  addNewAddress({
+    city, company, name, state, streetAddress, zip,
+  }) {
+    Meteor.call('addresses.insert', city, company, name, state, streetAddress, zip);
+    this.setState({ addingNewAddress: false });
   }
 
+  /**
+   * Removes address from collection by id
+   * @param {string} addressId
+   */
+  removeAddress(addressId) {
+    Meteor.call('addresses.remove', addressId);
+  }
+
+  /**
+   * Hides or Shows new address form
+   */
   toggleAddingNewAddress() {
     this.setState({ addingNewAddress: !this.state.addingNewAddress });
   }
@@ -36,11 +80,42 @@ export class AddressesPage extends Component {
 
         {!this.state.addingNewAddress && (
           <div>
-            <ul>
-              {this.props.addresses.length > 0
-                ? this.props.addresses.map(address => <li>{address}</li>)
-                : 'No Addresses'}
-            </ul>
+            <Table>
+              <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
+                <TableRow>
+                  <TableHeaderColumn style={darkerTableHeaders}>Company</TableHeaderColumn>
+                  <TableHeaderColumn style={darkerTableHeaders}>Name </TableHeaderColumn>
+                  <TableHeaderColumn style={darkerTableHeaders}>Street </TableHeaderColumn>
+                  <TableHeaderColumn style={darkerTableHeaders}>City</TableHeaderColumn>
+                  <TableHeaderColumn style={darkerTableHeaders}>State </TableHeaderColumn>
+                  <TableHeaderColumn style={darkerTableHeaders}>Zip </TableHeaderColumn>
+
+                  <TableHeaderColumn style={{ darkerTableHeaders, ...alignCenter }}>
+                    Remove
+                  </TableHeaderColumn>
+                </TableRow>
+              </TableHeader>
+              <TableBody displayRowCheckbox={false}>
+                {this.props.addresses.map(address => (
+                  <TableRow key={address.company}>
+                    <TableRowColumn>{address.company}</TableRowColumn>
+                    <TableRowColumn>{address.name}</TableRowColumn>
+                    <TableRowColumn>{address.street1}</TableRowColumn>
+                    <TableRowColumn>{address.city}</TableRowColumn>
+                    <TableRowColumn>{address.state}</TableRowColumn>
+                    <TableRowColumn>{address.zip}</TableRowColumn>
+                    <TableRowColumn style={centerColumn}>
+                      <FlatButton
+                        onClick={() => this.removeAddress(address._id)}
+                        secondary
+                        label="X"
+                      />
+                    </TableRowColumn>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+
             <FlatButton onClick={() => this.toggleAddingNewAddress()} label="New Address" />
           </div>
         )}

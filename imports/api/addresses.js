@@ -42,7 +42,7 @@ Meteor.methods({
       company,
       createdAt: new Date(),
       name,
-      owner: Meteor.userId(),
+      userId: Meteor.userId(),
       street1,
       state,
       zip,
