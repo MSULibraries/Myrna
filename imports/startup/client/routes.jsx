@@ -3,16 +3,16 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import AuthRoute from './AuthRoute';
 import MainNav from './../../ui/components/MainNav/index';
-import AboutPage from './../../ui//components/pages/AboutPage/index';
-import AddressesPage from './../../ui//components/pages/AddressesPage/index';
-import CartPage from './../../ui//components/pages/CartPage/index';
-import HomePage from './../../ui//components/pages/HomePage/index';
-import LoginPage from './../../ui//components/pages/LoginPage/index';
-import OrdersPage from './../../ui//components/pages/OrdersPage/index';
-import NotFoundPage from './../../ui//components/pages/NotFoundPage/index';
-import PoliciesPage from './../../ui//components/pages/PoliciesPage/index';
-import ProductsContainer from './../../ui//components/pages/Products/ProductsContainer';
-import ProfilePage from './../../ui//components/pages/ProfilePage/index';
+import AboutPage from './../../ui/pages/AboutPage/index';
+import AddressesPage from './../../ui/pages/AddressesPage/index';
+import CartPage from './../../ui/pages/CartPage/index';
+import HomePage from './../../ui/pages/HomePage/index';
+import LoginPage from './../../ui/pages/LoginPage/index';
+import OrdersPage from './../../ui/pages/OrdersPage/index';
+import NotFoundPage from './../../ui/pages/NotFoundPage/index';
+import PoliciesPage from './../../ui/pages/PoliciesPage/index';
+import ProductsContainer from './../../ui/pages/Products/ProductsContainer';
+import ProfilePage from './../../ui/pages/ProfilePage/index';
 
 const Routes = () => (
   <Router>
