@@ -42,6 +42,13 @@ export class AddressesPage extends Component {
     this.toggleAddingNewAddress = this.toggleAddingNewAddress.bind(this);
   }
 
+  componentWillMount() {
+    const option = this.props.match.params.option;
+    if (option === 'new') {
+      this.setState({ addingNewAddress: true });
+    }
+  }
+
   /**
    * Takes in new address information and calls insert endpoint
    * @param {String} city
@@ -77,7 +84,7 @@ export class AddressesPage extends Component {
     return (
       <Container>
         <h1>Addresses</h1>
-        <BreadCrumbs crumbs={['Profile', 'Addresses']} />
+        <BreadCrumbs crumbs={['/Profile', 'Addresses']} />
 
         {!this.state.addingNewAddress && (
           <div>

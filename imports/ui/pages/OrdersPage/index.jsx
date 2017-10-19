@@ -103,7 +103,6 @@ class OrdersPage extends Component {
             ))}
           </TableBody>
         </Table>
-        <FlatButton onClick={() => Meteor.call('order.insert')} label="Submit Order" />
       </Container>
     );
   }

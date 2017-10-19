@@ -38,7 +38,7 @@ class ProductsContainer extends Component {
   render() {
     return (
       <Container>
-        <h1>Products Container</h1>
+        <h1>Products</h1>
         <StackGrid
           columnWidth={200}
           gutterWidth={20}

@@ -85,13 +85,14 @@ Meteor.methods({
   },
 
   /**
-   * Removes an orders entry from the collection
+   * Removes an orders entry from the collection and the orders attached addresss
    * @param {string} orderId - id of the order
    */
   'order.delete': function orderDelete(orderId) {
     check(orderId, String);
     if (userLoggedIn()) {
       Order.remove({ _id: orderId });
+      Meteor.call('order.address.remove.by.orderId', orderId);
     }
   },
 
@@ -104,15 +105,17 @@ Meteor.methods({
     if (userLoggedIn()) {
       // Getting all item information from cart
       const cartProductIds = Meteor.call('cart.read.productIds');
+      Meteor.call('cart.clear');
 
-      Order.insert({
+      const orderId = Order.insert({
         userId: Meteor.userId(),
         dateAdded: Date.now(),
         productIds: cartProductIds,
         status: 'Un-Approved',
       });
-      Meteor.call('cart.clear');
+      return orderId;
     }
+    return undefined;
   },
 });
 
