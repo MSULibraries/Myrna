@@ -41,14 +41,14 @@ class NewAddressForm extends Component {
           onChange={e => this.updateFormState('company', e.target.value)}
         />
         <br />
-        <TextField hintText="City" onChange={e => this.updateFormState('city', e.target.value)} />
-        <br />
         <TextField hintText="Name" onChange={e => this.updateFormState('name', e.target.value)} />
         <br />
         <TextField
           hintText="Street Address"
           onChange={e => this.updateFormState('streetAddress', e.target.value)}
         />
+        <br />
+        <TextField hintText="City" onChange={e => this.updateFormState('city', e.target.value)} />
         <br />
         <TextField hintText="State" onChange={e => this.updateFormState('state', e.target.value)} />
         <br />

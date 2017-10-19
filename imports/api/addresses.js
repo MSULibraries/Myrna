@@ -23,7 +23,7 @@ if (Meteor.isServer) {
 }
 
 Meteor.methods({
-  'addresses.insert': function addressesInsert(name, company, street1, city, state, zip) {
+  'addresses.insert': function addressesInsert(city, company, name, state, street1, zip) {
     // Checking Input Var Types
     check(name, String);
     check(company, String);
