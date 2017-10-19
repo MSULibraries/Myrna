@@ -2,7 +2,10 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 
-import { roles } from './../../lib/roles';
+// import { EasyPostInterface } from './shipping/index';
+import { roles } from './../../../lib/roles';
+
+// const EasyPost = new EasyPostInterface();
 
 export const Order = new Mongo.Collection('orders');
 

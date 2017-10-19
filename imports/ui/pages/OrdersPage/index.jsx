@@ -14,7 +14,7 @@ import { createContainer } from 'meteor/react-meteor-data';
 
 import BreadCrumbs from './../../components/BreadCrumbs/index';
 import roles from './../../../../lib/roles';
-import Order from './../../../api/orders';
+import Order from './../../../api/orders/orders';
 
 // Adjusted contrast to help with a11y
 const darkerTableHeaders = {

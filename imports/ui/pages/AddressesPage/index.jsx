@@ -11,6 +11,7 @@ import {
   TableRowColumn,
 } from 'material-ui/Table';
 import { createContainer } from 'meteor/react-meteor-data';
+
 import NewAddressForm from './NewAddressForm';
 import Addresses from './../../../api/addresses';
 import BreadCrumbs from './../../components/BreadCrumbs/index';
