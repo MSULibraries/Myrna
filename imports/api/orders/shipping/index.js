@@ -18,20 +18,39 @@ export class EasyPostInterface {
   /**
      * Creates and saves a to address
      */
-  // createToAddress() {}
+  createToAddress({
+    company, street1, city, state, zip,
+  }) {
+    const toAddress = new this.api.Address({
+      company,
+      street1,
+      city,
+      state,
+      zip,
+    });
+
+    toAddress.save();
+  }
 
   /**
      * Creates and saves a from address
      */
   createFromAddress() {
+    // Defaulting to library PO box for now
+    const library = {
+      company: 'MSU Libraries',
+      street1: 'PO Box 5408',
+      city: 'Starkville',
+      state: 'Mississippi',
+      zip: '39759',
+    };
+
     const fromAddress = new this.api.Address({
-      company: 'EasyPost',
-      street1: '417 Montgomery Street',
-      street2: '5th Floor',
-      city: 'San Francisco',
-      state: 'CA',
-      zip: '94104',
-      phone: '415-528-7555',
+      company: library.company,
+      street1: library.street1,
+      city: library.city,
+      state: library.state,
+      zip: library.zip,
     });
 
     fromAddress.save();
