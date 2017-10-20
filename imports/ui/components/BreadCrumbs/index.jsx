@@ -9,10 +9,10 @@ export const BreadCrumbs = ({ crumbs }) => (
         {/* If it is not the current page add link and '>' */}
         {index !== crumbs.length - 1 ? (
           <Link style={{ textDecoration: 'none' }} to={crumb.toLowerCase()}>
-            {crumb}
+            {crumb.replace('/', '')}
           </Link>
         ) : (
-          crumb
+          crumb.replace('/', '')
         )}
         {index !== crumbs.length - 1 && ' > '}
       </span>

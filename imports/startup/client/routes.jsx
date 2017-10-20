@@ -19,7 +19,8 @@ const Routes = () => (
     <div>
       <MainNav />
       <Switch>
-        <AuthRoute exact path="/addresses" component={AddressesPage} />
+        <AuthRoute exact path="/addresses/" component={AddressesPage} />
+        <AuthRoute exact path="/addresses/:option" component={AddressesPage} />
         <AuthRoute path="/cart" component={CartPage} />
         <AuthRoute exact path="/orders" component={OrdersPage} />
         <AuthRoute exact path="/profile" component={ProfilePage} />

@@ -11,6 +11,7 @@ import {
   TableRowColumn,
 } from 'material-ui/Table';
 import { createContainer } from 'meteor/react-meteor-data';
+
 import NewAddressForm from './NewAddressForm';
 import Addresses from './../../../api/addresses';
 import BreadCrumbs from './../../components/BreadCrumbs/index';
@@ -39,6 +40,13 @@ export class AddressesPage extends Component {
 
     this.addNewAddress = this.addNewAddress.bind(this);
     this.toggleAddingNewAddress = this.toggleAddingNewAddress.bind(this);
+  }
+
+  componentWillMount() {
+    const option = this.props.match.params.option;
+    if (option === 'new') {
+      this.setState({ addingNewAddress: true });
+    }
   }
 
   /**
@@ -76,7 +84,7 @@ export class AddressesPage extends Component {
     return (
       <Container>
         <h1>Addresses</h1>
-        <BreadCrumbs crumbs={['Profile', 'Addresses']} />
+        <BreadCrumbs crumbs={['/Profile', 'Addresses']} />
 
         {!this.state.addingNewAddress && (
           <div>
