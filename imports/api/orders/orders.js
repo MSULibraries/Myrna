@@ -65,6 +65,15 @@ function userLoggedIn() {
   return true;
 }
 
+// Hooks
+Order.after.update(function onOrderUpdate(userId, doc) {
+  // If an order gets approved, start the shipping process
+  if (doc.status === 'Active' && this.previous.status === 'Un-Approved') {
+    // Start Shipping
+  }
+});
+
+// Methods
 Meteor.methods({
   'order.approve': function orderApprove(orderId) {
     if (userLoggedIn()) {
