@@ -2,9 +2,11 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 
-import { roles } from './../../../lib/roles';
-
 export const OrderAddress = new Mongo.Collection('order.address');
+
+OrderAddress.helpers({
+  address() {},
+});
 
 const orderAddressSchema = new SimpleSchema({
   orderId: {
@@ -37,14 +39,7 @@ OrderAddress.allow({
 
 if (Meteor.isServer) {
   // This code only runs on the server
-  Meteor.publish('order.address', () => {
-    // If a maintainer, you get to see all the orders addresses
-    if (Roles.userIsInRole(Meteor.userId(), roles.maintainers)) {
-      return OrderAddress.find({});
-    }
-    // Only return a user's ordered items
-    return OrderAddress.find({ userId: Meteor.userId() });
-  });
+  Meteor.publish('order.address', () => OrderAddress.find());
 }
 
 /**
