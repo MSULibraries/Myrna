@@ -2,12 +2,24 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 
-// import { EasyPostInterface } from './shipping/index';
+import { EasyPostInterface } from './shipping/index';
 import { roles } from './../../../lib/roles';
 
-// const EasyPost = new EasyPostInterface();
+import { Addresses } from './../addresses';
+import { OrderAddress } from './../orders/orderAddress';
+
+const EasyPost = new EasyPostInterface();
 
 export const Order = new Mongo.Collection('orders');
+
+// Helpers=
+Order.helpers({
+  address(orderId) {
+    const { addressId } = OrderAddress.findOne({ orderId });
+    const address = Addresses.findOne({ _id: addressId });
+    return address;
+  },
+});
 
 const orderSchema = new SimpleSchema({
   userId: {
@@ -50,6 +62,7 @@ if (Meteor.isServer) {
     if (Roles.userIsInRole(Meteor.userId(), roles.maintainers)) {
       return Order.find({});
     }
+
     // Only return a user's ordered items
     return Order.find({ userId: Meteor.userId() });
   });
@@ -65,6 +78,27 @@ function userLoggedIn() {
   return true;
 }
 
+function saveTrackingId(trackingID = '') {
+  if (trackingID === '') {
+    throw new Error('trackingID is required');
+  }
+  return trackingID;
+}
+
+async function createShipment(orderId) {
+  const {
+    company, street1, city, state, zip,
+  } = Order.findOne({ _id: orderId }).address(orderId);
+
+  // Creating Shipment
+  const fromAddress = await EasyPost.createFromAddress();
+  const toAddress = await EasyPost.createToAddress(company, street1, city, state, zip);
+  const parcel = await EasyPost.createParcel(9, 6, 2, 10);
+  const shipment = await EasyPost.createShipment(fromAddress, toAddress, parcel);
+  const trackingId = await shipment.buy(shipment.lowestRate(['USPS'], ['First']));
+  saveTrackingId(trackingId);
+}
+
 // Hooks
 Order.after.update(function onOrderUpdate(userId, doc) {
   // If an order gets approved, start the shipping process
@@ -77,6 +111,11 @@ Order.after.update(function onOrderUpdate(userId, doc) {
 Meteor.methods({
   'order.approve': function orderApprove(orderId) {
     if (userLoggedIn()) {
+      // Only run on server
+      if (!this.isSimulation) {
+        createShipment(orderId);
+      }
+      // Updating order status
       Order.update({ _id: orderId }, { $set: { status: 'Active' } });
     }
   },

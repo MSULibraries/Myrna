@@ -18,9 +18,7 @@ export class EasyPostInterface {
   /**
      * Creates and saves a to address
      */
-  createToAddress({
-    company, street1, city, state, zip,
-  }) {
+  createToAddress(company, street1, city, state, zip) {
     const toAddress = new this.api.Address({
       company,
       street1,
@@ -29,7 +27,7 @@ export class EasyPostInterface {
       zip,
     });
 
-    toAddress.save();
+    return toAddress.save();
   }
 
   /**
@@ -53,18 +51,35 @@ export class EasyPostInterface {
       zip: library.zip,
     });
 
-    fromAddress.save();
+    return fromAddress.save();
   }
 
   /**
      * Creates and saves a parcel
      */
-  // createParcel() {}
+  createParcel(length, width, height, weight) {
+    const parcel = new this.api.Parcel({
+      length,
+      width,
+      height,
+      weight,
+    });
+
+    return parcel.save();
+  }
 
   /**
      * Creates and saves a shipment
      */
-  // createShipment() {}
+  createShipment(fromAddress, toAddress, parcel) {
+    const shipment = new this.api.Shipment({
+      to_address: toAddress,
+      from_address: fromAddress,
+      parcel,
+    });
+
+    return shipment.save();
+  }
 
   /**
      * Buys a shipment
