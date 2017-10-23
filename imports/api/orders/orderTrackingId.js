@@ -45,7 +45,7 @@ OrderTrackingId.allow({
 
 if (Meteor.isServer) {
   // This code only runs on the server
-  Meteor.publish('order.tracking', () => OrderTrackingId.find());
+  Meteor.publish('order.trackingId', () => OrderTrackingId.find());
 }
 
 Meteor.methods({

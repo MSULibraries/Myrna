@@ -78,12 +78,16 @@ function userLoggedIn() {
   return true;
 }
 
-function saveTrackingId(trackingID = '') {
+function saveTrackingId(orderId = '', trackingID = '') {
   if (trackingID === '') {
-    throw new Error('trackingID is required');
+    throw new Error('trackingId is required');
   }
 
-  Meteor.call('order.trackingId.insert', trackingID);
+  if (orderId === '') {
+    throw new Error('orderId is required');
+  }
+
+  Meteor.call('order.trackingId.insert', orderId, trackingID);
 }
 
 async function createShipment(orderId) {
@@ -96,8 +100,8 @@ async function createShipment(orderId) {
   const toAddress = await EasyPost.createToAddress(company, street1, city, state, zip);
   const parcel = await EasyPost.createParcel(9, 6, 2, 10);
   const shipment = await EasyPost.createShipment(fromAddress, toAddress, parcel);
-  const trackingId = await shipment.buy(shipment.lowestRate(['USPS'], ['First']));
-  saveTrackingId(trackingId);
+  const { tracking_code: trackingId } = await shipment.buy(shipment.lowestRate(['USPS'], ['First']));
+  saveTrackingId(orderId, trackingId);
 }
 
 // Hooks
