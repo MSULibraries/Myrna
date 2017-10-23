@@ -82,7 +82,8 @@ function saveTrackingId(trackingID = '') {
   if (trackingID === '') {
     throw new Error('trackingID is required');
   }
-  return trackingID;
+
+  Meteor.call('order.trackingId.insert', trackingID);
 }
 
 async function createShipment(orderId) {
@@ -141,6 +142,7 @@ Meteor.methods({
     if (userLoggedIn()) {
       Order.remove({ _id: orderId });
       Meteor.call('order.address.remove.by.orderId', orderId);
+      Meteor.call('order.trackingId.remove.by.orderId', orderId);
     }
   },
 

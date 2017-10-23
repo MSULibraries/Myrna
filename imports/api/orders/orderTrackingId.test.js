@@ -5,16 +5,16 @@ import { assert } from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import { Random } from 'meteor/random';
 
-import { OrderAddress } from './orderAddress';
+import { OrderTrackingId } from './orderTrackingId';
 
 if (Meteor.isServer) {
-  describe('OrderAddress', () => {
+  describe('OrderTrackingId', () => {
     describe('methods', () => {
       // Creating mock ids
       const userId = Random.id();
       const orderId = Random.id();
-      const addressId = Random.id();
-      let mockOrderAddressId;
+      const trackingId = Random.id();
+      let mockOrderTrackingId;
 
       beforeEach(() => {
         // Stubbing soome of meteors global functions
@@ -24,12 +24,12 @@ if (Meteor.isServer) {
         userIdStub.returns(userId);
 
         // clearing Order collection
-        OrderAddress.remove({});
+        OrderTrackingId.remove({});
 
         // Inserting a Order Address item (Default Status)
-        mockOrderAddressId = OrderAddress.insert({
+        mockOrderTrackingId = OrderTrackingId.insert({
           orderId,
-          addressId,
+          trackingId,
           dateAdded: new Date(),
         });
       });
@@ -39,33 +39,33 @@ if (Meteor.isServer) {
         Meteor.userId.restore();
       });
 
-      it('orders.addresses.insert inserts', () => {
-        const insertOrderAddress = Meteor.server.method_handlers['order.address.insert'];
-
+      it('orders.trackingId.remove removes entry from collection', () => {
+        const removeOrderTrackingId = Meteor.server.method_handlers['order.trackingId.remove'];
         // Set up a fake method invocation that looks like what the method expects
         const invocation = { userId };
 
-        insertOrderAddress.apply(invocation, ['1', '2']);
-        assert.equal(OrderAddress.find().count(), 2);
+        removeOrderTrackingId.apply(invocation, [mockOrderTrackingId]);
+        assert.equal(OrderTrackingId.find().count(), 0);
       });
 
-      it('orders.addresses.remove removes order from collection', () => {
-        const removeOrderAddress = Meteor.server.method_handlers['order.address.remove'];
+      it('orders.trackingId.remove.by.orderId removes entry from collection by orderId', () => {
+        const removeOrderTrackingIdByOrderId =
+          Meteor.server.method_handlers['order.trackingId.remove.by.orderId'];
         // Set up a fake method invocation that looks like what the method expects
         const invocation = { userId };
 
-        removeOrderAddress.apply(invocation, [mockOrderAddressId]);
-        assert.equal(OrderAddress.find().count(), 0);
+        removeOrderTrackingIdByOrderId.apply(invocation, [orderId]);
+        assert.equal(OrderTrackingId.find().count(), 0);
       });
 
-      it('orders.addresses.remove.by.orderId removes entry from collection by orderId', () => {
-        const removeAddressByOrderId =
-          Meteor.server.method_handlers['order.address.remove.by.orderId'];
+      it('orders.trackingId.insert inserts', () => {
+        const insertOrderTrackingId = Meteor.server.method_handlers['order.trackingId.insert'];
+
         // Set up a fake method invocation that looks like what the method expects
         const invocation = { userId };
 
-        removeAddressByOrderId.apply(invocation, [orderId]);
-        assert.equal(OrderAddress.find().count(), 0);
+        insertOrderTrackingId.apply(invocation, ['1', '2']);
+        assert.equal(OrderTrackingId.find().count(), 2);
       });
     });
   });
