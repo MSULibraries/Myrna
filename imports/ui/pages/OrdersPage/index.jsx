@@ -15,10 +15,11 @@ import { Container } from 'react-grid-system';
 
 import AddressList from './../../components/AddressList/index';
 import BreadCrumbs from './../../components/BreadCrumbs/index';
-import roles from './../../../../lib/roles';
+import { isMaintainer } from './../../../../lib/roles';
 import Addresses from './../../../api/addresses';
 import Order from './../../../api/orders/orders';
 import OrderAddress from './../../../api/orders/orderAddress';
+import OrderTrackingId from './../../../api/orders/orderTrackingId';
 
 // Adjusted contrast to help with a11y
 const darkerTableHeaders = {
@@ -39,7 +40,6 @@ class OrdersPage extends Component {
     super();
 
     this.state = {
-      isMaintainer: Roles.userIsInRole(Meteor.userId(), roles.maintainers),
       modalOpen: false,
       orderAddresses: {},
       selectedOrderAddress: undefined,
@@ -49,6 +49,7 @@ class OrdersPage extends Component {
     this.deleteOrder = this.deleteOrder.bind(this);
     this.getOrderAddress = this.getOrderAddress.bind(this);
     this.getOrderAddresses = this.getOrderAddresses.bind(this);
+    this.renderOrderTrackingLink = this.renderOrderTrackingLink.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -80,6 +81,21 @@ class OrdersPage extends Component {
     this.setState({ selectedOrderAddress: orderAddress });
   }
 
+  renderOrderTrackingLink({ _id: orderId, status }) {
+    if (status === 'Active') {
+      const orderTrackingIdObject = OrderTrackingId.findOne({ orderId });
+      if (orderTrackingIdObject !== undefined) {
+        return (
+          <a href={orderTrackingIdObject.trackingUrl} target="_blank">
+            {' '}
+            {orderTrackingIdObject.trackingId}
+          </a>
+        );
+      }
+    }
+    return '';
+  }
+
   /**
    * Opens modal to select addresses to ship to
    */
@@ -104,7 +120,7 @@ class OrdersPage extends Component {
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
             <TableRow>
               <TableHeaderColumn style={darkerTableHeaders}>Order Owner</TableHeaderColumn>
-              <TableHeaderColumn style={darkerTableHeaders}>Order ID</TableHeaderColumn>
+              <TableHeaderColumn style={darkerTableHeaders}>Tracking ID</TableHeaderColumn>
               <TableHeaderColumn style={darkerTableHeaders}>Ordered On</TableHeaderColumn>
               <TableHeaderColumn style={darkerTableHeaders}>Product Ids</TableHeaderColumn>
               <TableHeaderColumn style={darkerTableHeaders}>Status</TableHeaderColumn>
@@ -113,7 +129,7 @@ class OrdersPage extends Component {
                 Cancel
               </TableHeaderColumn>
 
-              {this.state.isMaintainer && (
+              {isMaintainer() && (
                 <TableHeaderColumn style={{ darkerTableHeaders, ...alignCenter }}>
                   Approve
                 </TableHeaderColumn>
@@ -125,7 +141,7 @@ class OrdersPage extends Component {
               <TableRow key={order._id}>
                 <TableRowColumn>{order.userId}</TableRowColumn>
 
-                <TableRowColumn>{order._id}</TableRowColumn>
+                <TableRowColumn>{this.renderOrderTrackingLink(order)}</TableRowColumn>
 
                 <TableRowColumn>
                   {new Date(order.dateAdded).toLocaleDateString('en-US')}
@@ -143,7 +159,7 @@ class OrdersPage extends Component {
                   <FlatButton onClick={() => this.deleteOrder(order._id)} secondary label="X" />
                 </TableRowColumn>
 
-                {this.state.isMaintainer && (
+                {isMaintainer() && (
                   <TableRowColumn>
                     <FlatButton onClick={() => this.approveOrder(order._id)} secondary label="✓" />
                   </TableRowColumn>
@@ -176,10 +192,13 @@ OrdersPage.proptypes = {
 
 export default (OrdersPage = createContainer(() => {
   Meteor.subscribe('addresses');
+  Meteor.subscribe('order.trackingId');
   Meteor.subscribe('order.address');
   Meteor.subscribe('orders');
 
   return {
     orders: Order.find({}).fetch(),
+    orderAddresses: OrderAddress.find({}).fetch(),
+    orderTrackingId: OrderTrackingId.find({}).fetch(),
   };
 }, OrdersPage));
