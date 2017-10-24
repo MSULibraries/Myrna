@@ -2,6 +2,9 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 
+import { Order } from './../orders/orders';
+import { isMaintainer } from './../../../lib/roles';
+
 /**
  * @returns {bool}
  */
@@ -22,6 +25,14 @@ const OrderTrackingIdSchema = new SimpleSchema({
   trackingId: {
     type: String,
     label: 'dateAdded',
+  },
+  labelImageUrl: {
+    type: String,
+    label: 'labelImageUrl',
+  },
+  trackingUrl: {
+    type: String,
+    label: 'trackingUrl',
   },
   dateAdded: {
     type: Date,
@@ -44,21 +55,40 @@ OrderTrackingId.allow({
 });
 
 if (Meteor.isServer) {
-  // This code only runs on the server
-  Meteor.publish('order.trackingId', () => OrderTrackingId.find());
+  // Can see all tracking info if maintainer
+  Meteor.publish('order.trackingId', () => {
+    if (isMaintainer()) {
+      return OrderTrackingId.find();
+    }
+    // User's can only see their own tracking information
+    const usersOrderIds = Order.find({ userId: Meteor.userId() }, { fields: { _id: 1 } })
+      .fetch() // Executing Query
+      .map(({ _id }) => _id); // returning array of order's ids
+
+    return OrderTrackingId.find({ orderId: { $in: usersOrderIds } });
+  });
 }
 
 Meteor.methods({
-  'order.trackingId.insert': function OrderTrackingIdInsert(orderId, trackingId) {
+  'order.trackingId.insert': function OrderTrackingIdInsert(
+    orderId,
+    trackingId,
+    trackingUrl,
+    labelImageUrl,
+  ) {
     if (userLoggedIn()) {
       const newOrderTrackingId = {
         orderId,
         trackingId,
+        trackingUrl,
+        labelImageUrl,
         dateAdded: new Date(),
       };
 
       check(orderId, String);
       check(trackingId, String);
+      check(trackingUrl, String);
+      check(labelImageUrl, String);
       check(newOrderTrackingId, OrderTrackingIdSchema);
       OrderTrackingId.insert(newOrderTrackingId);
     }

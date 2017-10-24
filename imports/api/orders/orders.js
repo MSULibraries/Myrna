@@ -3,7 +3,7 @@ import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 
 import { EasyPostInterface } from './shipping/index';
-import { roles } from './../../../lib/roles';
+import { isMaintainer } from './../../../lib/roles';
 
 import { Addresses } from './../addresses';
 import { OrderAddress } from './../orders/orderAddress';
@@ -59,7 +59,7 @@ if (Meteor.isServer) {
   // This code only runs on the server
   Meteor.publish('orders', () => {
     // If a maintainer, you get to see all the orders
-    if (Roles.userIsInRole(Meteor.userId(), roles.maintainers)) {
+    if (isMaintainer()) {
       return Order.find({});
     }
 
@@ -78,16 +78,22 @@ function userLoggedIn() {
   return true;
 }
 
-function saveTrackingId(orderId = '', trackingID = '') {
-  if (trackingID === '') {
+function saveTrackingId(orderId = '', trackingId = '', trackingUrl = '', labelImageUrl = '') {
+  if (trackingId === '') {
     throw new Error('trackingId is required');
   }
 
   if (orderId === '') {
     throw new Error('orderId is required');
   }
+  if (trackingUrl === '') {
+    throw new Error('trackingUrl is required');
+  }
+  if (labelImageUrl === '') {
+    throw new Error('labelImageUrl is required');
+  }
 
-  Meteor.call('order.trackingId.insert', orderId, trackingID);
+  Meteor.call('order.trackingId.insert', orderId, trackingId, trackingUrl, labelImageUrl);
 }
 
 async function createShipment(orderId) {
@@ -101,7 +107,12 @@ async function createShipment(orderId) {
   const parcel = await EasyPost.createParcel(9, 6, 2, 10);
   const shipment = await EasyPost.createShipment(fromAddress, toAddress, parcel);
   const { tracking_code: trackingId } = await shipment.buy(shipment.lowestRate(['USPS'], ['First']));
-  saveTrackingId(orderId, trackingId);
+  saveTrackingId(
+    orderId,
+    trackingId,
+    shipment.tracker.public_url,
+    shipment.postage_label.label_url,
+  );
 }
 
 // Hooks

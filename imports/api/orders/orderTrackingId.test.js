@@ -14,6 +14,9 @@ if (Meteor.isServer) {
       const userId = Random.id();
       const orderId = Random.id();
       const trackingId = Random.id();
+      const trackingUrl = 'www.google.com';
+      const labelImageUrl = 'www.google.com';
+
       let mockOrderTrackingId;
 
       beforeEach(() => {
@@ -30,6 +33,8 @@ if (Meteor.isServer) {
         mockOrderTrackingId = OrderTrackingId.insert({
           orderId,
           trackingId,
+          trackingUrl,
+          labelImageUrl,
           dateAdded: new Date(),
         });
       });
@@ -64,7 +69,7 @@ if (Meteor.isServer) {
         // Set up a fake method invocation that looks like what the method expects
         const invocation = { userId };
 
-        insertOrderTrackingId.apply(invocation, ['1', '2']);
+        insertOrderTrackingId.apply(invocation, ['1', '2', '3', '4']);
         assert.equal(OrderTrackingId.find().count(), 2);
       });
     });

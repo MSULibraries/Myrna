@@ -2,6 +2,9 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 
+import { Order } from './orders';
+import { isMaintainer } from './../../../lib/roles';
+
 export const OrderAddress = new Mongo.Collection('order.address');
 
 OrderAddress.helpers({
@@ -38,8 +41,20 @@ OrderAddress.allow({
 });
 
 if (Meteor.isServer) {
-  // This code only runs on the server
-  Meteor.publish('order.address', () => OrderAddress.find());
+  Meteor.publish('order.address', () => {
+    if (isMaintainer()) {
+      return OrderAddress.find({});
+    }
+    const usersOrderIds = Order.find({ userId: Meteor.userId() }, { fields: { _id: 1 } })
+      .fetch() // Executing Query
+      .map(({ _id }) => _id); // returning array of order's ids
+
+    return OrderAddress.find({
+      orderId: {
+        $in: usersOrderIds,
+      },
+    });
+  });
 }
 
 /**
