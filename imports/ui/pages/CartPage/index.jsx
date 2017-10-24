@@ -12,6 +12,7 @@ import { createContainer } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Container } from 'react-grid-system';
+import { Link } from 'react-router-dom';
 
 import PickAddress from './PickAddress';
 import BreadCrumbs from './../../components/BreadCrumbs/index';
@@ -31,7 +32,7 @@ const centerColumn = {
   alignItems: 'center',
 };
 
-class CartPage extends Component {
+export class CartPage extends Component {
   constructor() {
     super();
     this.state = {
@@ -69,7 +70,7 @@ class CartPage extends Component {
   }
   /**
    * Asks user what address to use and then submits order with that address
-   * @param {string} id 
+   * @param {string} id
    */
   selectAddress(id) {
     this.setState({
@@ -138,7 +139,11 @@ class CartPage extends Component {
             ))}
           </TableBody>
         </Table>
-
+        <p>
+          <em>
+            By placing an order, you are agreeing to our <Link to="policies">policies</Link>
+          </em>
+        </p>
         <Dialog
           title="Pick Address"
           modal={false}
