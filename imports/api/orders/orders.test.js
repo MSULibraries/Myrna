@@ -29,7 +29,10 @@ if (Meteor.isServer) {
         mockOrderId = Order.insert({
           userId: Meteor.userId(),
           dateAdded: Date.now(),
+          dateToArriveBy: new Date(),
+          dateToShipBack: new Date(),
           productIds: mockCartProductIds,
+          specialInstr: 'None',
           status: 'Un-Approved',
         });
       });
@@ -75,7 +78,8 @@ if (Meteor.isServer) {
         // Set up a fake method invocation that looks like what the method expects
         const invocation = { userId };
 
-        insertOrder.apply(invocation, []);
+        // Inserting expects a dateToArriveBy, dateToShipBack, and special instr
+        insertOrder.apply(invocation, [new Date(), new Date(), 'Send pizza with order']);
         assert.equal(Order.find().count(), 2);
       });
     });

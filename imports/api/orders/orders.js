@@ -24,15 +24,29 @@ Order.helpers({
 const orderSchema = new SimpleSchema({
   userId: {
     type: String,
-    label: 'userId',
+    label: 'Users Id',
   },
   dateAdded: {
     type: Date,
-    label: 'dateAdded',
+    label: 'Date Added',
+  },
+  dateToArriveBy: {
+    type: Date,
+    label: 'Date To Arrive By',
+  },
+  dateToShipBack: {
+    type: Date,
+    label: 'Date To Ship Back',
   },
   productIds: {
     type: [String],
     label: 'productIds',
+  },
+  specialInstr: {
+    defaultValue: '',
+    optional: true,
+    type: String,
+    label: 'Special Instructions',
   },
   status: {
     allowedValues: ['Active', 'Cancelled', 'Complete', 'Un-Approved'],
@@ -166,7 +180,7 @@ Meteor.methods({
    * Sets status to 'Un-Approved' by default so that
    * a maintainer can approve the order
    */
-  'order.insert': function orderInsert() {
+  'order.insert': function orderInsert(dateToArriveBy, dateToShipBack, specialInstr = '') {
     if (userLoggedIn()) {
       // Getting all item information from cart
       const cartProductIds = Meteor.call('cart.read.productIds');
@@ -175,8 +189,11 @@ Meteor.methods({
       const orderId = Order.insert({
         userId: Meteor.userId(),
         dateAdded: Date.now(),
+        dateToArriveBy,
+        dateToShipBack,
         productIds: cartProductIds,
         status: 'Un-Approved',
+        specialInstr,
       });
       return orderId;
     }
