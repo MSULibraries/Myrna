@@ -21,9 +21,11 @@ import { Container } from 'react-grid-system';
 import { Link } from 'react-router-dom';
 
 import InputSpecialInstructions from './InputSpecialInstructions';
+import NewShowPrompt from './NewShowPrompt';
 import PickAddress from './PickAddress';
 import PickOrderDates from './PickOrderDates';
 import BreadCrumbs from './../../components/BreadCrumbs/index';
+import Toast from './../../components/Toast/index';
 import Cart from './../../../api/cart';
 
 // Adjusted contrast to help with a11y
@@ -46,10 +48,13 @@ export class CartPage extends Component {
     this.state = {
       dateToArrive: undefined,
       dateToShipBack: undefined,
-      modalOpen: false, // modal is open
+      newShowModalOpen: false, // modal for entering a new show is open
+      orderModalOpen: false, // modal for new order is open
       selectedAddressId: undefined, // Id of order to ship to
       specialInstr: '', // Special Instr. for Order
       step: 0, // The current step of the create order process
+      toasting: false, // small toast is open at the bottom
+      toastMessage: undefined, // message to appear in toast
       /**
       * Number of inputs after user hits submit
       * @example: We need toAddress, dates, and specialInstr
@@ -58,13 +63,17 @@ export class CartPage extends Component {
       totalSteps: 3,
     };
 
-    this.handleOpen = this.handleOpen.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-    this.incStep = this.incStep.bind(this);
+    this.createNewShow = this.createNewShow.bind(this);
     this.decStep = this.decStep.bind(this);
+    this.openNewOrderModal = this.openNewOrderModal.bind(this);
+    this.openToast = this.openToast.bind(this);
+    this.closeNewOrderModal = this.closeNewOrderModal.bind(this);
+    this.closeToast = this.closeToast.bind(this);
+    this.incStep = this.incStep.bind(this);
     this.removeProductFromCart = this.removeProductFromCart.bind(this);
     this.renderStep = this.renderStep.bind(this);
     this.setSpecialIntr = this.setSpecialIntr.bind(this);
+    this.setNewShowName = this.setNewShowName.bind(this);
     this.setOrderDates = this.setOrderDates.bind(this);
     this.startOrder = this.startOrder.bind(this);
     this.submitOrder = this.submitOrder.bind(this);
@@ -79,6 +88,10 @@ export class CartPage extends Component {
     }
   }
 
+  createNewShow() {
+    this.setState({ newShowModalOpen: true });
+  }
+
   /**
    * Decreases the current step counter
    */
@@ -91,7 +104,7 @@ export class CartPage extends Component {
   * Calls function to save order to DB
   * Closes Modal
   */
-  finishOrder() {      
+  finishOrder() {
     this.setState({ step: 0 });
     this.submitOrder(
       this.state.dateToArrive,
@@ -106,16 +119,27 @@ export class CartPage extends Component {
    * Resets steps back to 0
    * Reset selectedAddressId
    */
-  handleClose = () => {
-    this.setState({ modalOpen: false });
+  closeNewOrderModal = () => {
+    this.setState({ orderModalOpen: false, step: 0 });
   };
+
+  closeToast() {
+    this.setState({ toasting: false });
+  }
 
   /**
    * Opens modal to select addresses to ship to
    */
-  handleOpen = () => {
-    this.setState({ modalOpen: true });
+  openNewOrderModal = () => {
+    this.setState({ orderModalOpen: true });
   };
+
+  openToast(message) {
+    this.setState({
+      toasting: true,
+      toastMessage: message,
+    });
+  }
 
   /**
    * Increases the current step counter
@@ -143,6 +167,18 @@ export class CartPage extends Component {
     this.incStep();
   }
 
+  setNewShowName(showName) {
+    const cartProductIds = this.props.cartItems.map(item => item._id);
+    Meteor.call('show.insert', showName, cartProductIds, err => {
+      if (!err) {
+        this.openToast(`'${showName}' Made`);
+      } else {
+        console.error(err);
+      }
+    });
+    this.setState({ newShowModalOpen: false });
+  }
+
   /**
  * When a user submits their dates,
  * set the state to those dates
@@ -162,7 +198,7 @@ export class CartPage extends Component {
    * Driver for submitting an order
    */
   startOrder() {
-    this.handleOpen();
+    this.openNewOrderModal();
     this.incStep();
   }
 
@@ -170,7 +206,7 @@ export class CartPage extends Component {
    * Inserts order information into order and order.address collections
    */
   submitOrder(dateToArrive, dateToShipBack, specialInstr, selectedAddressId) {
-    this.handleClose();
+    this.closeNewOrderModal();
     Meteor.call('order.insert', dateToArrive, dateToShipBack, specialInstr, (err, orderId) => {
       if (err) {
         console.error(err);
@@ -178,7 +214,10 @@ export class CartPage extends Component {
         this.submitOrderSuccess();
         Meteor.call('order.address.insert', orderId, selectedAddressId, (err, result) => {
           if (!err) {
-            this.setState({ steps: 0 });
+            this.setState({
+              steps: 0,
+            });
+            this.openToast('Order Submitted');
           }
         });
       }
@@ -189,6 +228,19 @@ export class CartPage extends Component {
     alert('Order Submitted!');
   }
 
+  renderNewShowPrompt() {
+    return (
+      <Dialog
+        title="New Show"
+        modal={false}
+        open={this.state.newShowModalOpen}
+        onRequestClose={() => this.setState({ newShowModalOpen: false })}
+      >
+        <NewShowPrompt setNewShowName={newShowName => this.setNewShowName(newShowName)} />
+      </Dialog>
+    );
+  }
+
   renderStep(step = this.state.step) {
     switch (step) {
       case 1: {
@@ -196,8 +248,8 @@ export class CartPage extends Component {
           <Dialog
             title="Pick Address"
             modal={false}
-            open={this.state.modalOpen}
-            onRequestClose={this.handleClose}
+            open={this.state.orderModalOpen}
+            onRequestClose={this.closeNewOrderModal}
           >
             <PickAddress selectAddress={address => this.selectAddress(address)} />
           </Dialog>
@@ -208,8 +260,8 @@ export class CartPage extends Component {
           <Dialog
             title="Pick Order Dates"
             modal={false}
-            open={this.state.modalOpen}
-            onRequestClose={this.handleClose}
+            open={this.state.orderModalOpen}
+            onRequestClose={this.closeNewOrderModal}
           >
             <PickOrderDates
               setOrderDates={(dateToArriveBy, dateToShipBack) => {
@@ -224,8 +276,8 @@ export class CartPage extends Component {
           <Dialog
             title="Special Instructions"
             modal={false}
-            open={this.state.modalOpen}
-            onRequestClose={this.handleClose}
+            open={this.state.orderModalOpen}
+            onRequestClose={this.closeNewOrderModal}
           >
             <InputSpecialInstructions setSpecialIntr={text => this.setSpecialIntr(text)} />
           </Dialog>
@@ -275,11 +327,23 @@ export class CartPage extends Component {
         </p>
         {/* Only allow submit if there are items in the cart  */}
         {this.props.cartItems.length > 0 && (
-          <FlatButton onClick={() => this.startOrder()} label="Submit Order" />
+          <div>
+            <FlatButton onClick={() => this.startOrder()} label="Submit Order" />
+            <FlatButton secondary onClick={() => this.createNewShow()} label="Create a Show" />
+          </div>
         )}
 
         {/* Rendering the current step if availible */}
         {this.renderStep()}
+
+        {this.renderNewShowPrompt()}
+        {this.state.toasting && (
+          <Toast
+            open={this.state.toasting}
+            message={this.state.toastMessage}
+            closeToast={() => this.closeToast()}
+          />
+        )}
       </Container>
     );
   }
