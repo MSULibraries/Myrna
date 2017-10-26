@@ -70,11 +70,16 @@ Meteor.methods({
       throw new Meteor.Error('not-authorized');
     }
 
-    Cart.insert({
-      productId,
-      userId: Meteor.userId(),
-      dateAdded: Date.now(),
-    });
+    const currentCartIds = Meteor.call('cart.read.productIds');
+
+    // If the new product ID isn't alrighty in the cart
+    if (!currentCartIds.includes(productId)) {
+      Cart.insert({
+        productId,
+        userId: Meteor.userId(),
+        dateAdded: Date.now(),
+      });
+    }
   },
 
   'cart.remove': function cartRemove(cartEntryId) {
