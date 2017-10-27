@@ -14,11 +14,11 @@ OrderAddress.helpers({
 const orderAddressSchema = new SimpleSchema({
   orderId: {
     type: String,
-    label: 'userId',
+    label: 'Order Id',
   },
   addressId: {
     type: String,
-    label: 'dateAdded',
+    label: 'Address Id',
   },
   dateAdded: {
     type: Date,
