@@ -7,9 +7,9 @@ import { isMaintainer } from './../../../lib/roles';
 
 import { Addresses } from './../addresses';
 import { OrderAddress } from './../orders/orderAddress';
+import { Payment } from './../../../lib/server/payment';
 
 const EasyPost = new EasyPostInterface();
-
 export const Order = new Mongo.Collection('orders');
 
 // Helpers=
@@ -110,6 +110,27 @@ function saveTrackingId(orderId = '', trackingId = '', trackingUrl = '', labelIm
   Meteor.call('order.trackingId.insert', orderId, trackingId, trackingUrl, labelImageUrl);
 }
 
+/**
+ *
+ * @param {String} orderId
+ * @param {Number} currentAmountDue
+ */
+export function createPaymentUrl(orderId, amountDue) {
+  const payment = new Payment(Meteor.settings.private.payment.secret);
+  const orderNumber = orderId;
+  const timestamp = Date.now();
+
+  // Creates URL for a user to go to for payment
+  const paymentUrl = payment.createUrl(amountDue, orderNumber, timestamp);
+
+  return paymentUrl;
+}
+
+/**
+ * Creates a shipment through EasyPost and Buys it
+ * @param {String} orderId
+ * @returns {Object} shipmentInfo - https://www.easypost.com/docs/api#shipment-object
+ */
 async function createShipment(orderId) {
   const {
     company, street1, city, state, zip,
@@ -120,13 +141,16 @@ async function createShipment(orderId) {
   const toAddress = await EasyPost.createToAddress(company, street1, city, state, zip);
   const parcel = await EasyPost.createParcel(9, 6, 2, 10);
   const shipment = await EasyPost.createShipment(fromAddress, toAddress, parcel);
-  const { tracking_code: trackingId } = await shipment.buy(shipment.lowestRate(['USPS'], ['First']));
+  const shipmentInfo = await shipment.buy(shipment.lowestRate(['USPS'], ['First']));
+
   saveTrackingId(
     orderId,
-    trackingId,
+    shipmentInfo.trackingId,
     shipment.tracker.public_url,
     shipment.postage_label.label_url,
   );
+
+  return shipmentInfo;
 }
 
 // Methods
@@ -135,7 +159,9 @@ Meteor.methods({
     if (userLoggedIn()) {
       // Only run on server
       if (!this.isSimulation) {
-        createShipment(orderId);
+        const mockAmountDue = 50;
+        createShipment(orderId); // TODO store info returned from this
+        createPaymentUrl(orderId, mockAmountDue); // TODO save url returned from this
       }
       // Updating order status
       Order.update({ _id: orderId }, { $set: { status: 'Active' } });
@@ -194,3 +220,7 @@ Meteor.methods({
 });
 
 export default Order;
+
+export const helpers = {
+  createPaymentUrl,
+};

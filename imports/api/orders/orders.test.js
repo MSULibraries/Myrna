@@ -5,7 +5,8 @@ import { assert } from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import { Random } from 'meteor/random';
 
-import { Order } from './orders';
+import { Order, helpers } from './orders';
+import { Payment } from './../../../lib/server/payment';
 
 if (Meteor.isServer) {
   describe('Order', () => {
@@ -81,6 +82,27 @@ if (Meteor.isServer) {
         // Inserting expects a dateToArriveBy, dateToShipBack, and special instr
         insertOrder.apply(invocation, [new Date(), new Date(), 'Send pizza with order']);
         assert.equal(Order.find().count(), 2);
+      });
+    });
+
+    describe('helpers', () => {
+      const { createPaymentUrl } = helpers;
+      describe('createPaymentUrl', () => {
+        let createUrlStub;
+
+        beforeEach(() => {
+          createUrlStub = sinon.spy(Payment.prototype, 'createUrl');
+        });
+
+        afterEach(() => {
+          Payment.prototype.createUrl.restore();
+        });
+
+        it('calls payment.createUrl', () => {
+          const orderId = Random.id();
+          createPaymentUrl(orderId, 50);
+          sinon.assert.calledOnce(createUrlStub);
+        });
       });
     });
   });
