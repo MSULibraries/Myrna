@@ -10,6 +10,7 @@ import HomePage from './../../ui/pages/HomePage/index';
 import LoginPage from './../../ui/pages/LoginPage/index';
 import OrdersPage from './../../ui/pages/OrdersPage/index';
 import NotFoundPage from './../../ui/pages/NotFoundPage/index';
+import PaymentSuccess from './../../ui/pages/PaymentSuccess/index';
 import PoliciesPage from './../../ui/pages/PoliciesPage/index';
 import ProductsContainer from './../../ui/pages/Products/ProductsContainer';
 import ProfilePage from './../../ui/pages/ProfilePage/index';
@@ -23,6 +24,7 @@ const Routes = () => (
         <AuthRoute exact path="/addresses/:option" component={AddressesPage} />
         <AuthRoute path="/cart" component={CartPage} />
         <AuthRoute exact path="/orders" component={OrdersPage} />
+        <AuthRoute exact path="/payment/success" component={PaymentSuccess} />
         <AuthRoute exact path="/profile" component={ProfilePage} />
 
         <Route exact path="/" component={HomePage} />

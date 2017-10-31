@@ -185,7 +185,7 @@ Meteor.methods({
       // Only run on server
       const mockAmountDue = 50;
 
-      await createShipment(orderId);
+      // await createShipment(orderId);
 
       const paymentUrl = createPaymentUrl(orderId, mockAmountDue);
       savePaymentUrl(orderId, paymentUrl);
