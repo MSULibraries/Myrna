@@ -7,7 +7,7 @@ import { isMaintainer } from './../../../lib/roles';
 
 import { Addresses } from './../addresses';
 import { OrderAddress } from './../orders/orderAddress';
-import { Payment } from './../../../lib/server/payment';
+import { Payment } from './../../../lib/payment';
 
 const EasyPost = new EasyPostInterface();
 export const Order = new Mongo.Collection('orders');
@@ -85,14 +85,30 @@ if (Meteor.isServer) {
 /**
  * @returns {bool}
  */
-function userLoggedIn() {
+export function userLoggedIn() {
   if (!Meteor.userId()) {
     throw new Meteor.Error('not-authorized');
   }
   return true;
 }
 
-function saveTrackingId(orderId = '', trackingId = '', trackingUrl = '', labelImageUrl = '') {
+export function savePaymentUrl(orderId = '', paymentUrl = '') {
+  if (orderId === '') {
+    throw new Error('orderId is required');
+  }
+  if (paymentUrl === '') {
+    throw new Error('paymentUrl is required');
+  }
+
+  return Meteor.call('order.payment.insert', orderId, paymentUrl);
+}
+
+export function saveTrackingId(
+  orderId = '',
+  trackingId = '',
+  trackingUrl = '',
+  labelImageUrl = '',
+) {
   if (trackingId === '') {
     throw new Error('trackingId is required');
   }
@@ -131,7 +147,7 @@ export function createPaymentUrl(orderId, amountDue) {
  * @param {String} orderId
  * @returns {Object} shipmentInfo - https://www.easypost.com/docs/api#shipment-object
  */
-async function createShipment(orderId) {
+export async function createShipment(orderId) {
   const {
     company, street1, city, state, zip,
   } = Order.findOne({ _id: orderId }).address(orderId);
@@ -157,14 +173,26 @@ async function createShipment(orderId) {
 Meteor.methods({
   'order.approve': function orderApprove(orderId) {
     if (userLoggedIn()) {
-      // Only run on server
-      if (!this.isSimulation) {
-        const mockAmountDue = 50;
-        createShipment(orderId); // TODO store info returned from this
-        createPaymentUrl(orderId, mockAmountDue); // TODO save url returned from this
-      }
       // Updating order status
       Order.update({ _id: orderId }, { $set: { status: 'Active' } });
+    }
+  },
+
+  'order.buy': function orderBuy(orderId) {
+    if (userLoggedIn() && !this.isSimulation) {
+      // Only run on server
+      const mockAmountDue = 50;
+
+      const {
+        tracking_code: trackingId,
+        postage_label: { label_url: labelImageUrl },
+        tracker: { public_url: trackingUrl },
+      } = createShipment(orderId);
+
+      saveTrackingId(orderId, trackingId, trackingUrl, labelImageUrl);
+
+      const paymentUrl = createPaymentUrl(orderId, mockAmountDue);
+      savePaymentUrl(orderId, paymentUrl);
     }
   },
 
@@ -190,6 +218,7 @@ Meteor.methods({
       Order.remove({ _id: orderId });
       Meteor.call('order.address.remove.by.orderId', orderId);
       Meteor.call('order.trackingId.remove.by.orderId', orderId);
+      Meteor.call('order.payment.remove.by.orderId', orderId);
     }
   },
 

@@ -2,7 +2,7 @@ import Snackbar from 'material-ui/Snackbar';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
-export const Toast = (message, closeToast) => (
+export const Toast = ({ message, open, closeToast }) => (
   <Snackbar open message={message} autoHideDuration={4000} onRequestClose={() => closeToast()} />
 );
 

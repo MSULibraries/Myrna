@@ -5,8 +5,8 @@ import { assert } from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import { Random } from 'meteor/random';
 
-import { Order, helpers } from './orders';
-import { Payment } from './../../../lib/server/payment';
+import * as OrderApi from './orders';
+import { Payment } from './../../../lib/payment';
 
 if (Meteor.isServer) {
   describe('Order', () => {
@@ -24,10 +24,10 @@ if (Meteor.isServer) {
         userIdStub.returns(userId);
 
         // clearing Order collection
-        Order.remove({});
+        OrderApi.Order.remove({});
 
         // Inserting a Order item (Default Status)
-        mockOrderId = Order.insert({
+        mockOrderId = OrderApi.Order.insert({
           userId: Meteor.userId(),
           dateAdded: Date.now(),
           dateToArriveBy: new Date(),
@@ -50,8 +50,7 @@ if (Meteor.isServer) {
         const expectedStatus = 'Active';
 
         activateOrder.apply(invocation, [mockOrderId]);
-
-        assert.equal(Order.findOne({ _id: mockOrderId }).status, expectedStatus);
+        assert.equal(OrderApi.Order.findOne({ _id: mockOrderId }).status, expectedStatus);
       });
 
       it("order.cancel updates order status to 'Cancelled'", () => {
@@ -61,7 +60,7 @@ if (Meteor.isServer) {
         const expectedStatus = 'Cancelled';
         cancelOrder.apply(invocation, [mockOrderId]);
 
-        assert.equal(Order.findOne({ _id: mockOrderId }).status, expectedStatus);
+        assert.equal(OrderApi.Order.findOne({ _id: mockOrderId }).status, expectedStatus);
       });
 
       it('order.delete removes order from collection', () => {
@@ -70,7 +69,7 @@ if (Meteor.isServer) {
         const invocation = { userId };
 
         readOrder.apply(invocation, [mockOrderId]);
-        assert.equal(Order.find().count(), 0);
+        assert.equal(OrderApi.Order.find().count(), 0);
       });
 
       it('order.insert inserts', () => {
@@ -81,12 +80,11 @@ if (Meteor.isServer) {
 
         // Inserting expects a dateToArriveBy, dateToShipBack, and special instr
         insertOrder.apply(invocation, [new Date(), new Date(), 'Send pizza with order']);
-        assert.equal(Order.find().count(), 2);
+        assert.equal(OrderApi.Order.find().count(), 2);
       });
     });
 
     describe('helpers', () => {
-      const { createPaymentUrl } = helpers;
       describe('createPaymentUrl', () => {
         let createUrlStub;
 
@@ -100,7 +98,7 @@ if (Meteor.isServer) {
 
         it('calls payment.createUrl', () => {
           const orderId = Random.id();
-          createPaymentUrl(orderId, 50);
+          OrderApi.createPaymentUrl(orderId, 50);
           sinon.assert.calledOnce(createUrlStub);
         });
       });

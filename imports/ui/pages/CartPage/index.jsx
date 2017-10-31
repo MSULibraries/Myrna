@@ -224,9 +224,7 @@ export class CartPage extends Component {
     });
   }
 
-  submitOrderSuccess() {
-    alert('Order Submitted!');
-  }
+  submitOrderSuccess() {}
 
   renderNewShowPrompt() {
     return (
