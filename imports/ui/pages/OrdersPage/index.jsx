@@ -1,3 +1,4 @@
+import CircularProgress from 'material-ui/CircularProgress';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import {
@@ -40,12 +41,16 @@ class OrdersPage extends Component {
     super();
 
     this.state = {
+      isBuyingOrder: false,
+      modalBuyingOpen: false,
       modalOpen: false,
+      paymentUrl: null,
       orderAddresses: {},
       selectedOrderAddress: undefined,
     };
 
     this.approveOrder = this.approveOrder.bind(this);
+    this.buyOrder = this.buyOrder.bind(this);
     this.deleteOrder = this.deleteOrder.bind(this);
     this.getOrderAddress = this.getOrderAddress.bind(this);
     this.getOrderAddresses = this.getOrderAddresses.bind(this);
@@ -60,6 +65,17 @@ class OrdersPage extends Component {
 
   approveOrder(id) {
     Meteor.call('order.approve', id);
+  }
+
+  buyOrder(orderId) {
+    this.setState({ modalBuyingOpen: true, isBuyingOrder: true });
+    Meteor.call('order.buy', orderId, (error, paymentUrl) => {
+      if (error) {
+        console.error(error);
+      } else {
+        this.setState({ isBuyingOrder: false, paymentUrl });
+      }
+    });
   }
 
   deleteOrder(id) {
@@ -93,7 +109,7 @@ class OrdersPage extends Component {
         );
       }
     }
-    return '';
+    return 'None';
   }
 
   /**
@@ -115,7 +131,6 @@ class OrdersPage extends Component {
       <Container>
         <h1>Orders</h1>
         <BreadCrumbs crumbs={['Profile', 'Orders']} />
-
         <Table>
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
             <TableRow>
@@ -125,6 +140,9 @@ class OrdersPage extends Component {
               <TableHeaderColumn style={darkerTableHeaders}>Product Ids</TableHeaderColumn>
               <TableHeaderColumn style={darkerTableHeaders}>Status</TableHeaderColumn>
               <TableHeaderColumn style={{ darkerTableHeaders }}>Address</TableHeaderColumn>
+              <TableHeaderColumn style={{ darkerTableHeaders, ...alignCenter }}>
+                Buy
+              </TableHeaderColumn>
               <TableHeaderColumn style={{ darkerTableHeaders, ...alignCenter }}>
                 Cancel
               </TableHeaderColumn>
@@ -139,26 +157,43 @@ class OrdersPage extends Component {
           <TableBody displayRowCheckbox={false}>
             {this.props.orders.map(order => (
               <TableRow key={order._id}>
+                {/* Order Owner */}
                 <TableRowColumn>{order.userId}</TableRowColumn>
 
+                {/* Tracking Link */}
                 <TableRowColumn>{this.renderOrderTrackingLink(order)}</TableRowColumn>
 
+                {/* Ordered On */}
                 <TableRowColumn>
                   {new Date(order.dateAdded).toLocaleDateString('en-US')}
                 </TableRowColumn>
 
+                {/* Product IDs */}
                 <TableRowColumn>{JSON.stringify(order.productIds)}</TableRowColumn>
 
+                {/* Status */}
                 <TableRowColumn>{order.status}</TableRowColumn>
 
+                {/* View Address */}
                 <TableRowColumn>
                   <FlatButton onClick={() => this.handleOpen(order._id)} label="View" />
                 </TableRowColumn>
 
+                {/* Buy Shipment */}
+                <TableRowColumn>
+                  <FlatButton
+                    disabled={order.status !== 'Approved'}
+                    onClick={() => this.buyOrder(order._id)}
+                    label="Buy"
+                  />
+                </TableRowColumn>
+
+                {/* Cancel Order */}
                 <TableRowColumn>
                   <FlatButton onClick={() => this.deleteOrder(order._id)} secondary label="X" />
                 </TableRowColumn>
 
+                {/* Approve Button */}
                 {isMaintainer() && (
                   <TableRowColumn>
                     <FlatButton onClick={() => this.approveOrder(order._id)} secondary label="✓" />
@@ -168,6 +203,23 @@ class OrdersPage extends Component {
             ))}
           </TableBody>
         </Table>
+        <Dialog
+          title="Buy Order"
+          modal={false}
+          open={this.state.modalBuyingOpen}
+          onRequestClose={() => this.setState({ modalBuyingOpen: false })}
+        >
+          {this.state.isBuyingOrder ? (
+            <CircularProgress />
+          ) : (
+            <div>
+              <p>Please have your Credit Card information ready</p>
+              <a href={this.state.paymentUrl} target="_blank">
+                <FlatButton label="Continue" />
+              </a>
+            </div>
+          )}
+        </Dialog>
         <Dialog
           title="Order Address"
           modal={false}

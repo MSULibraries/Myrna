@@ -49,7 +49,7 @@ const orderSchema = new SimpleSchema({
     label: 'Special Instructions',
   },
   status: {
-    allowedValues: ['Active', 'Cancelled', 'Complete', 'Un-Approved'],
+    allowedValues: ['Active', 'Approved', 'Cancelled', 'Complete', 'Un-Approved'],
     type: String,
     label: 'status',
   },
@@ -161,7 +161,7 @@ export async function createShipment(orderId) {
 
   saveTrackingId(
     orderId,
-    shipmentInfo.trackingId,
+    shipmentInfo.tracking_code,
     shipment.tracker.public_url,
     shipment.postage_label.label_url,
   );
@@ -176,26 +176,22 @@ Meteor.methods({
   'order.approve': function orderApprove(orderId) {
     if (userLoggedIn()) {
       // Updating order status
-      Order.update({ _id: orderId }, { $set: { status: 'Active' } });
+      Order.update({ _id: orderId }, { $set: { status: 'Approved' } });
     }
   },
 
-  'order.buy': function orderBuy(orderId) {
+  'order.buy': async function orderBuy(orderId) {
     if (userLoggedIn() && !this.isSimulation) {
       // Only run on server
       const mockAmountDue = 50;
 
-      const {
-        tracking_code: trackingId,
-        postage_label: { label_url: labelImageUrl },
-        tracker: { public_url: trackingUrl },
-      } = createShipment(orderId);
-
-      saveTrackingId(orderId, trackingId, trackingUrl, labelImageUrl);
+      await createShipment(orderId);
 
       const paymentUrl = createPaymentUrl(orderId, mockAmountDue);
       savePaymentUrl(orderId, paymentUrl);
+      return paymentUrl;
     }
+    return undefined;
   },
 
   /**

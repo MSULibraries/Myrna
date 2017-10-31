@@ -43,11 +43,11 @@ if (Meteor.isServer) {
         Meteor.userId.restore();
       });
 
-      it("order.approve updates order status to 'Active'", () => {
+      it("order.approve updates order status to 'Approved'", () => {
         const activateOrder = Meteor.server.method_handlers['order.approve'];
         // Set up a fake method invocation that looks like what the method expects
         const invocation = { userId };
-        const expectedStatus = 'Active';
+        const expectedStatus = 'Approved';
 
         activateOrder.apply(invocation, [mockOrderId]);
         assert.equal(OrderApi.Order.findOne({ _id: mockOrderId }).status, expectedStatus);
