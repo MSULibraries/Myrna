@@ -6,7 +6,7 @@ import { EasyPostInterface } from './shipping/index';
 import { isMaintainer } from './../../../lib/roles';
 
 import { Addresses } from './../addresses';
-import { OrderAddress } from './../orders/orderAddress';
+import { OrderAddress } from './../order/bridges/orderAddress';
 import { Payment } from './../../../lib/payment';
 
 const EasyPost = new EasyPostInterface();
@@ -169,7 +169,9 @@ export async function createShipment(orderId) {
   return shipmentInfo;
 }
 
-// Methods
+/**
+ *  Methods
+ */
 Meteor.methods({
   'order.approve': function orderApprove(orderId) {
     if (userLoggedIn()) {
@@ -216,9 +218,6 @@ Meteor.methods({
     check(orderId, String);
     if (userLoggedIn()) {
       Order.remove({ _id: orderId });
-      Meteor.call('order.address.remove.by.orderId', orderId);
-      Meteor.call('order.trackingId.remove.by.orderId', orderId);
-      Meteor.call('order.payment.remove.by.orderId', orderId);
     }
   },
 
@@ -246,6 +245,17 @@ Meteor.methods({
     }
     return undefined;
   },
+});
+
+/**
+ * Hooks
+ */
+
+// Removing associated documents
+Order.before.remove((doc) => {
+  Meteor.call('order.address.remove.by.orderId', doc);
+  Meteor.call('order.trackingId.remove.by.orderId', doc);
+  Meteor.call('order.payment.remove.by.orderId', doc);
 });
 
 export default Order;

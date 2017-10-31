@@ -5,7 +5,7 @@ import { assert } from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import { Random } from 'meteor/random';
 
-import * as OrderApi from './orders';
+import * as OrderApi from './order';
 import { Payment } from './../../../lib/payment';
 
 if (Meteor.isServer) {
@@ -80,6 +80,7 @@ if (Meteor.isServer) {
 
         // Inserting expects a dateToArriveBy, dateToShipBack, and special instr
         insertOrder.apply(invocation, [new Date(), new Date(), 'Send pizza with order']);
+
         assert.equal(OrderApi.Order.find().count(), 2);
       });
     });

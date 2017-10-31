@@ -2,8 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 
-import { Order } from './orders';
-import { isMaintainer } from './../../../lib/roles';
+import { Order } from './../order';
+import { isMaintainer } from './../../../../lib/roles';
 
 export const OrderAddress = new Mongo.Collection('order.address');
 

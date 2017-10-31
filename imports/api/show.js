@@ -8,7 +8,7 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 
-import { Order } from './orders/orders';
+import { Order } from './order/order';
 import { isMaintainer } from './../../lib/roles';
 
 export const Show = new Mongo.Collection('show');

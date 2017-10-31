@@ -17,9 +17,9 @@ import AddressList from './../../components/AddressList/index';
 import BreadCrumbs from './../../components/BreadCrumbs/index';
 import { isMaintainer } from './../../../../lib/roles';
 import Addresses from './../../../api/addresses';
-import Order from './../../../api/orders/orders';
-import OrderAddress from './../../../api/orders/orderAddress';
-import OrderTrackingId from './../../../api/orders/orderTrackingId';
+import Order from './../../../api/order/order';
+import OrderAddress from './../../../api/order/bridges/orderAddress';
+import OrderTrackingId from './../../../api/order/bridges/orderTrackingId';
 
 // Adjusted contrast to help with a11y
 const darkerTableHeaders = {

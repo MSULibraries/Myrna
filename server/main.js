@@ -3,11 +3,11 @@ import { Meteor } from 'meteor/meteor';
 import '../imports/api/addresses';
 import '../imports/api/cart';
 import '../imports/api/dresses';
-import '../imports/api/orders/orders';
-import '../imports/api/orders/orderAddress';
-import '../imports/api/orders/orderPayment';
-import '../imports/api/orders/orderShow';
-import '../imports/api/orders/orderTrackingId';
+import '../imports/api/order/order';
+import '../imports/api/order/bridges/orderAddress';
+import '../imports/api/order/bridges/orderPayment';
+import '../imports/api/order/bridges/orderShow';
+import '../imports/api/order/bridges/orderTrackingId';
 import '../imports/api/itemDesc';
 import '../imports/api/show';
 
