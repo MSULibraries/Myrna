@@ -1,12 +1,20 @@
-import React from "react";
-import { Container } from "react-grid-system";
+import React from 'react';
+import { Container } from 'react-grid-system';
+import Helmet from 'react-helmet';
 
-const HomePage = () => {
-  return (
-    <Container>
-      <h1>Welcome</h1>
-    </Container>
-  );
-};
+const HomePage = () => (
+  <Container>
+    <Helmet
+      title="Welcome"
+      meta={[
+          {
+            name: 'description',
+            content: 'Landing page for the Myrna Colley Lee rental site',
+          },
+        ]}
+    />
+    <h1>Welcome</h1>
+  </Container>
+);
 
 export default HomePage;

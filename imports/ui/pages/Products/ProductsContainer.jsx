@@ -4,6 +4,7 @@ import { createContainer } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Container } from 'react-grid-system';
+import Helmet from 'react-helmet';
 import StackGrid from 'react-stack-grid';
 import ProductCard from './../../components/ProductCard/index';
 
@@ -38,6 +39,15 @@ class ProductsContainer extends Component {
   render() {
     return (
       <Container>
+        <Helmet
+          title="Products"
+          meta={[
+            {
+              name: 'description',
+              content: 'Search for various costumes and collections pieces',
+            },
+          ]}
+        />
         <h1>Products</h1>
         <StackGrid
           columnWidth={200}

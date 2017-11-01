@@ -16,8 +16,13 @@ export class ProfilePage extends React.PureComponent {
     return (
       <Container>
         <Helmet
-          title="Policies"
-          meta={[{ name: 'description', content: 'Description of Policies' }]}
+          title="Profile"
+          meta={[
+            {
+              name: 'description',
+              content: 'Profile page for checking on cart, orders, or addresses',
+            },
+          ]}
         />
         <h1>Profile</h1>
         <List>

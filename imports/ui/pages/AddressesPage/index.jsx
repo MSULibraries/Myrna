@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Container } from 'react-grid-system';
+import Helmet from 'react-helmet';
 import FlatButton from 'material-ui/FlatButton';
 import {
   Table,
@@ -83,6 +84,15 @@ export class AddressesPage extends Component {
   render() {
     return (
       <Container>
+        <Helmet
+          title="Addresses"
+          meta={[
+            {
+              name: 'description',
+              content: 'Lists all addresses associated with a user',
+            },
+          ]}
+        />
         <h1>Addresses</h1>
         <BreadCrumbs crumbs={['/Profile', 'Addresses']} />
 

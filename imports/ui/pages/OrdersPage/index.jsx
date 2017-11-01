@@ -13,6 +13,7 @@ import { createContainer } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Container } from 'react-grid-system';
+import Helmet from 'react-helmet';
 
 import AddressList from './../../components/AddressList/index';
 import BreadCrumbs from './../../components/BreadCrumbs/index';
@@ -129,6 +130,15 @@ class OrdersPage extends Component {
   render() {
     return (
       <Container>
+        <Helmet
+          title="Orders"
+          meta={[
+            {
+              name: 'description',
+              content: 'Lists all associated orders for user',
+            },
+          ]}
+        />
         <h1>Orders</h1>
         <BreadCrumbs crumbs={['Profile', 'Orders']} />
         <Table>

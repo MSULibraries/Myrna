@@ -18,6 +18,7 @@ import { createContainer } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Container } from 'react-grid-system';
+import Helmet from 'react-helmet';
 import { Link } from 'react-router-dom';
 
 import InputSpecialInstructions from './InputSpecialInstructions';
@@ -287,6 +288,15 @@ export class CartPage extends Component {
   render() {
     return (
       <Container>
+        <Helmet
+          title="Cart"
+          meta={[
+            {
+              name: 'description',
+              content: "Displays all items in a user's cart",
+            },
+          ]}
+        />
         <h1>Cart</h1>
         <BreadCrumbs crumbs={['Profile', 'Cart']} />
         <Table>
