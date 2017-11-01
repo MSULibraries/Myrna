@@ -4,35 +4,24 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Container } from 'react-grid-system';
 import Helmet from 'react-helmet';
-import StackGrid from 'react-stack-grid';
+import StackGrid, { transitions } from 'react-stack-grid';
 import ProductCard from './../../components/ProductCard/index';
 
 import Cart from './../../../api/cart';
 import Dresses from './../../../api/dresses';
 import ItemDesc from './../../../api/itemDesc';
 
+const { fadeUp } = transitions;
+
 class ProductsContainer extends Component {
   constructor() {
     super();
-    this.state = { clothing: [] };
-    this.addProductToCart = this.addProductToCart.bind(this);
-    this.getAllProductInfo = this.getAllProductInfo.bind(this);
-  }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.props.dresses !== prevProps.dresses) {
-      this.setState({ clothing: this.props.dresses });
-    }
+    this.addProductToCart = this.addProductToCart.bind(this);
   }
 
   addProductToCart({ _str: id }) {
     Meteor.call('cart.insert', id);
-  }
-
-  getAllProductInfo(item) {
-    const itemDescIndex = findIndex(this.props.itemDesc, { oldId: item.oldId });
-    const itemDesc = this.props.itemDesc[itemDescIndex];
-    return { ...item, ...itemDesc };
   }
 
   render() {
@@ -48,46 +37,43 @@ class ProductsContainer extends Component {
           ]}
         />
         <h1>Products</h1>
-        <StackGrid
-          columnWidth={200}
-          gutterWidth={20}
-          gutterHeight={20}
-          monitorImagesLoaded
-          width="100%"
-        >
-          {this.state.clothing.slice(0, 19).map((clothing) => {
-            const product = this.getAllProductInfo(clothing);
-            return (
+        {this.props.itemDesc.length === 20 && (
+          <StackGrid
+            columnWidth={200}
+            duration={0}
+            gutterWidth={20}
+            gutterHeight={20}
+            monitorImagesLoaded
+            appear={fadeUp.appear}
+            width="100%"
+          >
+            {this.props.itemDesc.map(clothing => (
               <ProductCard
                 addProductToCart={this.addProductToCart}
                 isAuthed={Meteor.userId() !== null}
                 key={clothing._id}
-                {...product}
+                {...clothing}
               />
-            );
-          })}
-        </StackGrid>
+            ))}
+          </StackGrid>
+        )}
       </Container>
     );
   }
 }
 
 ProductsContainer.defaultProps = {
-  dresses: [],
   itemDesc: {},
 };
 
 ProductsContainer.proptypes = {
-  dresses: PropTypes.array,
   itemDesc: PropTypes.object,
 };
 
 export default (ProductsContainer = createContainer(() => {
-  Meteor.subscribe('dresses');
   Meteor.subscribe('itemDesc');
 
   return {
-    dresses: Dresses.find({}, { $limit: 20 }).fetch(),
-    itemDesc: ItemDesc.find({ category: 'Dress' }).fetch(),
+    itemDesc: ItemDesc.find({ category: 'Dress' }, { limit: 20 }).fetch(),
   };
 }, ProductsContainer));

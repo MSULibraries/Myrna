@@ -5,10 +5,12 @@ import FlatButton from 'material-ui/FlatButton';
 import Paper from 'material-ui/Paper';
 import styled from 'styled-components';
 
+const CartContainer = styled(Paper)`min-height: 50vh;`;
+
 const DescriptionContainer = styled.div`padding: 10px;`;
 
 const ProductImage = styled.img`
-  height: 298.75px;
+  min-height: 250px;
   filter: ${(props) => {
     if (props.disabled) {
       return 'grayscale(100%)';
@@ -33,7 +35,7 @@ const ProductCard = ({
   imgSrc,
   shortDescription,
 }) => (
-  <Paper zDepth={3}>
+  <CartContainer zDepth={3}>
     <Card>
       <PageDetailLink>
         {disabled ? (
@@ -62,7 +64,7 @@ const ProductCard = ({
         {isAuthed && <FlatButton label="Add To Cart" onClick={() => addProductToCart(_id)} />}
       </CardActions>
     </Card>
-  </Paper>
+  </CartContainer>
 );
 
 ProductCard.propTypes = {

@@ -10,6 +10,7 @@ import styled from 'styled-components';
 
 const LogoContainer = styled.div`
   display: flex;
+  min-height: 141px;
   flex-direction: row;
   justify-content: center;
   width: 100%;
