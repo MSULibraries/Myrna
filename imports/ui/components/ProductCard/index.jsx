@@ -8,6 +8,7 @@ import styled from 'styled-components';
 const DescriptionContainer = styled.div`padding: 10px;`;
 
 const ProductImage = styled.img`
+  height: 298.75px;
   filter: ${(props) => {
     if (props.disabled) {
       return 'grayscale(100%)';

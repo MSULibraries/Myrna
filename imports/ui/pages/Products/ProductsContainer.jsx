@@ -1,5 +1,4 @@
 import findIndex from 'lodash/findIndex';
-import CircularProgress from 'material-ui/CircularProgress';
 import { createContainer } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -86,11 +85,9 @@ ProductsContainer.proptypes = {
 export default (ProductsContainer = createContainer(() => {
   Meteor.subscribe('dresses');
   Meteor.subscribe('itemDesc');
-  Meteor.subscribe('cart');
 
   return {
-    cart: Dresses.find({ customerId: Meteor.userId() }).fetch(),
-    dresses: Dresses.find().fetch(),
+    dresses: Dresses.find({}, { $limit: 20 }).fetch(),
     itemDesc: ItemDesc.find({ category: 'Dress' }).fetch(),
   };
 }, ProductsContainer));
