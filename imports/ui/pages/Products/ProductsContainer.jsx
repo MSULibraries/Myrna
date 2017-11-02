@@ -107,7 +107,9 @@ class ProductsContainer extends Component {
   getCurrentItems() {
     this.setState({ loading: true });
     const { activeFilters } = this.state;
-    const activeFiltersArray = Object.keys(activeFilters).filter(f => activeFilters[f] === true);
+    const activeFiltersArray = Object.keys(activeFilters)
+      .filter(category => activeFilters[category] === true)
+      .map(category => this.capFirstLetter(category));
     Meteor.call(
       'itemDesc.paginate',
       this.state.paginationOffset,
