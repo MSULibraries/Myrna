@@ -75,20 +75,21 @@ Meteor.methods({
   'itemDesc.paginate': function itemDescPaginate(
     offset,
     limit,
-    clothingType = '',
+    clothingFilters = [],
     searchQuery = '',
   ) {
     check(offset, Number);
     check(limit, Number);
 
-    if (clothingType !== '' && searchQuery === '') {
-      const results = ItemDesc.find({ category: clothingType }, { skip: offset, limit }).fetch();
-      if (results.length > 0) {
-        return results;
-      }
-      return [];
+    let selector = {};
+
+    if (clothingFilters.length > 0) {
+      selector = { ...selector, category: { $in: clothingFilters } };
     }
-    return [ItemDesc.find({}, { offset, limit }).fetch()];
+    if (searchQuery !== '') {
+      selector = { ...selector, shortDescription: { $regex: `.*${searchQuery}.*` } };
+    }
+    return ItemDesc.find(selector, { skip: offset, limit }).fetch();
   },
 });
 

@@ -36,3 +36,24 @@ The Myrna costume website allows users to browse costume pieces and learn more a
 * [ReactJS](https://reactjs.org/) - is used for the view layer of the application.
 
 * [MongoDB](https://www.mongodb.com/) - is used for the database. You do not have to interface much with the database directly. `imports/api` provides the interface for the application to the db.
+
+### Clothing
+
+The possible cltohing types are
+
+* Apron
+* Cape
+* Dancewear
+* Dress
+* Jacket
+* Jumpsuit
+* Nightwear
+* Pants
+* Robe
+* Shawl
+* Shirt
+* Shorts
+* Skirt
+* Suit
+* Sweater
+* Vest
