@@ -84,7 +84,7 @@ Meteor.methods({
     let selector = {};
 
     if (clothingFilters.length > 0) {
-      selector = { ...selector, category: { $in: clothingFilters } };
+      selector = { ...selector, name: { $in: clothingFilters } };
     }
     if (searchQuery !== '') {
       selector = { ...selector, shortDescription: { $regex: `.*${searchQuery}.*` } };

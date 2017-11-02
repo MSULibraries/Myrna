@@ -1,7 +1,8 @@
 import { remove } from 'lodash';
 import Checkbox from 'material-ui/Checkbox';
-import RaisedButton from 'material-ui/RaisedButton';
 import Paper from 'material-ui/Paper';
+import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
 import { createContainer } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -20,8 +21,8 @@ const { fadeUp } = transitions;
 class ProductsContainer extends Component {
   constructor() {
     super();
-    this.state = {
-      currentProducts: [],
+
+    this.defaultState = {
       activeFilters: {
         apron: false,
         cape: false,
@@ -40,15 +41,22 @@ class ProductsContainer extends Component {
         sweater: false,
         vest: false,
       },
+      currentProducts: [],
       itemsPerPage: 20,
+      loading: false,
       paginationOffset: 0,
+      searchQuery: '',
     };
+
+    this.state = this.defaultState;
 
     this.addProductToCart = this.addProductToCart.bind(this);
     this.capFirstLetter = this.capFirstLetter.bind(this);
+    this.clearFilters = this.clearFilters.bind(this);
     this.getCurrentItems = this.getCurrentItems.bind(this);
     this.paginateBackwards = this.paginateBackwards.bind(this);
     this.paginateForwards = this.paginateForwards.bind(this);
+    this.renderCategoryFilters = this.renderCategoryFilters.bind(this);
   }
 
   componentDidMount() {
@@ -87,24 +95,33 @@ class ProductsContainer extends Component {
     return word[0].toUpperCase() + word.slice(1);
   }
 
+  clearFilters() {
+    this.setState(this.defaultState);
+    this.getCurrentItems();
+  }
+
   /**
    * Fetches product based on the components state
    * such as offset, filters, and search query
    */
   getCurrentItems() {
+    this.setState({ loading: true });
     const { activeFilters } = this.state;
-    const activeFiltersArray = Object.keys(activeFilters)
-      .filter(f => activeFilters[f] === true)
-      .map(key => this.capFirstLetter(key));
+    const activeFiltersArray = Object.keys(activeFilters).filter(f => activeFilters[f] === true);
     Meteor.call(
       'itemDesc.paginate',
       this.state.paginationOffset,
       this.state.itemsPerPage,
       activeFiltersArray,
+      this.state.searchQuery,
       (err, currentProducts) => {
-        this.setState({ currentProducts });
+        this.setState({ currentProducts, loading: false });
       },
     );
+  }
+
+  handleNewSearch(searchQuery) {
+    this.setState({ searchQuery });
   }
 
   /**
@@ -125,6 +142,23 @@ class ProductsContainer extends Component {
     }
   }
 
+  renderCategoryFilters() {
+    return Object.keys(this.state.activeFilters).map(category => (
+      <Checkbox
+        checked={this.state.activeFilters[category]}
+        key={category}
+        label={this.capFirstLetter(category)}
+        onCheck={() =>
+          this.setState({
+            activeFilters: {
+              ...this.state.activeFilters,
+              [category]: !this.state.activeFilters[category],
+            },
+          })}
+      />
+    ));
+  }
+
   render() {
     return (
       <Container>
@@ -140,26 +174,34 @@ class ProductsContainer extends Component {
         <h1>Products</h1>
         <Row>
           <SideNav lg={2}>
-            <Paper zDepth={3}>
-              <h3>Search</h3>
-              {Object.keys(this.state.activeFilters).map(category => (
-                <Checkbox
-                  checked={this.state.activeFilters[category]}
-                  key={category}
-                  label={this.capFirstLetter(category)}
-                  onCheck={() =>
-                    this.setState({
-                      activeFilters: {
-                        ...this.state.activeFilters,
-                        [category]: !this.state.activeFilters[category],
-                      },
-                    })}
+            <Paper style={{ padding: '20px' }} zDepth={3}>
+              {this.state.loading && <p>Loading</p>}
+              <form
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  this.getCurrentItems();
+                }}
+              >
+                <TextField
+                  hintText="Search"
+                  fullWidth
+                  label={this.state.searchQuery}
+                  onChange={({ target: { value: newQuery } }) => this.handleNewSearch(newQuery)}
                 />
-              ))}
+              </form>
+              {this.renderCategoryFilters()}
+
+              <RaisedButton
+                label="RESET"
+                onClick={() => {
+                  this.clearFilters();
+                }}
+              />
 
               <div>
                 <RaisedButton
                   disabled={this.state.paginationOffset === 0}
+                  fullWidth
                   label="<"
                   style={{ display: 'inline' }}
                   onClick={() => {
@@ -218,7 +260,6 @@ ProductsContainer.proptypes = {
 export default ProductsContainer;
 
 const SideNav = styled(Col)`
-  padding: 10px;
   position: sticky !important;
   top: 10px;
 `;
