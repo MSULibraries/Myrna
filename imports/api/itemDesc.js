@@ -72,6 +72,15 @@ Meteor.methods({
 
     ItemDesc.remove(descId);
   },
+  'itemDesc.paginate': function itemDescPaginate(offset, limit, clothingType = '', searchQuery) {
+    check(offset, Number);
+    check(limit, Number);
+
+    if (clothingType !== '') {
+      return ItemDesc.find({ category: clothingType }, { offset, limit }).fetch();
+    }
+    return ItemDesc.find({}, { offset, limit }).fetch();
+  },
 });
 
 export default ItemDesc;
