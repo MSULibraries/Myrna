@@ -5,8 +5,6 @@ import FlatButton from 'material-ui/FlatButton';
 import Paper from 'material-ui/Paper';
 import styled from 'styled-components';
 
-const CartContainer = styled(Paper)`min-height: 50vh;`;
-
 const DescriptionContainer = styled.div`padding: 10px;`;
 
 const ProductImage = styled.img`
@@ -35,7 +33,7 @@ const ProductCard = ({
   imgSrc,
   shortDescription,
 }) => (
-  <CartContainer zDepth={3}>
+  <Paper zDepth={3}>
     <Card>
       <PageDetailLink>
         {disabled ? (
@@ -64,7 +62,7 @@ const ProductCard = ({
         {isAuthed && <FlatButton label="Add To Cart" onClick={() => addProductToCart(_id)} />}
       </CardActions>
     </Card>
-  </CartContainer>
+  </Paper>
 );
 
 ProductCard.propTypes = {

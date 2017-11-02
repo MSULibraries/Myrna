@@ -72,14 +72,23 @@ Meteor.methods({
 
     ItemDesc.remove(descId);
   },
-  'itemDesc.paginate': function itemDescPaginate(offset, limit, clothingType = '', searchQuery) {
+  'itemDesc.paginate': function itemDescPaginate(
+    offset,
+    limit,
+    clothingType = '',
+    searchQuery = '',
+  ) {
     check(offset, Number);
     check(limit, Number);
 
-    if (clothingType !== '') {
-      return ItemDesc.find({ category: clothingType }, { offset, limit }).fetch();
+    if (clothingType !== '' && searchQuery === '') {
+      const results = ItemDesc.find({ category: clothingType }, { skip: offset, limit }).fetch();
+      if (results.length > 0) {
+        return results;
+      }
+      return [];
     }
-    return ItemDesc.find({}, { offset, limit }).fetch();
+    return [ItemDesc.find({}, { offset, limit }).fetch()];
   },
 });
 
