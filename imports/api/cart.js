@@ -2,6 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 
+import { userLoggedIn } from './../../lib/user';
+
 export const Cart = new Mongo.Collection('cart');
 
 Cart.allow({
@@ -30,6 +32,13 @@ Meteor.methods({
       throw new Meteor.Error('not-authorized');
     }
     Cart.remove({ userId: Meteor.userId() });
+  },
+
+  'cart.count': function cartCount() {
+    if (userLoggedIn()) {
+      return Cart.find({ userId: Meteor.userId() }).count();
+    }
+    return 0;
   },
 
   /**

@@ -47,6 +47,16 @@ if (Meteor.isServer) {
         assert.equal(Cart.find().count(), 0);
       });
 
+      it("cart.count returns the number of items in a user's cart", () => {
+        const clearCount = Meteor.server.method_handlers['cart.count'];
+        // Set up a fake method invocation that looks like what the method expects
+        const invocation = { userId };
+
+        const itemsInCartCount = clearCount.apply(invocation, []);
+
+        assert.equal(itemsInCartCount, 1);
+      });
+
       it('cart.read reads cart', () => {
         const readCart = Meteor.server.method_handlers['cart.read'];
         // Set up a fake method invocation that looks like what the method expects
