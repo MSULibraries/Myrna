@@ -55,7 +55,7 @@ const ProductCard = ({
 
       <DescriptionContainer>
         <PageDetailLink href="#">
-          <CardText>{shortDescription}</CardText>
+          <CardText dangerouslySetInnerHTML={{ __html: shortDescription }} />
         </PageDetailLink>
       </DescriptionContainer>
       <CardActions>

@@ -184,12 +184,13 @@ class ProductsContainer extends Component {
                   this.getCurrentItems();
                 }}
               >
-                <TextField
-                  hintText="Search"
-                  fullWidth
-                  label={this.state.searchQuery}
+                <input
                   onChange={({ target: { value: newQuery } }) => this.handleNewSearch(newQuery)}
+                  placeholder="Search"
+                  style={{ width: '100%', marginBottom: '10px' }}
+                  value={this.state.searchQuery}
                 />
+                <br />
               </form>
               {this.renderCategoryFilters()}
 

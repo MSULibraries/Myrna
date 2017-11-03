@@ -6,6 +6,7 @@
 import React from 'react';
 import { Container } from 'react-grid-system';
 import Helmet from 'react-helmet';
+import styled from 'styled-components';
 
 export class AboutPage extends React.PureComponent {
   // eslint-disable-line react/prefer-stateless-function
@@ -31,19 +32,17 @@ export class AboutPage extends React.PureComponent {
           donation from Myrna to serve the theatre community of Mississippi. In addition to the
           rental collection, the Mississippi State University Libraries houses a research collection
           of theatre costumes and antique clothing along with the papers and letters of Myrna
-          Colley-Lee. For more information about the research collection, please contact
+          Colley-Lee. For more information about the research collection, please contact{' '}
           <a href="mailto:sp_coll@library.msstate.edu">sp_coll@library.msstate.edu</a>. You should
           also visit Myrna{"'"}s website for more information about her career and current
-          activities at
-          <a href="http://www.gladragsdesigns.com">Gladrags Designs</a>.
+          activities at{' '}
+          <a href="http://www.gladragsdesigns.com" target="_blank">
+            Gladrags Designs
+          </a>.
         </p>
 
-        <p>
-          MCLCC is not your average e-commerce website. Click
-          <a href="/how_to"> here</a> for help on how to use this website.
-        </p>
         <h2>Myrna Colley-Lee</h2>
-        <img alt="Myrna Colley Lee Headshot" src="images/pages/About/myrna.jpg" />
+        <WrappedImage alt="Myrna Colley Lee Headshot" src="images/pages/About/myrna.jpg" />
 
         <p>
           Myrna Colley-Lee was born in 1941 at Hamlett, N.C. She completed her B.F.A. in art
@@ -76,19 +75,6 @@ export class AboutPage extends React.PureComponent {
           New York, N.Y.
         </p>
 
-        <p>Learn more about Myrna Colley-Lee:</p>
-
-        <ul>
-          <li>
-            <a href="http://gladragsdesigns.com">GladRags Designs</a>
-          </li>
-          <li>
-            <a href="http://library.msstate.edu/myrna/Designer.asp">
-              The Myrna Colley-Lee Exhibit at Mississippi State University Libraries
-            </a>
-          </li>
-        </ul>
-
         <h2>Costume Donations</h2>
 
         <p>
@@ -103,9 +89,29 @@ export class AboutPage extends React.PureComponent {
           <br />
           All donations need to be in wearable condition to be considered for the collection.
         </p>
+
+        <h3>Learn more about Myrna Colley-Lee:</h3>
+
+        <ul>
+          <li>
+            <a href="http://gladragsdesigns.com" target="_blank">
+              GladRags Designs
+            </a>
+          </li>
+          <li>
+            <a href="http://library.msstate.edu/myrna/Designer.asp" target="_blank">
+              The Myrna Colley-Lee Exhibit at Mississippi State University Libraries
+            </a>
+          </li>
+        </ul>
       </Container>
     );
   }
 }
+
+const WrappedImage = styled.img`
+  float: left;
+  padding: 10px;
+`;
 
 export default AboutPage;
