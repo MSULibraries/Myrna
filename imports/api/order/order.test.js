@@ -15,19 +15,62 @@ if (Meteor.isServer) {
       const userId = Random.id();
       const mockCartProductIds = [Random.id(), Random.id(), Random.id()];
       let mockOrderId;
+      let totalOrders;
 
       beforeEach(() => {
         // Stubbing soome of meteors global functions
         const userIdStub = sinon.stub(Meteor, 'userId');
-
+        totalOrders = 5;
         // stubbed userId will return our mock uid
         userIdStub.returns(userId);
 
         // clearing Order collection
         OrderApi.Order.remove({});
 
-        // Inserting a Order item (Default Status)
+        // Inserting Orders
+        // 'Active' status
         mockOrderId = OrderApi.Order.insert({
+          userId: Meteor.userId(),
+          dateAdded: Date.now(),
+          dateToArriveBy: new Date(),
+          dateToShipBack: new Date(),
+          productIds: mockCartProductIds,
+          specialInstr: 'None',
+          status: 'Active',
+        });
+        // 'Approved' status
+        OrderApi.Order.insert({
+          userId: Meteor.userId(),
+          dateAdded: Date.now(),
+          dateToArriveBy: new Date(),
+          dateToShipBack: new Date(),
+          productIds: mockCartProductIds,
+          specialInstr: 'None',
+          status: 'Approved',
+        });
+        // 'Cancelled' status
+        OrderApi.Order.insert({
+          userId: Meteor.userId(),
+          dateAdded: Date.now(),
+          dateToArriveBy: new Date(),
+          dateToShipBack: new Date(),
+          productIds: mockCartProductIds,
+          specialInstr: 'None',
+          status: 'Cancelled',
+        });
+        // 'Complete' status
+        OrderApi.Order.insert({
+          userId: Meteor.userId(),
+          dateAdded: Date.now(),
+          dateToArriveBy: new Date(),
+          dateToShipBack: new Date(),
+          productIds: mockCartProductIds,
+          specialInstr: 'None',
+          status: 'Complete',
+        });
+
+        // 'Un-Approved'
+        OrderApi.Order.insert({
           userId: Meteor.userId(),
           dateAdded: Date.now(),
           dateToArriveBy: new Date(),
@@ -62,6 +105,72 @@ if (Meteor.isServer) {
 
         assert.equal(OrderApi.Order.findOne({ _id: mockOrderId }).status, expectedStatus);
       });
+      describe('order.count', () => {
+        it('returns the number of orders a user has regardless of order status', () => {
+          const orderCount = Meteor.server.method_handlers['order.count'];
+          // Set up a fake method invocation that looks like what the method expects
+          const invocation = { userId };
+
+          // Inserted 3 different orders in the beforeEach
+          const actualCount = orderCount.apply(invocation, []);
+
+          assert.equal(actualCount, totalOrders);
+        });
+        it("returns the number of  'Active' orders", () => {
+          const orderCount = Meteor.server.method_handlers['order.count'];
+          const invocation = { userId };
+          const targetStatus = 'Active';
+          const expectedCount = 1;
+          const actualCount = orderCount.apply(invocation, [[targetStatus]]);
+
+          assert.equal(actualCount, expectedCount);
+        });
+        it("returns the number of  'Approved' orders", () => {
+          const orderCount = Meteor.server.method_handlers['order.count'];
+          const invocation = { userId };
+          const targetStatus = 'Approved';
+          const expectedCount = 1;
+          const actualCount = orderCount.apply(invocation, [[targetStatus]]);
+
+          assert.equal(actualCount, expectedCount);
+        });
+        it("returns the number of  'Cancelled' orders", () => {
+          const orderCount = Meteor.server.method_handlers['order.count'];
+          const invocation = { userId };
+          const targetStatus = 'Cancelled';
+          const expectedCount = 1;
+          const actualCount = orderCount.apply(invocation, [[targetStatus]]);
+
+          assert.equal(actualCount, expectedCount);
+        });
+        it("returns the number of  'Complete' orders", () => {
+          const orderCount = Meteor.server.method_handlers['order.count'];
+          const invocation = { userId };
+          const targetStatus = 'Complete';
+          const expectedCount = 1;
+          const actualCount = orderCount.apply(invocation, [[targetStatus]]);
+
+          assert.equal(actualCount, expectedCount);
+        });
+        it("returns the number of  'Un-Approved' orders", () => {
+          const orderCount = Meteor.server.method_handlers['order.count'];
+          const invocation = { userId };
+          const targetStatus = 'Un-Approved';
+          const expectedCount = 1;
+          const actualCount = orderCount.apply(invocation, [[targetStatus]]);
+
+          assert.equal(actualCount, expectedCount);
+        });
+        it('returns the number orders with more than one status', () => {
+          const orderCount = Meteor.server.method_handlers['order.count'];
+          const invocation = { userId };
+          const targetStatuses = ['Un-Approved', 'Approved'];
+          const expectedCount = targetStatuses.length;
+          const actualCount = orderCount.apply(invocation, [targetStatuses]);
+
+          assert.equal(actualCount, expectedCount);
+        });
+      });
 
       it('order.delete removes order from collection', () => {
         const readOrder = Meteor.server.method_handlers['order.delete'];
@@ -69,7 +178,7 @@ if (Meteor.isServer) {
         const invocation = { userId };
 
         readOrder.apply(invocation, [mockOrderId]);
-        assert.equal(OrderApi.Order.find().count(), 0);
+        assert.equal(OrderApi.Order.find().count(), totalOrders - 1);
       });
 
       it('order.insert inserts', () => {
@@ -81,7 +190,7 @@ if (Meteor.isServer) {
         // Inserting expects a dateToArriveBy, dateToShipBack, and special instr
         insertOrder.apply(invocation, [new Date(), new Date(), 'Send pizza with order']);
 
-        assert.equal(OrderApi.Order.find().count(), 2);
+        assert.equal(OrderApi.Order.find().count(), totalOrders + 1);
       });
     });
 

@@ -7,11 +7,24 @@
 import { List, ListItem } from 'material-ui/List';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Container } from 'react-grid-system';
+import { Col, Container, Row } from 'react-grid-system';
 import Helmet from 'react-helmet';
 
 export class ProfilePage extends React.PureComponent {
-  // eslint-disable-line react/prefer-stateless-function
+  constructor() {
+    super();
+
+    this.state = {
+      itemsInCart: 0,
+    };
+  }
+
+  componentDidMount() {
+    Meteor.call('cart.count', undefined, (error, itemsInCart) => {
+      this.setState({ itemsInCart });
+    });
+  }
+
   render() {
     return (
       <Container>
@@ -25,17 +38,27 @@ export class ProfilePage extends React.PureComponent {
           ]}
         />
         <h1>Profile</h1>
-        <List>
-          <Link style={{ textDecoration: 'none' }} to="/addresses">
-            <ListItem primaryText="Addresses" />
-          </Link>
-          <Link style={{ textDecoration: 'none' }} to="/orders">
-            <ListItem primaryText="Orders" />
-          </Link>
-          <Link style={{ textDecoration: 'none' }} to="/cart">
-            <ListItem primaryText="Cart" />
-          </Link>
-        </List>
+        <Row>
+          <Col sm={4}>
+            <List>
+              <Link style={{ textDecoration: 'none' }} to="/addresses">
+                <ListItem primaryText="Addresses" />
+              </Link>
+              <Link style={{ textDecoration: 'none' }} to="/orders">
+                <ListItem primaryText="Orders" />
+              </Link>
+              <Link style={{ textDecoration: 'none' }} to="/cart">
+                <ListItem primaryText="Cart" />
+              </Link>
+            </List>
+          </Col>
+          <Col sm={8}>
+            <h2>Summary</h2>
+            <p>
+              <strong>Items in Cart:</strong> {this.state.itemsInCart}{' '}
+            </p>
+          </Col>
+        </Row>
       </Container>
     );
   }
