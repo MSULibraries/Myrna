@@ -44,7 +44,7 @@ const ProductCard = ({
           <CardMediaContainer>
             <ProductImage
               disabled={disabled}
-              src={`images/clothing/${category}/${oldId}/small/${JSON.parse(description)
+              src={`images/clothing/${category.toLowerCase()}/${oldId}/small/${JSON.parse(description)
                 .picture_1}`}
               alt={`images/clothing/${category}/${oldId}/small/${JSON.parse(description)
                 .picture_1}`}
