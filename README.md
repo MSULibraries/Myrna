@@ -4,12 +4,12 @@ The Myrna costume website allows users to browse costume pieces and learn more a
 
 ## Contents
 
-* [Functionality](#Functionality)
-* [Setup](#Setup)
-* [Technology](#Technology)
-* [Clothing](#Clothing_Types)
+* [Functionality](#functionality)
+* [Setup](#setup)
+* [Technology](#technology)
+* [Clothing](#clothing-types)
 
-## [Functionality](#Functionality)
+## [Functionality](#functionality)
 
 * **User Accounts**
   * Users can create accounts and have a persisted experience within the app
@@ -41,7 +41,7 @@ The Myrna costume website allows users to browse costume pieces and learn more a
 
 * **EasyPost Shipping** - We are using the [EasyPost API](https://www.easypost.com/) to handle shipping. EasyPost provides a [facade](https://en.wikipedia.org/wiki/Facade_pattern) for other shipping APIs allowing us to interface with EasyPost and then letting EasyPost translate what we want to other shipping APIs. After signing up for an account, EasyPost will give you a production key and a test key. While developing, we will use the test key to make fake shipments.
 
-## [Setup](#Setup)
+## [Setup](#setup)
 
 * Install [NodeJS](https://nodejs.org/en/)
 * Install [Meteor](https://www.meteor.com/install)
@@ -56,7 +56,7 @@ The Myrna costume website allows users to browse costume pieces and learn more a
 * Install Dependencies *(command: `npm i`)*
 * Start Server *(command: `meteor --settings settings.json`)*
 
-## [Technology](#Technology)
+## [Technology](#technology)
 
 * [Meteor](https://www.meteor.com/) - is a full stack javascript framework. It provides a view layer and a database with controllers in the middle. It also provides user accounts easily. If you are new to Meteor, the [Meteor React Tutorial](https://www.meteor.com/tutorials/react/creating-an-app) is a good place to start. You can learn most of what you need from it.
 
@@ -64,7 +64,7 @@ The Myrna costume website allows users to browse costume pieces and learn more a
 
 * [MongoDB](https://www.mongodb.com/) - is used for the database. You do not have to interface much with the database directly. `imports/api` provides the interface for the application to the db.
 
-### [Clothing Types](#Clothing_Types)
+### [Clothing Types](#clothing-types)
 
 The possible cltohing types are
 
