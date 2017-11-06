@@ -206,7 +206,12 @@ class OrdersPage extends Component {
                 {/* Approve Button */}
                 {isMaintainer() && (
                   <TableRowColumn>
-                    <FlatButton onClick={() => this.approveOrder(order._id)} secondary label="✓" />
+                    <FlatButton
+                      disabled={order.status === 'Approved'}
+                      onClick={() => this.approveOrder(order._id)}
+                      secondary
+                      label="✓"
+                    />
                   </TableRowColumn>
                 )}
               </TableRow>
