@@ -316,7 +316,9 @@ export class CartPage extends Component {
               <TableRow key={item._id}>
                 <TableRowColumn>{item.productId}</TableRowColumn>
                 <TableRowColumn>{item.userId}</TableRowColumn>
-                <TableRowColumn>{item.dateAdded}</TableRowColumn>
+                <TableRowColumn>
+                  {new Date(item.dateAdded).toLocaleDateString('en-US')}
+                </TableRowColumn>
                 <TableRowColumn style={centerColumn}>
                   <FlatButton
                     onClick={() => this.removeProductFromCart(item._id)}
