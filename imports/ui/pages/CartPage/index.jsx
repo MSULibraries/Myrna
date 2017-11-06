@@ -303,7 +303,6 @@ export class CartPage extends Component {
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
             <TableRow>
               <TableHeaderColumn style={darkerTableHeaders}>Product ID</TableHeaderColumn>
-              <TableHeaderColumn style={darkerTableHeaders}>User ID</TableHeaderColumn>
               <TableHeaderColumn style={darkerTableHeaders}>Added On </TableHeaderColumn>
 
               <TableHeaderColumn style={{ darkerTableHeaders, ...alignCenter }}>
@@ -315,7 +314,6 @@ export class CartPage extends Component {
             {this.props.cartItems.map(item => (
               <TableRow key={item._id}>
                 <TableRowColumn>{item.productId}</TableRowColumn>
-                <TableRowColumn>{item.userId}</TableRowColumn>
                 <TableRowColumn>
                   {new Date(item.dateAdded).toLocaleDateString('en-US')}
                 </TableRowColumn>

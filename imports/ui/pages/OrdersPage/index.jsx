@@ -168,7 +168,7 @@ class OrdersPage extends Component {
             {this.props.orders.map(order => (
               <TableRow key={order._id}>
                 {/* Order Owner */}
-                <TableRowColumn>{order.userId}</TableRowColumn>
+                <TableRowColumn>{Meteor.user(order.userId).emails[0].address}</TableRowColumn>
 
                 {/* Tracking Link */}
                 <TableRowColumn>{this.renderOrderTrackingLink(order)}</TableRowColumn>
