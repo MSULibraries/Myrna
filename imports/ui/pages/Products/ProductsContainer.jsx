@@ -239,7 +239,7 @@ class ProductsContainer extends Component {
                   }}
                 />
                 <RaisedButton
-                  disabled={this.state.currentProducts.length === 0}
+                  disabled={this.state.currentProducts.length < this.state.itemsPerPage}
                   label=">"
                   style={{ display: 'inline' }}
                   onClick={() => {
