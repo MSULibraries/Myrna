@@ -2,7 +2,11 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import AuthRoute from './AuthRoute';
+
+// Main UI components
 import MainNav from './../../ui/components/MainNav/index';
+import BottomNav from './../../ui/components/BottomNav/index';
+// Pages
 import AboutPage from './../../ui/pages/AboutPage/index';
 import AddressesPage from './../../ui/pages/AddressesPage/index';
 import CartPage from './../../ui/pages/CartPage/index';
@@ -35,6 +39,7 @@ const Routes = () => (
 
         <Route component={NotFoundPage} />
       </Switch>
+      <BottomNav />
     </div>
   </Router>
 );
