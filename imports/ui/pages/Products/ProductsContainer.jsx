@@ -159,15 +159,17 @@ class ProductsContainer extends Component {
    */
   paginateBackwards() {
     if (this.state.paginationOffset > 0) {
+      window.scrollTo(0, 0);      
       this.setState({ paginationOffset: this.state.paginationOffset - this.state.itemsPerPage });
     }
   }
-
+  
   /**
    * Decrements the  pagination offset by current states itemsPerPage
    */
   paginateForwards() {
     if (this.state.paginationOffset >= 0) {
+      window.scrollTo(0, 0);      
       this.setState({ paginationOffset: this.state.paginationOffset + this.state.itemsPerPage });
     }
   }
