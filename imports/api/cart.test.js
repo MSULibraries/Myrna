@@ -84,7 +84,7 @@ if (Meteor.isServer) {
         assert.deepEqual(mockArrayOfProductIds, cartItemsIds);
       });
 
-      it('cart.insert insertsz', () => {
+      it('cart.insert inserts', () => {
         const insertCart = Meteor.server.method_handlers['cart.insert'];
 
         // Set up a fake method invocation that looks like what the method expects
@@ -102,6 +102,16 @@ if (Meteor.isServer) {
 
         insertCart.apply(invocation, [productId]);
         assert.equal(Cart.find().count(), 1);
+      });
+
+      it('cart.insert.productIds inserts multiple ids', () => {
+        const insertCart = Meteor.server.method_handlers['cart.insert.productIds'];
+
+        // Set up a fake method invocation that looks like what the method expects
+        const invocation = { userId };
+
+        insertCart.apply(invocation, [[Random.id(), Random.id(), Random.id()]]);
+        assert.equal(Cart.find().count(), 4);
       });
     });
   });
