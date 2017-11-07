@@ -4,9 +4,28 @@
 *
 */
 
+import { withTracker } from 'meteor/react-meteor-data';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+
+const MainNav = ({ userLoggedIn }) => (
+  <MainNavContainer>
+    <LogoContainer>
+      <img src="images/main_logo.png" alt="Myrna Colley-Lee Costume Collection Logo" />
+    </LogoContainer>
+    <LinkListContainer>
+      <LinkList>
+        <MainLink to="/">Home</MainLink>
+        <MainLink to="/about">About</MainLink>
+        <MainLink to="/products">Product</MainLink>
+        <MainLink to="/policies">Policies</MainLink>
+        <MainLink to="/profile">Profile</MainLink>
+        <MainLink to="/login">{userLoggedIn ? 'Logout' : 'Login'}</MainLink>
+      </LinkList>
+    </LinkListContainer>
+  </MainNavContainer>
+);
 
 const LogoContainer = styled.div`
   display: flex;
@@ -46,22 +65,6 @@ const MainNavContainer = styled.header`
   padding-top: 10px;
 `;
 
-const MainNav = () => (
-  <MainNavContainer>
-    <LogoContainer>
-      <img src="images/main_logo.png" alt="Myrna Colley-Lee Costume Collection Logo" />
-    </LogoContainer>
-    <LinkListContainer>
-      <LinkList>
-        <MainLink to="/">Home</MainLink>
-        <MainLink to="/about">About</MainLink>
-        <MainLink to="/products">Product</MainLink>
-        <MainLink to="/policies">Policies</MainLink>
-        <MainLink to="/profile">Profile</MainLink>
-        <MainLink to="/login">{Meteor.user() ? 'Logout' : 'Login'}</MainLink>
-      </LinkList>
-    </LinkListContainer>
-  </MainNavContainer>
-);
-
-export default MainNav;
+export default withTracker(() => ({
+  userLoggedIn: Meteor.userId(),
+}))(MainNav);
