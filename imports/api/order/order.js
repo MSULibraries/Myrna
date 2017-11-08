@@ -180,23 +180,6 @@ Meteor.methods({
     }
   },
 
-  /**
-   * Returns the number of orders with optional status
-   * @param {Array} orderStatuses
-   */
-  'order.count': function orderCount(orderStatuses = []) {
-    let selector = { userId: Meteor.userId() };
-
-    if (orderStatuses.length > 0) {
-      selector = { ...selector, status: { $in: orderStatuses } };
-    }
-
-    if (userLoggedIn()) {
-      return Order.find(selector).count();
-    }
-    return 0;
-  },
-
   'order.buy': async function orderBuy(orderId) {
     if (userLoggedIn() && !this.isSimulation) {
       // Only run on server
@@ -221,6 +204,42 @@ Meteor.methods({
 
       Order.update({ _id: orderId }, { $set: { status: 'Cancelled' } });
     }
+  },
+
+  /**
+   * Accepts info about an order and tells you if is a legitimate order
+   * This is used on payment success page to make sure someone didn't
+   * just visit the page to spoof order info
+   * @param {String} amountDue
+   * @param {String} orderNumber
+   * @param {String} timestamp
+   * @param {String} userHash
+   * @returns {Bool}
+   */
+  'order.check': function orderCheck(amountDue, orderNumber, timestamp, userHash) {
+    if (!this.isSimulation) {
+      const payment = new Payment();
+      const actualHash = payment.createPaymentHash(amountDue, orderNumber, timestamp);
+      return actualHash === userHash;
+    }
+    return undefined;
+  },
+
+  /**
+   * Returns the number of orders with optional status
+   * @param {Array} orderStatuses
+   */
+  'order.count': function orderCount(orderStatuses = []) {
+    let selector = { userId: Meteor.userId() };
+
+    if (orderStatuses.length > 0) {
+      selector = { ...selector, status: { $in: orderStatuses } };
+    }
+
+    if (userLoggedIn()) {
+      return Order.find(selector).count();
+    }
+    return 0;
   },
 
   /**

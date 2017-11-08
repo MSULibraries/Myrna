@@ -59,7 +59,7 @@ export class PullShowPrompt extends Component {
             <br />
             <FlatButton
               disabled={this.state.selectedShowId === undefined}
-              label="Submit"
+              label="Pull Show"
               onClick={() => this.addShowToCart(this.state.selectedShowId)}
             />
           </div>

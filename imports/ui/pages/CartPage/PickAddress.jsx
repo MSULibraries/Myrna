@@ -4,7 +4,7 @@
  */
 
 import { List, ListItem } from 'material-ui/List';
-import { createContainer } from 'meteor/react-meteor-data';
+import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
@@ -66,9 +66,10 @@ PickAddress.proptypes = {
   selectAddress: PropTypes.func.isRequired,
 };
 
-export default (PickAddress = createContainer(() => {
+export default withTracker((props) => {
   Meteor.subscribe('addresses');
+
   return {
     addresses: Addresses.find({}, { sort: { createdAt: -1 } }).fetch(),
   };
-}, PickAddress));
+})(PickAddress);
