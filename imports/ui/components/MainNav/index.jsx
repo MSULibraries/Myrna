@@ -46,7 +46,7 @@ const MainNavContainer = styled.header`
   padding-top: 10px;
 `;
 
-const MainNav = () => (
+export const MainNav = () => (
   <MainNavContainer>
     <LogoContainer>
       <img src="images/main_logo.png" alt="Myrna Colley-Lee Costume Collection Logo" />

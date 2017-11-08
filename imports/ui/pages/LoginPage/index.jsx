@@ -5,7 +5,7 @@ import { Redirect } from 'react-router-dom';
 
 import AccountsUIWrapper from './../../components/AccountsUIWrapper/index';
 
-class LoginPage extends React.Component {
+export class LoginPage extends React.Component {
   state = {
     redirectToReferrer: false,
   };

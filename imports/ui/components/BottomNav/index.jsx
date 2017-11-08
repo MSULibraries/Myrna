@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { userLoggedIn } from './../../../../lib/user';
 
-const BottomNav = () =>
+export const BottomNav = () =>
   (Meteor.user() ? (
     <BottomNavContainer>
       <Item>

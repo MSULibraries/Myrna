@@ -21,7 +21,7 @@ const CardMediaContainer = styled(CardMedia)`max-width: 320px;`;
 
 const PageDetailLink = styled.a`text-decoration: none;`;
 
-const ProductCard = ({
+export const ProductCard = ({
   _id,
   addProductToCart,
   category,
@@ -44,8 +44,7 @@ const ProductCard = ({
           <CardMediaContainer>
             <ProductImage
               disabled={disabled}
-              src={`images/clothing/${category.toLowerCase()}/${oldId}/small/${JSON.parse(description)
-                .picture_1}`}
+              src={`images/clothing/${category.toLowerCase()}/${oldId}/small/${JSON.parse(description).picture_1}`}
               alt={`images/clothing/${category}/${oldId}/small/${JSON.parse(description)
                 .picture_1}`}
             />

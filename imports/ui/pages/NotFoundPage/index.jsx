@@ -5,7 +5,7 @@ import Helmet from 'react-helmet';
 
 import Cart from './../../../api/cart';
 
-const NotFound = () => (
+export const NotFound = () => (
   <Container>
     <Helmet
       title="404 Page Not Found"

@@ -6,7 +6,7 @@ import { List, ListItem } from 'material-ui/List';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-const AddressList = ({ addresses }) => (
+export const AddressList = ({ addresses }) => (
   <List>
     {addresses.map(address => (
       <ListItem disabled key={address.street1}>
