@@ -339,6 +339,7 @@ export class CartPage extends Component {
                   <FlatButton
                     onClick={() => this.removeProductFromCart(item._id)}
                     secondary
+                    style={{ margin: 'auto' }}
                     label="X"
                   />
                 </TableRowColumn>
