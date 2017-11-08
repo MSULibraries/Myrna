@@ -91,6 +91,36 @@ Meteor.methods({
     }
   },
 
+  /**
+   * Takes in an array of productIds and adds them to the cart
+   * @param {Array} productIds
+   */
+  'cart.insert.productIds': function cartInsertProductIds(productIds) {
+    // Checking Input Var Types
+    check(productIds, Array);
+
+    // Make sure the user is logged in before inserting a task
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    const currentCartIds = Meteor.call('cart.read.productIds');
+    const dateAdded = Date.now();
+    const userId = Meteor.userId();
+
+    // Inserting each productId
+    productIds.forEach((productId) => {
+      // If the new product ID isn't alrighty in the cart
+      if (!currentCartIds.includes(productId)) {
+        Cart.insert({
+          productId,
+          userId,
+          dateAdded,
+        });
+      }
+    });
+  },
+
   'cart.remove': function cartRemove(cartEntryId) {
     check(cartEntryId, String);
     // Make sure the user is logged in before inserting a task

@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 
 import { Meteor } from 'meteor/meteor';
-import { assert } from 'meteor/practicalmeteor:chai';
+import { assert, expect } from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import { Random } from 'meteor/random';
 
@@ -16,7 +16,9 @@ if (Meteor.isServer) {
       const ownerId = Random.id();
       const createdAt = new Date();
       const name = 'RICKKKK';
+      let mockShow;
       let mockShowId;
+
       beforeEach(() => {
         // Stubbing soome of meteors global functions
         const userIdStub = sinon.stub(Meteor, 'userId');
@@ -27,12 +29,15 @@ if (Meteor.isServer) {
         // clearing Show collection
         Show.remove({});
 
-        mockShowId = Show.insert({
+        mockShow = {
           name,
           productIds,
           createdAt,
           ownerId,
-        });
+        };
+
+        mockShowId = Show.insert(mockShow);
+        mockShow = { _id: mockShowId, ...mockShow };
       });
 
       afterEach(() => {
@@ -41,17 +46,28 @@ if (Meteor.isServer) {
       });
 
       it('show.insert inserts', () => {
-        const insertDress = Meteor.server.method_handlers['show.insert'];
+        const insertShow = Meteor.server.method_handlers['show.insert'];
         // Set up a fake method invocation that looks like what the method expects
         const invocation = { userId };
 
-        insertDress.apply(invocation, [
+        insertShow.apply(invocation, [
           'The Wizard of Oz 2017', // Name of Show
           ['1', '2', '3', '4', '5'], // Product Ids for the show
         ]);
 
         assert.equal(Show.find().count(), 2);
       });
+
+      it('show.read reads', () => {
+        const readShow = Meteor.server.method_handlers['show.read'];
+        // Set up a fake method invocation that looks like what the method expects
+        const invocation = { userId };
+
+        const actualShow = readShow.apply(invocation, [mockShowId]);
+
+        expect(actualShow).to.be.deep.equal(mockShow);
+      });
+
       it('show.delete deletes', () => {
         const showRemove = Meteor.server.method_handlers['show.remove'];
         // Set up a fake method invocation that looks like what the method expects

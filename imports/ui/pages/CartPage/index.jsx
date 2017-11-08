@@ -14,7 +14,7 @@ import {
   TableRow,
   TableRowColumn,
 } from 'material-ui/Table';
-import { createContainer } from 'meteor/react-meteor-data';
+import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Container } from 'react-grid-system';
@@ -25,9 +25,11 @@ import InputSpecialInstructions from './InputSpecialInstructions';
 import NewShowPrompt from './NewShowPrompt';
 import PickAddress from './PickAddress';
 import PickOrderDates from './PickOrderDates';
+import PullShowPrompt from './PullShowPrompt';
 import BreadCrumbs from './../../components/BreadCrumbs/index';
 import Toast from './../../components/Toast/index';
 import Cart from './../../../api/cart';
+import Show from './../../../api/show';
 
 // Adjusted contrast to help with a11y
 const darkerTableHeaders = {
@@ -51,6 +53,7 @@ export class CartPage extends Component {
       dateToShipBack: undefined,
       newShowModalOpen: false, // modal for entering a new show is open
       orderModalOpen: false, // modal for new order is open
+      pullShowModalOpen: false,
       selectedAddressId: undefined, // Id of order to ship to
       specialInstr: '', // Special Instr. for Order
       step: 0, // The current step of the create order process
@@ -71,14 +74,15 @@ export class CartPage extends Component {
     this.closeNewOrderModal = this.closeNewOrderModal.bind(this);
     this.closeToast = this.closeToast.bind(this);
     this.incStep = this.incStep.bind(this);
+    this.pullShow = this.pullShow.bind(this);
     this.removeProductFromCart = this.removeProductFromCart.bind(this);
+    this.renderPullShow = this.renderPullShow.bind(this);
     this.renderStep = this.renderStep.bind(this);
     this.setSpecialIntr = this.setSpecialIntr.bind(this);
     this.setNewShowName = this.setNewShowName.bind(this);
     this.setOrderDates = this.setOrderDates.bind(this);
     this.startOrder = this.startOrder.bind(this);
     this.submitOrder = this.submitOrder.bind(this);
-    this.submitOrderSuccess = this.submitOrderSuccess.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -149,6 +153,10 @@ export class CartPage extends Component {
     this.setState({ step: this.state.step + 1 });
   };
 
+  pullShow = () => {
+    this.setState({ pullShowModalOpen: true });
+  };
+
   /**
    * Removes product from user's cart collection
    */
@@ -212,7 +220,6 @@ export class CartPage extends Component {
       if (err) {
         console.error(err);
       } else {
-        this.submitOrderSuccess();
         Meteor.call('order.address.insert', orderId, selectedAddressId, (err, result) => {
           if (!err) {
             this.setState({
@@ -225,7 +232,18 @@ export class CartPage extends Component {
     });
   }
 
-  submitOrderSuccess() {}
+  renderPullShow() {
+    return (
+      <Dialog
+        title="Pull Show"
+        modal={false}
+        open={this.state.pullShowModalOpen}
+        onRequestClose={() => this.setState({ pullShowModalOpen: false })}
+      >
+        <PullShowPrompt close={() => this.setState({ pullShowModalOpen: false })} />
+      </Dialog>
+    );
+  }
 
   renderNewShowPrompt() {
     return (
@@ -333,7 +351,10 @@ export class CartPage extends Component {
             By placing an order, you are agreeing to our <Link to="policies">policies</Link>
           </em>
         </p>
-        {/* Only allow submit if there are items in the cart  */}
+        {/*
+          Only allow submit or create show 
+          if there are items in the cart  
+          */}
         {this.props.cartItems.length > 0 && (
           <div>
             <FlatButton onClick={() => this.startOrder()} label="Submit Order" />
@@ -341,6 +362,9 @@ export class CartPage extends Component {
           </div>
         )}
 
+        <FlatButton secondary onClick={() => this.pullShow()} label="Pull a Show" />
+
+        {this.renderPullShow()}
         {/* Rendering the current step if availible */}
         {this.renderStep()}
 
@@ -365,9 +389,12 @@ CartPage.proptypes = {
   cartItems: PropTypes.array,
 };
 
-export default (CartPage = createContainer(() => {
+export default withTracker(props => {
   Meteor.subscribe('cart');
+  Meteor.subscribe('show');
+
   return {
+    shows: Show.find({ ownerId: Meteor.userId() }).fetch(),
     cartItems: Cart.find({}).fetch(),
   };
-}, CartPage));
+})(CartPage);

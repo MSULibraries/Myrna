@@ -1,11 +1,10 @@
+import { withTracker } from 'meteor/react-meteor-data';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { userLoggedIn } from './../../../../lib/user';
-
-export const BottomNav = () =>
-  (Meteor.user() ? (
+export const BottomNav = ({ userLoggedIn }) =>
+  userLoggedIn && (
     <BottomNavContainer>
       <Item>
         <BottomNavLink to="cart">
@@ -26,18 +25,14 @@ export const BottomNav = () =>
         </BottomNavLink>
       </Item>
     </BottomNavContainer>
-  ) : (
-    <div />
-  ));
-
-const height = '64px';
+  );
 
 const BottomNavContainer = styled.nav`
   align-items: center;
   background-color: #9e52c7;
   bottom: 0px;
   display: flex;
-  height: ${height};
+  height: 64px;
   justify-content: center;
   position: fixed;
   width: 100%;
@@ -54,4 +49,6 @@ const BottomNavLink = styled(Link)`
   text-decoration: none;
 `;
 
-export default BottomNav;
+export default withTracker(() => ({
+  userLoggedIn: Meteor.userId(),
+}))(BottomNav);

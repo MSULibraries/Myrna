@@ -57,6 +57,13 @@ Meteor.methods({
 
     Show.insert(newShow);
   },
+  'show.read': function showRead(showId) {
+    check(showId, String);
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+    return Show.findOne({ _id: showId });
+  },
   'show.remove': function showRemove(showId) {
     check(showId, String);
 

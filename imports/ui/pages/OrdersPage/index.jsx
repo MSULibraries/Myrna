@@ -9,7 +9,7 @@ import {
   TableRow,
   TableRowColumn,
 } from 'material-ui/Table';
-import { createContainer } from 'meteor/react-meteor-data';
+import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Container } from 'react-grid-system';
@@ -257,7 +257,7 @@ OrdersPage.proptypes = {
   orders: PropTypes.array,
 };
 
-export default (OrdersPage = createContainer(() => {
+export default withTracker(props => {
   Meteor.subscribe('addresses');
   Meteor.subscribe('order.trackingId');
   Meteor.subscribe('order.address');
@@ -268,4 +268,4 @@ export default (OrdersPage = createContainer(() => {
     orderAddresses: OrderAddress.find({}).fetch(),
     orderTrackingId: OrderTrackingId.find({}).fetch(),
   };
-}, OrdersPage));
+})(OrdersPage);

@@ -2,7 +2,7 @@ import Checkbox from 'material-ui/Checkbox';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-import { createContainer } from 'meteor/react-meteor-data';
+import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Col, Container, Row } from 'react-grid-system';
