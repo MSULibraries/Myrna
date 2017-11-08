@@ -11,7 +11,7 @@ configure({ adapter: new Adapter() });
 
 describe('<BottomNav/>', () => {
   it('should render', () => {
-    const component = shallow(<BottomNav BottomNav />);
+    const component = shallow(<BottomNav />);
     chai.assert(component);
   });
 });

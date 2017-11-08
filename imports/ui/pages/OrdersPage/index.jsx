@@ -37,7 +37,7 @@ const centerColumn = {
   alignItems: 'center',
 };
 
-class OrdersPage extends Component {
+export class OrdersPage extends Component {
   constructor() {
     super();
 

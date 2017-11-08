@@ -1,4 +1,5 @@
 import { withTracker } from 'meteor/react-meteor-data';
+import Proptypes from 'prop-types';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
@@ -48,6 +49,17 @@ const BottomNavLink = styled(Link)`
   text-align: center;
   text-decoration: none;
 `;
+
+BottomNav.defaultProps = {
+  userLoggedIn: false,
+};
+
+BottomNav.prototypes = {
+  userLoggedIn: Proptypes.bool,
+};
+BottomNav.prototypes = {
+  userLoggedIn: Proptypes.bool,
+};
 
 export default withTracker(() => ({
   userLoggedIn: Meteor.userId(),

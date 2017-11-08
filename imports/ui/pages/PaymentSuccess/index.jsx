@@ -20,9 +20,8 @@ export class PaymentSuccess extends Component {
     const { urlParams: { orderNumber } } = this.state;
     const { urlParams: { hash } } = this.state;
 
-    Meteor.call('order.check', amountDue, orderNumber, timestamp, hash, (error, isValidOrder) => {
+    Meteor.call('order.check', orderNumber, timestamp, hash, (error, isValidOrder) => {
       if (!error) {
-        console.log(`res: ${isValidOrder}`);
         this.setState({ isValidOrder });
       }
     });
@@ -40,8 +39,7 @@ export class PaymentSuccess extends Component {
             },
           ]}
         />
-        <h1>Payment Success</h1>
-        {this.state.isValidOrder ? <p>Success</p> : <p>Bad Request</p>}
+        <h1>Payment {this.state.isValidOrder ? 'Success' : 'Failure'}</h1>
       </Container>
     );
   }

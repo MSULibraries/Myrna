@@ -210,17 +210,15 @@ Meteor.methods({
    * Accepts info about an order and tells you if is a legitimate order
    * This is used on payment success page to make sure someone didn't
    * just visit the page to spoof order info
-   * @param {String} amountDue
    * @param {String} orderNumber
    * @param {String} timestamp
    * @param {String} userHash
    * @returns {Bool}
    */
-  'order.check': function orderCheck(amountDue, orderNumber, timestamp, userHash) {
+  'order.check': function orderCheck(orderNumber, timestamp, userHash) {
     if (!this.isSimulation) {
       const payment = new Payment();
-      const actualHash = payment.createPaymentHash(amountDue, orderNumber, timestamp);
-      return actualHash === userHash;
+      return payment.validateHash({ orderNumber, timestamp }, userHash);
     }
     return undefined;
   },
