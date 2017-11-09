@@ -23,7 +23,8 @@ export class EasyPostInterface {
  */
   async buyShipment(shipmentId) {
     let shipment = await this.api.Shipment.retrieve(shipmentId);
-    return (shipment = await shipment.buy(shipment.lowestRate()));
+    shipment = await shipment.buy(shipment.lowestRate());
+    return shipment;
   }
 
   /**

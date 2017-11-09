@@ -193,7 +193,7 @@ export class OrdersPage extends Component {
                 {/* Buy Shipment */}
                 <TableRowColumn>
                   <FlatButton
-                    disabled={order.status !== 'Approved'}
+                    disabled={order.status !== 'Active'}
                     onClick={() => this.buyOrder(order._id)}
                     label="Buy"
                   />

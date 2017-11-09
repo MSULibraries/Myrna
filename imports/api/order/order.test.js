@@ -7,7 +7,6 @@ import { Random } from 'meteor/random';
 
 import * as OrderApi from './order';
 import { Payment } from './../../../lib/payment';
-import { EasyPostInterface } from './shipping/index';
 
 if (Meteor.isServer) {
   describe('Order', () => {
