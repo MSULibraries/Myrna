@@ -193,7 +193,7 @@ export class OrdersPage extends Component {
                 {/* Buy Shipment */}
                 <TableRowColumn>
                   <FlatButton
-                    disabled={order.status !== 'Active'}
+                    disabled={order.status === 'Un-Approved' || order.status === 'Active'}
                     onClick={() => this.buyOrder(order._id)}
                     label="Buy"
                   />
@@ -208,7 +208,7 @@ export class OrdersPage extends Component {
                 {isMaintainer() && (
                   <TableRowColumn>
                     <FlatButton
-                      disabled={order.status === 'Approved'}
+                      disabled={order.status === 'Approved' || order.status === 'Active'}
                       onClick={() => this.approveOrder(order._id)}
                       secondary
                       label="✓"
@@ -226,7 +226,10 @@ export class OrdersPage extends Component {
           onRequestClose={() => this.setState({ modalBuyingOpen: false })}
         >
           {this.state.isBuyingOrder ? (
-            <Loader />
+            <div>
+              <p>Preparing Order</p>
+              <Loader />
+            </div>
           ) : (
             <div>
               <p>This link will expire in 5 minutes</p>
