@@ -5,6 +5,7 @@ import AuthRoute from './AuthRoute';
 
 // Main UI components
 import MainNav from './../../ui/components/MainNav/index';
+import MobileMainNav from './../../ui/components/MainNav/mobile';
 import BottomNav from './../../ui/components/BottomNav/index';
 // Pages
 import AboutPage from './../../ui/pages/AboutPage/index';
@@ -23,8 +24,9 @@ const Routes = () => (
   <Router>
     <div>
       <MainNav />
+      <MobileMainNav />
       {/* Making room for content covered by bottom nav */}
-      <div style={{ marginBottom: '84px' }}>
+      <div style={{ marginBottom: '84px', marginTop: '74px' }}>
         <Switch>
           <AuthRoute exact path="/addresses/" component={AddressesPage} />
           <AuthRoute exact path="/addresses/:option" component={AddressesPage} />
