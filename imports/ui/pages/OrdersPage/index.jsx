@@ -1,3 +1,4 @@
+import { find } from 'lodash';
 import CircularProgress from 'material-ui/CircularProgress';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
@@ -60,7 +61,7 @@ export class OrdersPage extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.orders !== nextProps.orders) {
-      this.getOrderAddresses(nextProps.orders);
+      this.getOrderAddresses(this.props.orders);
     }
   }
 
@@ -94,8 +95,7 @@ export class OrdersPage extends Component {
     const { addressId } = OrderAddress.findOne({ orderId });
 
     const orderAddress = Addresses.findOne({ _id: addressId });
-
-    this.setState({ selectedOrderAddress: orderAddress });
+    return orderAddress;
   }
 
   renderOrderTrackingLink({ _id: orderId, status }) {
@@ -116,8 +116,10 @@ export class OrdersPage extends Component {
   /**
    * Opens modal to select addresses to ship to
    */
-  handleOpen = id => {
-    this.setState({ modalOpen: true });
+  handleOpen = orderId => {
+    const { addressId } = find(this.props.orderAddresses, { orderId: orderId });
+    const address = find(this.props.addresses, { _id: addressId });
+    this.setState({ modalOpen: true, selectedOrderAddress: address });
   };
 
   /**
@@ -264,6 +266,7 @@ export default withTracker(props => {
   Meteor.subscribe('orders');
 
   return {
+    addresses: Addresses.find({}).fetch(),
     orders: Order.find({}).fetch(),
     orderAddresses: OrderAddress.find({}).fetch(),
     orderTrackingId: OrderTrackingId.find({}).fetch(),
