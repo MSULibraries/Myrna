@@ -1,5 +1,4 @@
 import { find } from 'lodash';
-import CircularProgress from 'material-ui/CircularProgress';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import {
@@ -23,7 +22,7 @@ import Addresses from './../../../api/addresses';
 import Order from './../../../api/order/order';
 import OrderAddress from './../../../api/order/bridges/orderAddress';
 import OrderTrackingId from './../../../api/order/bridges/orderTrackingId';
-
+import { Loader } from './../../components/Loader/index';
 // Adjusted contrast to help with a11y
 const darkerTableHeaders = {
   color: '#575757',
@@ -60,7 +59,7 @@ export class OrdersPage extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.orders !== nextProps.orders) {
+    if (this.props.orders !== nextProps.orders && nextProps.orders.length > 0) {
       this.getOrderAddresses(this.props.orders);
     }
   }
@@ -81,7 +80,7 @@ export class OrdersPage extends Component {
   }
 
   deleteOrder(id) {
-    Meteor.call('order.delete', id);
+    Meteor.call('order.remove', id);
   }
 
   getOrderAddresses(orders) {
@@ -227,7 +226,7 @@ export class OrdersPage extends Component {
           onRequestClose={() => this.setState({ modalBuyingOpen: false })}
         >
           {this.state.isBuyingOrder ? (
-            <CircularProgress />
+            <Loader />
           ) : (
             <div>
               <p>This link will expire in 5 minutes</p>

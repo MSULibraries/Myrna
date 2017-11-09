@@ -7,6 +7,7 @@ import { Random } from 'meteor/random';
 
 import * as OrderApi from './order';
 import { Payment } from './../../../lib/payment';
+import { EasyPostInterface } from './shipping/index';
 
 if (Meteor.isServer) {
   describe('Order', () => {
@@ -27,7 +28,9 @@ if (Meteor.isServer) {
         // clearing Order collection
         OrderApi.Order.remove({});
 
-        // Inserting Orders
+        /**
+         * Inserting Orders
+         */
         // 'Active' status
         mockOrderId = OrderApi.Order.insert({
           userId: Meteor.userId(),
@@ -68,7 +71,6 @@ if (Meteor.isServer) {
           specialInstr: 'None',
           status: 'Complete',
         });
-
         // 'Un-Approved'
         OrderApi.Order.insert({
           userId: Meteor.userId(),
@@ -86,13 +88,25 @@ if (Meteor.isServer) {
         Meteor.userId.restore();
       });
 
+      describe('order.activate', () => {
+        it("updates status to 'Active'", () => {
+          const activateOrder = Meteor.server.method_handlers['order.activate'];
+          // Set up a fake method invocation that looks like what the method expects
+          const invocation = { userId };
+          const expectedStatus = 'Active';
+
+          activateOrder.apply(invocation, [mockOrderId]);
+          assert.equal(OrderApi.Order.findOne({ _id: mockOrderId }).status, expectedStatus);
+        });
+      });
+
       it("order.approve updates order status to 'Approved'", () => {
-        const activateOrder = Meteor.server.method_handlers['order.approve'];
+        const approveOrder = Meteor.server.method_handlers['order.approve'];
         // Set up a fake method invocation that looks like what the method expects
         const invocation = { userId };
         const expectedStatus = 'Approved';
 
-        activateOrder.apply(invocation, [mockOrderId]);
+        approveOrder.apply(invocation, [mockOrderId]);
         assert.equal(OrderApi.Order.findOne({ _id: mockOrderId }).status, expectedStatus);
       });
 
@@ -172,8 +186,8 @@ if (Meteor.isServer) {
         });
       });
 
-      it('order.delete removes order from collection', () => {
-        const readOrder = Meteor.server.method_handlers['order.delete'];
+      it('order.remove removes order from collection', () => {
+        const readOrder = Meteor.server.method_handlers['order.remove'];
         // Set up a fake method invocation that looks like what the method expects
         const invocation = { userId };
 

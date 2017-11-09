@@ -22,17 +22,24 @@ const OrderTrackingIdSchema = new SimpleSchema({
     type: String,
     label: 'userId',
   },
+  shipmentId: {
+    type: String,
+    label: 'Id of shipment in shipping API',
+  },
   trackingId: {
     type: String,
     label: 'dateAdded',
+    optional: true,
   },
   labelImageUrl: {
     type: String,
     label: 'labelImageUrl',
+    optional: true,
   },
   trackingUrl: {
     type: String,
     label: 'trackingUrl',
+    optional: true,
   },
   dateAdded: {
     type: Date,
@@ -70,27 +77,43 @@ if (Meteor.isServer) {
 }
 
 Meteor.methods({
-  'order.trackingId.insert': function OrderTrackingIdInsert(
-    orderId,
-    trackingId,
-    trackingUrl,
-    labelImageUrl,
-  ) {
+  'order.trackingId.insert': function OrderTrackingIdInsert(orderId, shipmentId) {
     if (userLoggedIn()) {
       const newOrderTrackingId = {
         orderId,
-        trackingId,
-        trackingUrl,
-        labelImageUrl,
+        shipmentId,
+
         dateAdded: new Date(),
       };
 
       check(orderId, String);
-      check(trackingId, String);
-      check(trackingUrl, String);
-      check(labelImageUrl, String);
+      check(shipmentId, String);
       check(newOrderTrackingId, OrderTrackingIdSchema);
       OrderTrackingId.insert(newOrderTrackingId);
+    }
+  },
+  'order.trackingId.update.tracking': function OrderTrackingIdInsert(
+    orderId,
+    trackingId,
+    labelImageUrl,
+    trackingUrl,
+  ) {
+    if (userLoggedIn()) {
+      check(orderId, String);
+      check(trackingId, String);
+      check(labelImageUrl, String);
+      check(trackingUrl, String);
+
+      OrderTrackingId.update(
+        { orderId },
+        {
+          $set: {
+            trackingId,
+            labelImageUrl,
+            trackingUrl,
+          },
+        },
+      );
     }
   },
   'order.trackingId.remove': function OrderTrackingIdRemove(id) {

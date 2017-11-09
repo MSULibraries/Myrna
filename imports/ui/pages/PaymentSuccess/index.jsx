@@ -5,7 +5,7 @@ import { Container } from 'react-grid-system';
 import Helmet from 'react-helmet';
 import styled from 'styled-components';
 
-import Loader from './../../components/Loader';
+import Loader from './../../components/Loader/index';
 
 export class PaymentSuccess extends Component {
   constructor() {
@@ -16,9 +16,17 @@ export class PaymentSuccess extends Component {
       isValidOrder: false,
       validationLoaded: false,
     };
+
+    this.validateResponse = this.validateResponse.bind(this);
+    this.activateOrder = this.activateOrder.bind(this);
   }
 
-  componentWillMount() {
+  activateOrder() {
+    const { urlParams: { orderNumber: orderId } } = this.state;
+    Meteor.call('order.activate', orderId);
+  }
+
+  validateResponse() {
     const { urlParams: { transactionTotalAmount: amountDue } } = this.state;
     const { urlParams: { timestamp } } = this.state;
     const { urlParams: { orderNumber } } = this.state;
@@ -28,8 +36,13 @@ export class PaymentSuccess extends Component {
       this.setState({ validationLoaded: true });
       if (!error) {
         this.setState({ isValidOrder });
+        this.activateOrder();
       }
     });
+  }
+
+  componentWillMount() {
+    this.validateResponse();
   }
 
   render() {

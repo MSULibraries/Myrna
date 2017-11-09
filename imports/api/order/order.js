@@ -7,6 +7,7 @@ import { isMaintainer } from './../../../lib/roles';
 
 import { Addresses } from './../addresses';
 import { OrderAddress } from './../order/bridges/orderAddress';
+import { OrderTrackingId } from './../order/bridges/orderTrackingId';
 import { Payment } from './../../../lib/payment';
 
 const EasyPost = new EasyPostInterface();
@@ -103,27 +104,15 @@ export function savePaymentUrl(orderId = '', paymentUrl = '') {
   return Meteor.call('order.payment.insert', orderId, paymentUrl);
 }
 
-export function saveTrackingId(
-  orderId = '',
-  trackingId = '',
-  trackingUrl = '',
-  labelImageUrl = '',
-) {
-  if (trackingId === '') {
-    throw new Error('trackingId is required');
-  }
-
+export function saveTrackingId(orderId = '', shipmentId = '') {
   if (orderId === '') {
     throw new Error('orderId is required');
   }
-  if (trackingUrl === '') {
-    throw new Error('trackingUrl is required');
-  }
-  if (labelImageUrl === '') {
-    throw new Error('labelImageUrl is required');
+  if (shipmentId === '') {
+    throw new Error('shipmentId is required');
   }
 
-  Meteor.call('order.trackingId.insert', orderId, trackingId, trackingUrl, labelImageUrl);
+  Meteor.call('order.trackingId.insert', orderId, shipmentId);
 }
 
 /**
@@ -157,22 +146,35 @@ export async function createShipment(orderId) {
   const toAddress = await EasyPost.createToAddress(company, street1, city, state, zip);
   const parcel = await EasyPost.createParcel(9, 6, 2, 10);
   const shipment = await EasyPost.createShipment(fromAddress, toAddress, parcel);
-  const shipmentInfo = await shipment.buy(shipment.lowestRate(['USPS'], ['First']));
 
-  saveTrackingId(
-    orderId,
-    shipmentInfo.tracking_code,
-    shipment.tracker.public_url,
-    shipment.postage_label.label_url,
-  );
+  saveTrackingId(orderId, shipment.id);
 
-  return shipmentInfo;
+  return shipment;
 }
 
 /**
  *  Methods
  */
 Meteor.methods({
+  'order.activate': function orderActivate(orderId) {
+    if (userLoggedIn()) {
+      // Updating order status
+      Order.update({ _id: orderId }, { $set: { status: 'Active' } }, async (error) => {
+        if (!error) {
+          const { shipmentId } = OrderTrackingId.findOne({ orderId });
+          const shipment = await EasyPost.buyShipment(shipmentId);
+
+          Meteor.call(
+            'order.trackingId.update.tracking',
+            orderId,
+            shipment.tracker.id,
+            shipment.postage_label.label_url,
+            shipment.tracker.public_url,
+          );
+        }
+      });
+    }
+  },
   'order.approve': function orderApprove(orderId) {
     if (userLoggedIn()) {
       // Updating order status
@@ -185,10 +187,9 @@ Meteor.methods({
       // Only run on server
       const mockAmountDue = 50;
 
-      // await createShipment(orderId);
+      await createShipment(orderId);
 
       const paymentUrl = createPaymentUrl(orderId, mockAmountDue);
-      savePaymentUrl(orderId, paymentUrl);
       return paymentUrl;
     }
     return undefined;
@@ -244,10 +245,13 @@ Meteor.methods({
    * Removes an orders entry from the collection and the orders attached addresss
    * @param {string} orderId - id of the order
    */
-  'order.delete': function orderDelete(orderId) {
+  'order.remove': function orderDelete(orderId) {
     check(orderId, String);
     if (userLoggedIn()) {
       Order.remove({ _id: orderId });
+      Meteor.call('order.address.remove.by.orderId', orderId);
+      Meteor.call('order.trackingId.remove.by.orderId', orderId);
+      Meteor.call('order.payment.remove.by.orderId', orderId);
     }
   },
 
@@ -275,17 +279,6 @@ Meteor.methods({
     }
     return undefined;
   },
-});
-
-/**
- * Hooks
- */
-
-// Removing associated documents
-Order.before.remove((doc) => {
-  Meteor.call('order.address.remove.by.orderId', doc);
-  Meteor.call('order.trackingId.remove.by.orderId', doc);
-  Meteor.call('order.payment.remove.by.orderId', doc);
 });
 
 export default Order;
