@@ -230,6 +230,7 @@ export class OrdersPage extends Component {
             <CircularProgress />
           ) : (
             <div>
+              <p>This link will expire in 5 minutes</p>
               <p>Please have your Credit Card information ready</p>
               <a href={this.state.paymentUrl} target="_blank">
                 <FlatButton label="Continue" />
