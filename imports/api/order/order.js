@@ -39,6 +39,10 @@ const orderSchema = new SimpleSchema({
     type: Date,
     label: 'Date To Ship Back',
   },
+  isPickUp: {
+    type: Boolean,
+    label: 'Order will be picked up',
+  },
   productIds: {
     type: [String],
     label: 'productIds',
@@ -279,7 +283,7 @@ Meteor.methods({
    * Sets status to 'Un-Approved' by default so that
    * a maintainer can approve the order
    */
-  'order.insert': function orderInsert(dateToArriveBy, dateToShipBack, specialInstr = '') {
+  'order.insert': function orderInsert(dateToArriveBy, dateToShipBack, isPickUp, specialInstr = '') {
     if (userLoggedIn()) {
       // Getting all item information from cart
       const cartProductIds = Meteor.call('cart.read.productIds');
@@ -290,6 +294,7 @@ Meteor.methods({
         dateAdded: Date.now(),
         dateToArriveBy,
         dateToShipBack,
+        isPickUp,
         productIds: cartProductIds,
         status: 'Un-Approved',
         specialInstr,

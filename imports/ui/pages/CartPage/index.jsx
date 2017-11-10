@@ -310,14 +310,17 @@ export class CartPage extends Component {
             open={this.state.orderModalOpen}
             onRequestClose={this.closeNewOrderModal}
           >
-            <p>Are you going to pick up the order om person? </p>
-            <Toggle
-              label="Shipping Required"
-              defaultToggle={true}
-              onToggle={(event, checked) => {
-                this.setState({ isPickupOrder: checked });
-              }}
-            />
+            <div style={{ width: '50%' }}>
+              <p>Are you going to pick up the order in person? </p>
+              <Toggle
+                label={this.state.isPickupOrder ? 'Yes' : 'No'}
+                defaultToggled={false}
+                onToggle={(event, checked) => {
+                  this.setState({ isPickupOrder: checked });
+                }}
+              />
+              <FlatButton label="Continue" onClick={() => this.incStep()} />
+            </div>
           </Dialog>
         );
       }

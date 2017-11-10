@@ -33,6 +33,7 @@ if (Meteor.isServer) {
         // 'Active' status
         mockOrderId = OrderApi.Order.insert({
           userId: Meteor.userId(),
+          isPickUp: false,
           dateAdded: Date.now(),
           dateToArriveBy: new Date(),
           dateToShipBack: new Date(),
@@ -43,6 +44,7 @@ if (Meteor.isServer) {
         // 'Approved' status
         OrderApi.Order.insert({
           userId: Meteor.userId(),
+          isPickUp: false,
           dateAdded: Date.now(),
           dateToArriveBy: new Date(),
           dateToShipBack: new Date(),
@@ -53,6 +55,7 @@ if (Meteor.isServer) {
         // 'Cancelled' status
         OrderApi.Order.insert({
           userId: Meteor.userId(),
+          isPickUp: false,
           dateAdded: Date.now(),
           dateToArriveBy: new Date(),
           dateToShipBack: new Date(),
@@ -63,6 +66,7 @@ if (Meteor.isServer) {
         // 'Complete' status
         OrderApi.Order.insert({
           userId: Meteor.userId(),
+          isPickUp: false,
           dateAdded: Date.now(),
           dateToArriveBy: new Date(),
           dateToShipBack: new Date(),
@@ -73,6 +77,7 @@ if (Meteor.isServer) {
         // 'Un-Approved'
         OrderApi.Order.insert({
           userId: Meteor.userId(),
+          isPickUp: false,
           dateAdded: Date.now(),
           dateToArriveBy: new Date(),
           dateToShipBack: new Date(),
@@ -219,8 +224,8 @@ if (Meteor.isServer) {
         // Set up a fake method invocation that looks like what the method expects
         const invocation = { userId };
 
-        // Inserting expects a dateToArriveBy, dateToShipBack, and special instr
-        insertOrder.apply(invocation, [new Date(), new Date(), 'Send pizza with order']);
+        // Inserting expects a dateToArriveBy, dateToShipBack, isPickUp and special instr
+        insertOrder.apply(invocation, [new Date(), new Date(), false, 'Send pizza with order']);
 
         assert.equal(OrderApi.Order.find().count(), totalOrders + 1);
       });
