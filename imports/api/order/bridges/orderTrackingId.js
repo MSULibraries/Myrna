@@ -22,6 +22,10 @@ const OrderTrackingIdSchema = new SimpleSchema({
     type: String,
     label: 'userId',
   },
+  rate: {
+    type: String,
+    label: 'Cost of the shipment',
+  },
   shipmentId: {
     type: String,
     label: 'Id of shipment in shipping API',
@@ -77,17 +81,18 @@ if (Meteor.isServer) {
 }
 
 Meteor.methods({
-  'order.trackingId.insert': function OrderTrackingIdInsert(orderId, shipmentId) {
+  'order.trackingId.insert': function OrderTrackingIdInsert(orderId, shipmentId, rate) {
     if (userLoggedIn()) {
       const newOrderTrackingId = {
         orderId,
         shipmentId,
-
+        rate,
         dateAdded: new Date(),
       };
 
       check(orderId, String);
       check(shipmentId, String);
+      check(rate, String);
       check(newOrderTrackingId, OrderTrackingIdSchema);
       OrderTrackingId.insert(newOrderTrackingId);
     }

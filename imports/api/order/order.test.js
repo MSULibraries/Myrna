@@ -99,13 +99,12 @@ if (Meteor.isServer) {
         });
       });
 
-      it("order.approve updates order status to 'Approved'", () => {
+      it("order.approve updates order status to 'Approved'", async () => {
         const approveOrder = Meteor.server.method_handlers['order.approve'];
-        // Set up a fake method invocation that looks like what the method expects
         const invocation = { userId };
         const expectedStatus = 'Approved';
 
-        approveOrder.apply(invocation, [mockOrderId]);
+        await approveOrder.apply(invocation, [mockOrderId]);
         assert.equal(OrderApi.Order.findOne({ _id: mockOrderId }).status, expectedStatus);
       });
 

@@ -13,6 +13,7 @@ if (Meteor.isServer) {
       // Creating mock ids
       const userId = Random.id();
       const orderId = Random.id();
+      const rate = '3.50';
       const shipmentId = Random.id();
       const trackingId = Random.id();
       const trackingUrl = 'www.google.com';
@@ -33,6 +34,7 @@ if (Meteor.isServer) {
         // Inserting a Order Address item (Default Status)
         mockOrderTrackingId = OrderTrackingId.insert({
           orderId,
+          rate,
           shipmentId,
           trackingId,
           trackingUrl,
@@ -71,7 +73,7 @@ if (Meteor.isServer) {
         // Set up a fake method invocation that looks like what the method expects
         const invocation = { userId };
 
-        insertOrderTrackingId.apply(invocation, ['1', '2', '3', '4', '5']);
+        insertOrderTrackingId.apply(invocation, ['1', '2', '3', '4', '5', '6']);
         assert.equal(OrderTrackingId.find().count(), 2);
       });
     });

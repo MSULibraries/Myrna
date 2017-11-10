@@ -104,15 +104,18 @@ export function savePaymentUrl(orderId = '', paymentUrl = '') {
   return Meteor.call('order.payment.insert', orderId, paymentUrl);
 }
 
-export function saveTrackingId(orderId = '', shipmentId = '') {
+export function saveTrackingId(orderId = '', shipmentId = '', rate = '') {
   if (orderId === '') {
     throw new Error('orderId is required');
   }
   if (shipmentId === '') {
     throw new Error('shipmentId is required');
   }
+  if (rate === '') {
+    throw new Error('shipmentId is required');
+  }
 
-  Meteor.call('order.trackingId.insert', orderId, shipmentId);
+  Meteor.call('order.trackingId.insert', orderId, shipmentId, rate);
 }
 
 /**
@@ -147,7 +150,9 @@ export async function createShipment(orderId) {
   const parcel = await EasyPost.createParcel(9, 6, 2, 10);
   const shipment = await EasyPost.createShipment(fromAddress, toAddress, parcel);
 
-  saveTrackingId(orderId, shipment.id);
+  const { rate } = shipment.lowestRate(['USPS'], ['First']);
+
+  saveTrackingId(orderId, shipment.id, rate);
 
   return shipment;
 }
@@ -160,7 +165,7 @@ Meteor.methods({
     if (userLoggedIn()) {
       // Updating order status
       Order.update({ _id: orderId }, { $set: { status: 'Active' } }, async (error) => {
-        if (!error) {
+        if (!error && !Meteor.isTest) {
           const { shipmentId } = OrderTrackingId.findOne({ orderId });
           const shipment = await EasyPost.buyShipment(shipmentId);
 
@@ -175,19 +180,20 @@ Meteor.methods({
       });
     }
   },
-  'order.approve': function orderApprove(orderId) {
+  'order.approve': async function orderApprove(orderId) {
     if (userLoggedIn()) {
-      // Updating order status
       Order.update({ _id: orderId }, { $set: { status: 'Approved' } });
+
+      if (!Meteor.isTest) {
+        await createShipment(orderId);
+      }
     }
   },
 
-  'order.buy': async function orderBuy(orderId) {
+  'order.buy': function orderBuy(orderId) {
     if (userLoggedIn() && !this.isSimulation) {
       // Only run on server
       const mockAmountDue = 50;
-
-      await createShipment(orderId);
 
       const paymentUrl = createPaymentUrl(orderId, mockAmountDue);
       return paymentUrl;
