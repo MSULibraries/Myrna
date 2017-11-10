@@ -42,6 +42,7 @@ export class OrdersPage extends Component {
     super();
 
     this.state = {
+      approvingOrder: false,
       isBuyingOrder: false,
       modalBuyingOpen: false,
       modalOpen: false,
@@ -65,7 +66,10 @@ export class OrdersPage extends Component {
   }
 
   approveOrder(id) {
-    Meteor.call('order.approve', id);
+    this.setState({ approvingOrder: true });
+    Meteor.call('order.approve', id, () => {
+      this.setState({ approvingOrder: false });
+    });
   }
 
   buyOrder(orderId) {
@@ -207,12 +211,16 @@ export class OrdersPage extends Component {
                 {/* Approve Button */}
                 {isMaintainer() && (
                   <TableRowColumn>
-                    <FlatButton
-                      disabled={order.status === 'Approved' || order.status === 'Active'}
-                      onClick={() => this.approveOrder(order._id)}
-                      secondary
-                      label="✓"
-                    />
+                    {this.state.approvingOrder ? (
+                      <Loader />
+                    ) : (
+                      <FlatButton
+                        disabled={order.status === 'Approved' || order.status === 'Active'}
+                        onClick={() => this.approveOrder(order._id)}
+                        secondary
+                        label="✓"
+                      />
+                    )}
                   </TableRowColumn>
                 )}
               </TableRow>

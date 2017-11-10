@@ -99,6 +99,26 @@ if (Meteor.isServer) {
         });
       });
 
+      describe('order.buy', () => {
+        let getRateStub;
+        beforeEach(() => {
+          getRateStub = sinon.stub(Meteor, 'call');
+        });
+
+        afterEach(() => {
+          Meteor.call.restore();
+        });
+
+        it('gets rate for package', () => {
+          const buyOrder = Meteor.server.method_handlers['order.buy'];
+          const invocation = { userId };
+          getRateStub.withArgs('order.trackingId.read.rate').returns(50);
+          buyOrder.apply(invocation, [mockOrderId]);
+
+          sinon.assert.calledOnce(getRateStub.withArgs('order.trackingId.read.rate'));
+        });
+      });
+
       it("order.approve updates order status to 'Approved'", async () => {
         const approveOrder = Meteor.server.method_handlers['order.approve'];
         const invocation = { userId };

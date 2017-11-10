@@ -112,7 +112,7 @@ export function saveTrackingId(orderId = '', shipmentId = '', rate = '') {
     throw new Error('shipmentId is required');
   }
   if (rate === '') {
-    throw new Error('shipmentId is required');
+    throw new Error('rate is required');
   }
 
   Meteor.call('order.trackingId.insert', orderId, shipmentId, rate);
@@ -121,7 +121,7 @@ export function saveTrackingId(orderId = '', shipmentId = '', rate = '') {
 /**
  *
  * @param {String} orderId
- * @param {Number} currentAmountDue
+ * @param {Number} currentAmountDue - dollar amount
  */
 export function createPaymentUrl(orderId, amountDue) {
   const payment = new Payment(Meteor.settings.private.payment.secret);
@@ -139,22 +139,31 @@ export function createPaymentUrl(orderId, amountDue) {
  * @param {String} orderId
  * @returns {Object} shipmentInfo - https://www.easypost.com/docs/api#shipment-object
  */
-export async function createShipment(orderId) {
-  const {
-    company, street1, city, state, zip,
-  } = Order.findOne({ _id: orderId }).address(orderId);
+export function createShipment(orderId) {
+  return new Promise(async (resolve, reject) => {
+    const {
+      company, street1, city, state, zip,
+    } = Order.findOne({ _id: orderId }).address(orderId);
 
-  // Creating Shipment
-  const fromAddress = await EasyPost.createFromAddress();
-  const toAddress = await EasyPost.createToAddress(company, street1, city, state, zip);
-  const parcel = await EasyPost.createParcel(9, 6, 2, 10);
-  const shipment = await EasyPost.createShipment(fromAddress, toAddress, parcel);
+    // Creating Shipment
+    const fromAddress = await EasyPost.createFromAddress();
+    const toAddress = await EasyPost.createToAddress(company, street1, city, state, zip);
+    const parcel = await EasyPost.createParcel(10, 10, 10, 10);
+    const shipment = await EasyPost.createShipment(fromAddress, toAddress, parcel);
 
-  const { rate } = shipment.lowestRate(['USPS'], ['First']);
+    let rate;
 
-  saveTrackingId(orderId, shipment.id, rate);
+    try {
+      const { rate: shipmentRate } = shipment.lowestRate(['USPS'], ['First']);
+      rate = shipmentRate;
+    } catch (error) {
+      reject(new Error(`Failed to get shipment rate for order number: ${orderId} with Error: ${error}`));
+    }
 
-  return shipment;
+    saveTrackingId(orderId, shipment.id, rate);
+
+    resolve(shipment);
+  });
 }
 
 /**
@@ -182,20 +191,24 @@ Meteor.methods({
   },
   'order.approve': async function orderApprove(orderId) {
     if (userLoggedIn()) {
-      Order.update({ _id: orderId }, { $set: { status: 'Approved' } });
-
       if (!Meteor.isTest) {
         await createShipment(orderId);
       }
+
+      Order.update({ _id: orderId }, { $set: { status: 'Approved' } });
     }
   },
 
   'order.buy': function orderBuy(orderId) {
     if (userLoggedIn() && !this.isSimulation) {
       // Only run on server
-      const mockAmountDue = 50;
+      const clothingCost = 0;
 
-      const paymentUrl = createPaymentUrl(orderId, mockAmountDue);
+      const shippingCost = Meteor.call('order.trackingId.read.rate', orderId);
+
+      const balanceDue = clothingCost + shippingCost;
+
+      const paymentUrl = createPaymentUrl(orderId, balanceDue);
       return paymentUrl;
     }
     return undefined;

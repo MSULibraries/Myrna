@@ -126,14 +126,16 @@ Meteor.methods({
    * Returns an order's shipping rate
    * An order must be approved before it has a shipping rate
    * @param {String} orderId
+   * @returns {Number|undefined}
    */
   'order.trackingId.read.rate': function orderTrackingIdReadRate(orderId) {
     if (userLoggedIn()) {
       check(orderId, String);
 
       const { rate } = OrderTrackingId.findOne({ orderId });
-      return rate;
+      return +rate;
     }
+    return undefined;
   },
 
   'order.trackingId.remove': function OrderTrackingIdRemove(id) {

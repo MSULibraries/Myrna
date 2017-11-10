@@ -61,7 +61,9 @@ if (Meteor.isServer) {
         const readRate = Meteor.server.method_handlers['order.trackingId.read.rate'];
         // Set up a fake method invocation that looks like what the method expects
         const invocation = { userId };
-        const expectedRate = rate;
+
+        // Making sure it returns the number and not the string for the price
+        const expectedRate = +rate;
         const actualRate = readRate.apply(invocation, [orderId]);
         assert.equal(actualRate, expectedRate);
       });
