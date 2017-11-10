@@ -57,6 +57,15 @@ if (Meteor.isServer) {
         assert.equal(OrderTrackingId.find().count(), 0);
       });
 
+      it('orders.trackingId.read.rate returns the shipping rate for a package', () => {
+        const readRate = Meteor.server.method_handlers['order.trackingId.read.rate'];
+        // Set up a fake method invocation that looks like what the method expects
+        const invocation = { userId };
+        const expectedRate = rate;
+        const actualRate = readRate.apply(invocation, [orderId]);
+        assert.equal(actualRate, expectedRate);
+      });
+
       it('orders.trackingId.remove.by.orderId removes entry from collection by orderId', () => {
         const removeOrderTrackingIdByOrderId =
           Meteor.server.method_handlers['order.trackingId.remove.by.orderId'];
