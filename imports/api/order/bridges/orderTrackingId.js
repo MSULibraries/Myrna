@@ -22,15 +22,6 @@ const OrderTrackingIdSchema = new SimpleSchema({
     type: Date,
     label: 'dateAdded',
   },
-  isPickUp: {
-    type: Boolean,
-    label: 'Requires Shipment',
-  },
-  labelImageUrl: {
-    type: String,
-    label: 'labelImageUrl',
-    optional: true,
-  },
   orderId: {
     type: String,
     label: 'userId',
@@ -39,9 +30,15 @@ const OrderTrackingIdSchema = new SimpleSchema({
     type: String,
     label: 'Cost of the shipment',
   },
+  labelImageUrl: {
+    type: String,
+    label: 'labelImageUrl',
+    optional: true,
+  },
   shipmentId: {
     type: String,
     label: 'Id of shipment in shipping API',
+    optional: true,
   },
   trackingId: {
     type: String,
@@ -86,17 +83,15 @@ if (Meteor.isServer) {
 }
 
 Meteor.methods({
-  'order.trackingId.insert': function OrderTrackingIdInsert(isPickUp, orderId, shipmentId, rate) {
+  'order.trackingId.insert': function OrderTrackingIdInsert(orderId, shipmentId, rate) {
     if (userLoggedIn()) {
       const newOrderTrackingId = {
-        isPickUp,
         orderId,
         shipmentId,
         rate,
         dateAdded: new Date(),
       };
 
-      check(isPickUp, Boolean);
       check(orderId, String);
       check(shipmentId, String);
       check(rate, String);

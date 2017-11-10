@@ -35,7 +35,6 @@ if (Meteor.isServer) {
         mockOrderTrackingId = OrderTrackingId.insert({
           orderId,
           rate,
-          isPickUp: false,
           shipmentId,
           trackingId,
           trackingUrl,
@@ -85,7 +84,7 @@ if (Meteor.isServer) {
         // Set up a fake method invocation that looks like what the method expects
         const invocation = { userId };
 
-        insertOrderTrackingId.apply(invocation, [false, Random.id(), Random.id(), '3.50']);
+        insertOrderTrackingId.apply(invocation, [Random.id(), Random.id(), '3.50']);
         assert.equal(OrderTrackingId.find().count(), 2);
       });
     });

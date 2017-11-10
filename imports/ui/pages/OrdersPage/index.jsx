@@ -61,7 +61,7 @@ export class OrdersPage extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.orders !== nextProps.orders && nextProps.orders.length > 0) {
-      this.getOrderAddresses(this.props.orders);
+      this.getOrderAddresses(nextProps.orders);
     }
   }
 

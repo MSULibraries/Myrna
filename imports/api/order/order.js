@@ -108,17 +108,7 @@ export function savePaymentUrl(orderId = '', paymentUrl = '') {
   return Meteor.call('order.payment.insert', orderId, paymentUrl);
 }
 
-export function saveTrackingId(orderId = '', shipmentId = '', rate = '') {
-  if (orderId === '') {
-    throw new Error('orderId is required');
-  }
-  if (shipmentId === '') {
-    throw new Error('shipmentId is required');
-  }
-  if (rate === '') {
-    throw new Error('rate is required');
-  }
-
+export function saveTrackingId(orderId, shipmentId, rate) {
   Meteor.call('order.trackingId.insert', orderId, shipmentId, rate);
 }
 
@@ -145,28 +135,34 @@ export function createPaymentUrl(orderId, amountDue) {
  */
 export function createShipment(orderId) {
   return new Promise(async (resolve, reject) => {
-    const {
-      company, street1, city, state, zip,
-    } = Order.findOne({ _id: orderId }).address(orderId);
+    const isPickUpOrder = Order.findOne({ _id: orderId }).isPickUp;
+    let rate = '0';
+    let shipmentId = '';
 
-    // Creating Shipment
-    const fromAddress = await EasyPost.createFromAddress();
-    const toAddress = await EasyPost.createToAddress(company, street1, city, state, zip);
-    const parcel = await EasyPost.createParcel(10, 10, 10, 10);
-    const shipment = await EasyPost.createShipment(fromAddress, toAddress, parcel);
+    if (!isPickUpOrder) {
+      const {
+        company, street1, city, state, zip,
+      } = Order.findOne({ _id: orderId }).address(orderId);
 
-    let rate;
+      // Creating Shipment
+      const fromAddress = await EasyPost.createFromAddress();
+      const toAddress = await EasyPost.createToAddress(company, street1, city, state, zip);
+      const parcel = await EasyPost.createParcel(10, 10, 10, 10);
+      const shipment = await EasyPost.createShipment(fromAddress, toAddress, parcel);
 
-    try {
-      const { rate: shipmentRate } = shipment.lowestRate(['USPS'], ['First']);
-      rate = shipmentRate;
-    } catch (error) {
-      reject(new Error(`Failed to get shipment rate for order number: ${orderId} with Error: ${error}`));
+      try {
+        const { rate: shipmentRate } = shipment.lowestRate(['USPS'], ['First']);
+        shipmentId = shipment.id;
+        rate = shipmentRate;
+      } catch (error) {
+        reject(new Error(`Failed to get shipment rate for order number: ${orderId} with Error: ${error}`));
+      }
+
+      resolve(shipment);
+    } else {
+      resolve(undefined);
     }
-
-    saveTrackingId(orderId, shipment.id, rate);
-
-    resolve(shipment);
+    saveTrackingId(orderId, shipmentId, rate);
   });
 }
 
