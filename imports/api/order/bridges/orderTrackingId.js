@@ -18,6 +18,19 @@ function userLoggedIn() {
 export const OrderTrackingId = new Mongo.Collection('order.trackingId');
 
 const OrderTrackingIdSchema = new SimpleSchema({
+  dateAdded: {
+    type: Date,
+    label: 'dateAdded',
+  },
+  isPickUp: {
+    type: Boolean,
+    label: 'Requires Shipment',
+  },
+  labelImageUrl: {
+    type: String,
+    label: 'labelImageUrl',
+    optional: true,
+  },
   orderId: {
     type: String,
     label: 'userId',
@@ -35,19 +48,11 @@ const OrderTrackingIdSchema = new SimpleSchema({
     label: 'dateAdded',
     optional: true,
   },
-  labelImageUrl: {
-    type: String,
-    label: 'labelImageUrl',
-    optional: true,
-  },
+
   trackingUrl: {
     type: String,
     label: 'trackingUrl',
     optional: true,
-  },
-  dateAdded: {
-    type: Date,
-    label: 'dateAdded',
   },
 });
 
@@ -81,15 +86,17 @@ if (Meteor.isServer) {
 }
 
 Meteor.methods({
-  'order.trackingId.insert': function OrderTrackingIdInsert(orderId, shipmentId, rate) {
+  'order.trackingId.insert': function OrderTrackingIdInsert(isPickUp, orderId, shipmentId, rate) {
     if (userLoggedIn()) {
       const newOrderTrackingId = {
+        isPickUp,
         orderId,
         shipmentId,
         rate,
         dateAdded: new Date(),
       };
 
+      check(isPickUp, Boolean);
       check(orderId, String);
       check(shipmentId, String);
       check(rate, String);

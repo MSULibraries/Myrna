@@ -14,6 +14,7 @@ import {
   TableRow,
   TableRowColumn,
 } from 'material-ui/Table';
+import Toggle from 'material-ui/Toggle';
 import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -51,6 +52,7 @@ export class CartPage extends Component {
     this.state = {
       dateToArrive: undefined,
       dateToShipBack: undefined,
+      isPickupOrder: false,
       newShowModalOpen: false, // modal for entering a new show is open
       orderModalOpen: false, // modal for new order is open
       pullShowModalOpen: false,
@@ -64,7 +66,7 @@ export class CartPage extends Component {
       * @example: We need toAddress, dates, and specialInstr
       *           So there would be three steps
       */
-      totalSteps: 3,
+      totalSteps: 4,
     };
 
     this.createNewShow = this.createNewShow.bind(this);
@@ -297,6 +299,25 @@ export class CartPage extends Component {
             onRequestClose={this.closeNewOrderModal}
           >
             <InputSpecialInstructions setSpecialIntr={text => this.setSpecialIntr(text)} />
+          </Dialog>
+        );
+      }
+      case 4: {
+        return (
+          <Dialog
+            title="Shipment"
+            modal={false}
+            open={this.state.orderModalOpen}
+            onRequestClose={this.closeNewOrderModal}
+          >
+            <p>Are you going to pick up the order om person? </p>
+            <Toggle
+              label="Shipping Required"
+              defaultToggle={true}
+              onToggle={(event, checked) => {
+                this.setState({ isPickupOrder: checked });
+              }}
+            />
           </Dialog>
         );
       }
