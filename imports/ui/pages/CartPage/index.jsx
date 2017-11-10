@@ -116,6 +116,7 @@ export class CartPage extends Component {
     this.submitOrder(
       this.state.dateToArrive,
       this.state.dateToShipBack,
+      this.state.isPickupOrder,
       this.state.specialInstr,
       this.state.selectedAddressId,
     );
@@ -216,22 +217,29 @@ export class CartPage extends Component {
   /**
    * Inserts order information into order and order.address collections
    */
-  submitOrder(dateToArrive, dateToShipBack, specialInstr, selectedAddressId) {
+  submitOrder(dateToArrive, dateToShipBack, isPickupOrder, specialInstr, selectedAddressId) {
     this.closeNewOrderModal();
-    Meteor.call('order.insert', dateToArrive, dateToShipBack, specialInstr, (err, orderId) => {
-      if (err) {
-        console.error(err);
-      } else {
-        Meteor.call('order.address.insert', orderId, selectedAddressId, (err, result) => {
-          if (!err) {
-            this.setState({
-              steps: 0,
-            });
-            this.openToast('Order Submitted');
-          }
-        });
-      }
-    });
+    Meteor.call(
+      'order.insert',
+      dateToArrive,
+      dateToShipBack,
+      isPickupOrder,
+      specialInstr,
+      (err, orderId) => {
+        if (err) {
+          console.error(err);
+        } else {
+          Meteor.call('order.address.insert', orderId, selectedAddressId, (err, result) => {
+            if (!err) {
+              this.setState({
+                steps: 0,
+              });
+              this.openToast('Order Submitted');
+            }
+          });
+        }
+      },
+    );
   }
 
   renderPullShow() {

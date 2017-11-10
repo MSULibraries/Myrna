@@ -283,22 +283,33 @@ Meteor.methods({
    * Sets status to 'Un-Approved' by default so that
    * a maintainer can approve the order
    */
-  'order.insert': function orderInsert(dateToArriveBy, dateToShipBack, isPickUp, specialInstr = '') {
+  'order.insert': function orderInsert(
+    dateToArriveBy,
+    dateToShipBack,
+    isPickUp,
+    specialInstr = '',
+  ) {
     if (userLoggedIn()) {
       // Getting all item information from cart
       const cartProductIds = Meteor.call('cart.read.productIds');
-      Meteor.call('cart.clear');
 
-      const orderId = Order.insert({
-        userId: Meteor.userId(),
-        dateAdded: Date.now(),
-        dateToArriveBy,
-        dateToShipBack,
-        isPickUp,
-        productIds: cartProductIds,
-        status: 'Un-Approved',
-        specialInstr,
-      });
+      const orderId = Order.insert(
+        {
+          userId: Meteor.userId(),
+          dateAdded: Date.now(),
+          dateToArriveBy,
+          dateToShipBack,
+          isPickUp,
+          productIds: cartProductIds,
+          status: 'Un-Approved',
+          specialInstr,
+        },
+        (error) => {
+          if (!error) {
+            Meteor.call('cart.clear');
+          }
+        },
+      );
       return orderId;
     }
     return undefined;
