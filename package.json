@@ -6,7 +6,7 @@
     "lint:fix": "eslint . --fix",
     "precommit": "npm test",
     "pretest": "npm run lint --silent",
-    "start": "meteor run",
+    "start": "meteor run --settings settings.json",
     "test":
       "meteor --settings settings.json test --once --driver-package dispatch:mocha",
     "test:watch":

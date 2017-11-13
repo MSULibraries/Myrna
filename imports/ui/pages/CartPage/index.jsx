@@ -17,7 +17,7 @@ import {
 import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Container } from 'react-grid-system';
+import { Col, Container, Row } from 'react-grid-system';
 import Helmet from 'react-helmet';
 import { Link } from 'react-router-dom';
 
@@ -30,6 +30,7 @@ import BreadCrumbs from './../../components/BreadCrumbs/index';
 import Toast from './../../components/Toast/index';
 import Cart from './../../../api/cart';
 import Show from './../../../api/show';
+import LeftNav from '../../components/LeftNav/LeftNav';
 
 // Adjusted contrast to help with a11y
 const darkerTableHeaders = {
@@ -316,66 +317,71 @@ export class CartPage extends Component {
           ]}
         />
         <h1>Cart</h1>
-        <BreadCrumbs crumbs={['Profile', 'Cart']} />
-        <Table>
-          <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
-            <TableRow>
-              <TableHeaderColumn style={darkerTableHeaders}>Product ID</TableHeaderColumn>
-              <TableHeaderColumn style={darkerTableHeaders}>Added On </TableHeaderColumn>
+        <Row>
+          <LeftNav />
+          <Col sm={8}>
+            <BreadCrumbs crumbs={['Profile', 'Cart']} />
+            <Table>
+              <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
+                <TableRow>
+                  <TableHeaderColumn style={darkerTableHeaders}>Product ID</TableHeaderColumn>
+                  <TableHeaderColumn style={darkerTableHeaders}>Added On </TableHeaderColumn>
 
-              <TableHeaderColumn style={{ darkerTableHeaders, ...alignCenter }}>
-                Remove
-              </TableHeaderColumn>
-            </TableRow>
-          </TableHeader>
-          <TableBody displayRowCheckbox={false}>
-            {this.props.cartItems.map(item => (
-              <TableRow key={item._id}>
-                <TableRowColumn>{item.productId}</TableRowColumn>
-                <TableRowColumn>
-                  {new Date(item.dateAdded).toLocaleDateString('en-US')}
-                </TableRowColumn>
-                <TableRowColumn style={centerColumn}>
-                  <FlatButton
-                    onClick={() => this.removeProductFromCart(item._id)}
-                    secondary
-                    label="X"
-                  />
-                </TableRowColumn>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        <p>
-          <em>
-            By placing an order, you are agreeing to our <Link to="policies">policies</Link>
-          </em>
-        </p>
-        {/*
-          Only allow submit or create show 
-          if there are items in the cart  
-          */}
-        {this.props.cartItems.length > 0 && (
-          <div>
-            <FlatButton onClick={() => this.startOrder()} label="Submit Order" />
-            <FlatButton secondary onClick={() => this.createNewShow()} label="Create a Show" />
-          </div>
-        )}
+                  <TableHeaderColumn style={{ darkerTableHeaders, ...alignCenter }}>
+                    Remove
+                  </TableHeaderColumn>
+                </TableRow>
+              </TableHeader>
+              <TableBody displayRowCheckbox={false}>
+                {this.props.cartItems.map(item => (
+                  <TableRow key={item._id}>
+                    <TableRowColumn>{item.productId}</TableRowColumn>
+                    <TableRowColumn>
+                      {new Date(item.dateAdded).toLocaleDateString('en-US')}
+                    </TableRowColumn>
+                    <TableRowColumn style={centerColumn}>
+                      <FlatButton
+                        onClick={() => this.removeProductFromCart(item._id)}
+                        secondary
+                        label="X"
+                      />
+                    </TableRowColumn>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            <p>
+              <em>
+                By placing an order, you are agreeing to our <Link to="policies">policies</Link>
+              </em>
+            </p>
+            {/*
+            Only allow submit or create show 
+            if there are items in the cart  
+            */}
+            {this.props.cartItems.length > 0 && (
+              <div>
+                <FlatButton onClick={() => this.startOrder()} label="Submit Order" />
+                <FlatButton secondary onClick={() => this.createNewShow()} label="Create a Show" />
+              </div>
+            )}
 
-        <FlatButton secondary onClick={() => this.pullShow()} label="Pull a Show" />
+            <FlatButton secondary onClick={() => this.pullShow()} label="Pull a Show" />
 
-        {this.renderPullShow()}
-        {/* Rendering the current step if availible */}
-        {this.renderStep()}
+            {this.renderPullShow()}
+            {/* Rendering the current step if availible */}
+            {this.renderStep()}
 
-        {this.renderNewShowPrompt()}
-        {this.state.toasting && (
-          <Toast
-            open={this.state.toasting}
-            message={this.state.toastMessage}
-            closeToast={() => this.closeToast()}
-          />
-        )}
+            {this.renderNewShowPrompt()}
+            {this.state.toasting && (
+              <Toast
+                open={this.state.toasting}
+                message={this.state.toastMessage}
+                closeToast={() => this.closeToast()}
+              />
+            )}
+          </Col>
+        </Row>
       </Container>
     );
   }

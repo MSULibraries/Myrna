@@ -9,6 +9,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Col, Container, Row } from 'react-grid-system';
 import Helmet from 'react-helmet';
+import LeftNav from '../../components/LeftNav/LeftNav';
 
 export class ProfilePage extends React.PureComponent {
   constructor() {
@@ -39,19 +40,7 @@ export class ProfilePage extends React.PureComponent {
         />
         <h1>Profile</h1>
         <Row>
-          <Col sm={4}>
-            <List>
-              <Link style={{ textDecoration: 'none' }} to="/addresses">
-                <ListItem primaryText="Addresses" />
-              </Link>
-              <Link style={{ textDecoration: 'none' }} to="/orders">
-                <ListItem primaryText="Orders" />
-              </Link>
-              <Link style={{ textDecoration: 'none' }} to="/cart">
-                <ListItem primaryText="Cart" />
-              </Link>
-            </List>
-          </Col>
+          <LeftNav />
           <Col sm={8}>
             <h2>Summary</h2>
             <p>
