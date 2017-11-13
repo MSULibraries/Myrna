@@ -95,6 +95,10 @@ export class CartPage extends Component {
     }
   }
 
+  clearCart = () => {
+    Meteor.call('cart.clear');
+  };
+
   createNewShow() {
     this.setState({ newShowModalOpen: true });
   }
@@ -384,18 +388,19 @@ export class CartPage extends Component {
             By placing an order, you are agreeing to our <Link to="policies">policies</Link>
           </em>
         </p>
+        <FlatButton onClick={() => this.pullShow()} label="Pull a Show" />
+
         {/*
           Only allow submit or create show 
           if there are items in the cart  
           */}
         {this.props.cartItems.length > 0 && (
-          <div>
+          <span>
             <FlatButton onClick={() => this.startOrder()} label="Submit Order" />
             <FlatButton secondary onClick={() => this.createNewShow()} label="Create a Show" />
-          </div>
+            <FlatButton secondary onClick={() => this.clearCart()} label="Clear Cart" />
+          </span>
         )}
-
-        <FlatButton secondary onClick={() => this.pullShow()} label="Pull a Show" />
 
         {this.renderPullShow()}
         {/* Rendering the current step if availible */}
