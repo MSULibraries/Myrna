@@ -252,6 +252,19 @@ if (Meteor.isServer) {
 
         assert.equal(OrderApi.Order.find().count(), totalOrders + 1);
       });
+
+      describe('order.reorder', () => {
+        it("adds an order's contents to the user's cart", () => {
+          const reOrderOrder = Meteor.server.method_handlers['order.reorder'];
+          const invocation = { userId };
+
+          reOrderOrder.apply(invocation, [mockOrderId]);
+
+          const productIdsInCart = Meteor.call('cart.read').map(({ productId }) => productId);
+
+          assert.deepEqual(productIdsInCart, mockCartProductIds);
+        });
+      });
     });
 
     describe('helpers', () => {

@@ -276,20 +276,6 @@ Meteor.methods({
   },
 
   /**
-   * Removes an orders entry from the collection and the orders attached addresss
-   * @param {string} orderId - id of the order
-   */
-  'order.remove': function orderDelete(orderId) {
-    check(orderId, String);
-    if (userLoggedIn()) {
-      Order.remove({ _id: orderId });
-      Meteor.call('order.address.remove.by.orderId', orderId);
-      Meteor.call('order.trackingId.remove.by.orderId', orderId);
-      Meteor.call('order.payment.remove.by.orderId', orderId);
-    }
-  },
-
-  /**
    * Adds a new order to the collection
    * Sets status to 'Un-Approved' by default so that
    * a maintainer can approve the order
@@ -322,6 +308,30 @@ Meteor.methods({
       return orderId;
     }
     return undefined;
+  },
+
+  /**
+   * Removes an orders entry from the collection and the orders attached addresss
+   * @param {string} orderId - id of the order
+   */
+  'order.remove': function orderDelete(orderId) {
+    check(orderId, String);
+    if (userLoggedIn()) {
+      Order.remove({ _id: orderId });
+      Meteor.call('order.address.remove.by.orderId', orderId);
+      Meteor.call('order.trackingId.remove.by.orderId', orderId);
+      Meteor.call('order.payment.remove.by.orderId', orderId);
+    }
+  },
+
+  /**
+   * Adds an order's products to a user's cart that has
+   * an id of 'orderId'
+   * @param {String} - orderId
+   */
+  'order.reorder': function orderReOrder(orderId) {
+    const { productIds } = Order.findOne({ _id: orderId }, { fields: { productIds: 1 } });
+    Meteor.call('cart.insert.productIds', productIds);
   },
 });
 
