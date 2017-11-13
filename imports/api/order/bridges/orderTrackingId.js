@@ -125,6 +125,25 @@ Meteor.methods({
   },
 
   /**
+   * Reads ordedId by looking up order by shippingId
+   * @param {String} - shipId - Shipping API's id for the shipment
+   * @return {String} - orderId - orderId of order that has shipId
+   */
+  'order.trackingId.read.orderId': function orderTrackingIdReadRate(shipmentId) {
+    if (!this.isSimulation) {
+      check(shipmentId, String);
+
+      const order = OrderTrackingId.findOne({ shipmentId });
+      if (order) {
+        const { orderId } = order;
+        return orderId;
+      }
+      return undefined;
+    }
+    return undefined;
+  },
+
+  /**
    * Returns an order's shipping rate
    * An order must be approved before it has a shipping rate
    * @param {String} orderId

@@ -7,11 +7,11 @@ const scenarios = {
   delivered: data => handleDelivered(data),
 };
 
-const handler = ({ body }) => {
+const handler = ({ body }, promise) => {
   try {
     const { result } = body;
     const scenario = scenarios[result.status];
-    if (scenario) scenario(result);
+    if (scenario) scenario(result, promise);
   } catch (exception) {
     throw new Meteor.Error('500', `[easyPostHandler.handler] ${exception}`);
   }

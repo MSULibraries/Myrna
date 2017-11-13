@@ -8,7 +8,7 @@ const providers = {
 const handler = ({ provider, request }, promise) => {
   try {
     const targetProvider = providers[provider];
-    if (targetProvider) targetProvider({ body: request.body });
+    if (targetProvider) targetProvider({ body: request.body }, promise);
     promise.resolve('Webhook received!');
   } catch (exception) {
     promise.reject(`[handleWebhook.handler] ${exception}`);

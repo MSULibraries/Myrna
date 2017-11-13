@@ -1,10 +1,15 @@
 /* eslint-disable consistent-return */
 
-const handler = (data, promise) => {
+const handler = ({ shipment_id: shipmentId }) => {
   try {
-    promise.resolve(data);
+    // Getting the orderId for the shipment that the webhook is talking about
+    const orderId = Meteor.call('order.trackingId.read.orderId', shipmentId);
+    // Updating the order  status to 'delivered'
+    Meteor.call('order.delivered', orderId);
   } catch (exception) {
-    promise.reject(`[trackerUpdatedHandler.handler] ${exception}`);
+    /* eslint-disable  no-console */
+
+    console.error(exception);
   }
 };
 
