@@ -102,7 +102,7 @@ export class OrdersPage extends Component {
   }
 
   renderOrderTrackingLink({ _id: orderId, status }) {
-    if (status === 'Active') {
+    if (status !== 'Approved' || status !== 'Un-Approved') {
       const orderTrackingIdObject = OrderTrackingId.findOne({ orderId });
       if (orderTrackingIdObject !== undefined) {
         return (
@@ -197,7 +197,7 @@ export class OrdersPage extends Component {
                 {/* Buy Shipment */}
                 <TableRowColumn>
                   <FlatButton
-                    disabled={order.status === 'Un-Approved' || order.status === 'Active'}
+                    disabled={order.status !== 'Approved'}
                     onClick={() => this.buyOrder(order._id)}
                     label="Buy"
                   />
@@ -215,7 +215,7 @@ export class OrdersPage extends Component {
                       <Loader />
                     ) : (
                       <FlatButton
-                        disabled={order.status === 'Approved' || order.status === 'Active'}
+                        disabled={order.status !== 'Un-Approved'}
                         onClick={() => this.approveOrder(order._id)}
                         secondary
                         label="✓"
