@@ -4,6 +4,7 @@ import { Meteor } from 'meteor/meteor';
 import { assert } from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import { Random } from 'meteor/random';
+import moment from 'moment';
 
 import * as OrderApi from './order';
 import { Payment } from './../../../lib/payment';
@@ -209,6 +210,29 @@ if (Meteor.isServer) {
         });
       });
 
+      describe('order.delivered', () => {
+        it('updates status to delivered', () => {
+          const activateOrder = Meteor.server.method_handlers['order.delivered'];
+          // Set up a fake method invocation that looks like what the method expects
+          const invocation = { userId };
+          const expectedStatus = 'Delivered';
+
+          activateOrder.apply(invocation, [mockOrderId]);
+          assert.equal(OrderApi.Order.findOne({ _id: mockOrderId }).status, expectedStatus);
+        });
+        it("updates 'dateDelivered' to today's date ", () => {
+          const activateOrder = Meteor.server.method_handlers['order.delivered'];
+          // Set up a fake method invocation that looks like what the method expects
+          const invocation = { userId };
+
+          activateOrder.apply(invocation, [mockOrderId]);
+
+          const { dateDelivered } = OrderApi.Order.findOne({ _id: mockOrderId });
+
+          assert.equal(moment(dateDelivered).format('LL'), moment(new Date()).format('LL'));
+        });
+      });
+
       it('order.remove removes order from collection', () => {
         const readOrder = Meteor.server.method_handlers['order.remove'];
         // Set up a fake method invocation that looks like what the method expects
@@ -220,7 +244,6 @@ if (Meteor.isServer) {
 
       it('order.insert inserts', () => {
         const insertOrder = Meteor.server.method_handlers['order.insert'];
-
         // Set up a fake method invocation that looks like what the method expects
         const invocation = { userId };
 

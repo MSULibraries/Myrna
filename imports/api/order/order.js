@@ -31,6 +31,12 @@ const orderSchema = new SimpleSchema({
     type: Date,
     label: 'Date Added',
   },
+  dateDelivered: {
+    defaultValue: null,
+    type: Date,
+    label: 'Date To Ship Back',
+    optional: true,
+  },
   dateToArriveBy: {
     type: Date,
     label: 'Date To Arrive By',
@@ -54,7 +60,7 @@ const orderSchema = new SimpleSchema({
     label: 'Special Instructions',
   },
   status: {
-    allowedValues: ['Active', 'Approved', 'Cancelled', 'Complete', 'Un-Approved'],
+    allowedValues: ['Active', 'Approved', 'Cancelled', 'Complete', 'Delivered', 'Un-Approved'],
     type: String,
     label: 'status',
   },
@@ -261,6 +267,15 @@ Meteor.methods({
   },
 
   /**
+   * Updates the status of an order to 'Delivered'
+   */
+  'order.delivered': function orderDelivered(orderId) {
+    if (!this.isSimulation) {
+      Order.update({ _id: orderId }, { $set: { status: 'Delivered', dateDelivered: new Date() } });
+    }
+  },
+
+  /**
    * Removes an orders entry from the collection and the orders attached addresss
    * @param {string} orderId - id of the order
    */
@@ -279,16 +294,10 @@ Meteor.methods({
    * Sets status to 'Un-Approved' by default so that
    * a maintainer can approve the order
    */
-  'order.insert': function orderInsert(
-    dateToArriveBy,
-    dateToShipBack,
-    isPickUp,
-    specialInstr = '',
-  ) {
+  'order.insert': (dateToArriveBy, dateToShipBack, isPickUp, specialInstr = '') => {
     if (userLoggedIn()) {
       // Getting all item information from cart
       const cartProductIds = Meteor.call('cart.read.productIds');
-
       const orderId = Order.insert(
         {
           userId: Meteor.userId(),
@@ -302,10 +311,14 @@ Meteor.methods({
         },
         (error) => {
           if (!error) {
-            Meteor.call('cart.clear');
+            // Waiting on this. This causes failures for order.insert sometimes
+            // because the test aren't waiting for this to finish
+            // Meteor.call('cart.clear');
           }
         },
       );
+      Meteor.call('cart.clear');
+
       return orderId;
     }
     return undefined;
