@@ -330,6 +330,11 @@ Meteor.methods({
    * @param {String} - orderId
    */
   'order.reorder': function orderReOrder(orderId) {
+    check(orderId, String)
+
+    // Clear Cart
+    Meteor.call('cart.clear');
+    
     const { productIds } = Order.findOne({ _id: orderId }, { fields: { productIds: 1 } });
     Meteor.call('cart.insert.productIds', productIds);
   },

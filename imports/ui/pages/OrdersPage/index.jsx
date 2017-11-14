@@ -101,21 +101,6 @@ export class OrdersPage extends Component {
     return orderAddress;
   }
 
-  renderOrderTrackingLink({ _id: orderId, status }) {
-    if (status !== 'Approved' || status !== 'Un-Approved') {
-      const orderTrackingIdObject = OrderTrackingId.findOne({ orderId });
-      if (orderTrackingIdObject !== undefined) {
-        return (
-          <a href={orderTrackingIdObject.trackingUrl} target="_blank">
-            {' '}
-            {orderTrackingIdObject.trackingId}
-          </a>
-        );
-      }
-    }
-    return 'None';
-  }
-
   /**
    * Opens modal to select addresses to ship to
    */
@@ -131,6 +116,25 @@ export class OrdersPage extends Component {
   handleClose = () => {
     this.setState({ modalOpen: false });
   };
+
+  reOrderOrder = orderId => {
+    Meteor.call('order.reorder', orderId);
+  };
+
+  renderOrderTrackingLink({ _id: orderId, status }) {
+    if (status !== 'Approved' || status !== 'Un-Approved') {
+      const orderTrackingIdObject = OrderTrackingId.findOne({ orderId });
+      if (orderTrackingIdObject !== undefined) {
+        return (
+          <a href={orderTrackingIdObject.trackingUrl} target="_blank">
+            {' '}
+            {orderTrackingIdObject.trackingId}
+          </a>
+        );
+      }
+    }
+    return 'None';
+  }
 
   render() {
     return (
@@ -160,6 +164,9 @@ export class OrdersPage extends Component {
               </TableHeaderColumn>
               <TableHeaderColumn style={{ darkerTableHeaders, ...alignCenter }}>
                 Cancel
+              </TableHeaderColumn>
+              <TableHeaderColumn style={{ darkerTableHeaders, ...alignCenter }}>
+                Re-Order
               </TableHeaderColumn>
 
               {isMaintainer() && (
@@ -206,6 +213,15 @@ export class OrdersPage extends Component {
                 {/* Cancel Order */}
                 <TableRowColumn>
                   <FlatButton onClick={() => this.deleteOrder(order._id)} secondary label="X" />
+                </TableRowColumn>
+
+                {/* Re Order */}
+                <TableRowColumn>
+                  <FlatButton
+                    onClick={() => this.reOrderOrder(order._id)}
+                    secondary
+                    label="Re-Order"
+                  />
                 </TableRowColumn>
 
                 {/* Approve Button */}
