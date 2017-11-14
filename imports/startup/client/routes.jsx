@@ -1,3 +1,4 @@
+import { withTracker } from 'meteor/react-meteor-data';
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
@@ -20,7 +21,7 @@ import PoliciesPage from './../../ui/pages/PoliciesPage/index';
 import ProductsContainer from './../../ui/pages/Products/ProductsContainer';
 import ProfilePage from './../../ui/pages/ProfilePage/index';
 
-const Routes = () => (
+const Routes = ({ userLoggedIn }) => (
   <Router>
     <div>
       <MainNav />
@@ -28,12 +29,27 @@ const Routes = () => (
       {/* Making room for content covered by bottom nav */}
       <div style={{ marginBottom: '84px', marginTop: '74px' }}>
         <Switch>
-          <AuthRoute exact path="/addresses/" component={AddressesPage} />
-          <AuthRoute exact path="/addresses/:option" component={AddressesPage} />
-          <AuthRoute path="/cart" component={CartPage} />
-          <AuthRoute exact path="/orders" component={OrdersPage} />
-          <AuthRoute exact path="/payment/success" component={PaymentSuccess} />
-          <AuthRoute exact path="/profile" component={ProfilePage} />
+          <AuthRoute
+            userLoggedIn={userLoggedIn}
+            exact
+            path="/addresses/"
+            component={AddressesPage}
+          />
+          <AuthRoute
+            userLoggedIn={userLoggedIn}
+            exact
+            path="/addresses/:option"
+            component={AddressesPage}
+          />
+          <AuthRoute userLoggedIn={userLoggedIn} path="/cart" component={CartPage} />
+          <AuthRoute userLoggedIn={userLoggedIn} exact path="/orders" component={OrdersPage} />
+          <AuthRoute
+            userLoggedIn={userLoggedIn}
+            exact
+            path="/payment/success"
+            component={PaymentSuccess}
+          />
+          <AuthRoute userLoggedIn={userLoggedIn} exact path="/profile" component={ProfilePage} />
 
           <Route exact path="/" component={HomePage} />
           <Route exact path="/about" component={AboutPage} />
@@ -49,4 +65,6 @@ const Routes = () => (
   </Router>
 );
 
-export default Routes;
+export default withTracker(() => ({
+  userLoggedIn: Meteor.userId(),
+}))(Routes);
