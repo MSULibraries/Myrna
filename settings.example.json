@@ -1,8 +1,17 @@
 {
   "public": {
-    "EASYPOST_TEST_API_KEY": "4815162342",
+    // API Key for EasyPost
+    "EASYPOST_TEST_API_KEY": ""
+  },
+  "private": {
+    // Read payment docs for more info
     "payment": {
-      "TEST_PAYMENT_ENDPOINT": "https://www.google.com/"
+      "endpoint": "",
+      "orderType": "",
+      "paymentMethod": "",
+      "redirectUrl": "",
+      "redirectUrlParameters": "",
+      "secret": ""
     }
   }
 }
