@@ -3,7 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import '../imports/api/addresses';
 import '../imports/api/cart';
 import '../imports/api/dresses';
-import '../imports/api/itemDesc';
+import '../imports/api/itemDesc/index';
 import '../imports/api/order/order';
 import '../imports/api/order/bridges/orderAddress';
 import '../imports/api/order/bridges/orderPayment';

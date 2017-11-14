@@ -15,7 +15,7 @@ import { media } from './../../breakpoints';
 import ProductCard from './../../components/ProductCard/index';
 import Cart from './../../../api/cart';
 import Dress from './../../../api/dresses';
-import ItemDesc from './../../../api/itemDesc';
+import ItemDesc from './../../../api/itemDesc/index';
 
 const { fadeUp } = transitions;
 
