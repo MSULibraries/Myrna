@@ -14,6 +14,7 @@ import {
   TableRow,
   TableRowColumn,
 } from 'material-ui/Table';
+import Toggle from 'material-ui/Toggle';
 import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -52,6 +53,7 @@ export class CartPage extends Component {
     this.state = {
       dateToArrive: undefined,
       dateToShipBack: undefined,
+      isPickupOrder: false,
       newShowModalOpen: false, // modal for entering a new show is open
       orderModalOpen: false, // modal for new order is open
       pullShowModalOpen: false,
@@ -65,7 +67,7 @@ export class CartPage extends Component {
       * @example: We need toAddress, dates, and specialInstr
       *           So there would be three steps
       */
-      totalSteps: 3,
+      totalSteps: 4,
     };
 
     this.createNewShow = this.createNewShow.bind(this);
@@ -94,6 +96,10 @@ export class CartPage extends Component {
     }
   }
 
+  clearCart = () => {
+    Meteor.call('cart.clear');
+  };
+
   createNewShow() {
     this.setState({ newShowModalOpen: true });
   }
@@ -115,6 +121,7 @@ export class CartPage extends Component {
     this.submitOrder(
       this.state.dateToArrive,
       this.state.dateToShipBack,
+      this.state.isPickupOrder,
       this.state.specialInstr,
       this.state.selectedAddressId,
     );
@@ -215,22 +222,29 @@ export class CartPage extends Component {
   /**
    * Inserts order information into order and order.address collections
    */
-  submitOrder(dateToArrive, dateToShipBack, specialInstr, selectedAddressId) {
+  submitOrder(dateToArrive, dateToShipBack, isPickupOrder, specialInstr, selectedAddressId) {
     this.closeNewOrderModal();
-    Meteor.call('order.insert', dateToArrive, dateToShipBack, specialInstr, (err, orderId) => {
-      if (err) {
-        console.error(err);
-      } else {
-        Meteor.call('order.address.insert', orderId, selectedAddressId, (err, result) => {
-          if (!err) {
-            this.setState({
-              steps: 0,
-            });
-            this.openToast('Order Submitted');
-          }
-        });
-      }
-    });
+    Meteor.call(
+      'order.insert',
+      dateToArrive,
+      dateToShipBack,
+      isPickupOrder,
+      specialInstr,
+      (err, orderId) => {
+        if (err) {
+          console.error(err);
+        } else {
+          Meteor.call('order.address.insert', orderId, selectedAddressId, (err, result) => {
+            if (!err) {
+              this.setState({
+                steps: 0,
+              });
+              this.openToast('Order Submitted');
+            }
+          });
+        }
+      },
+    );
   }
 
   renderPullShow() {
@@ -298,6 +312,28 @@ export class CartPage extends Component {
             onRequestClose={this.closeNewOrderModal}
           >
             <InputSpecialInstructions setSpecialIntr={text => this.setSpecialIntr(text)} />
+          </Dialog>
+        );
+      }
+      case 4: {
+        return (
+          <Dialog
+            title="Shipment"
+            modal={false}
+            open={this.state.orderModalOpen}
+            onRequestClose={this.closeNewOrderModal}
+          >
+            <div style={{ width: '50%' }}>
+              <p>Are you going to pick up the order in person? </p>
+              <Toggle
+                label={this.state.isPickupOrder ? 'Yes' : 'No'}
+                defaultToggled={false}
+                onToggle={(event, checked) => {
+                  this.setState({ isPickupOrder: checked });
+                }}
+              />
+              <FlatButton label="Continue" onClick={() => this.incStep()} />
+            </div>
           </Dialog>
         );
       }

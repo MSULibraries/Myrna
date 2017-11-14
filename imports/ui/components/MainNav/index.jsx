@@ -9,6 +9,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { media } from './../../breakpoints';
+
 export const MainNav = ({ userLoggedIn }) => (
   <MainNavContainer>
     <LogoContainer>
@@ -59,7 +61,7 @@ const MainLink = styled(Link)`
 
 const MainNavContainer = styled.header`
   align-items: center;
-  display: flex;
+  ${media.desktop`  display: none !important;`} display: flex;
   flex-direction: column;
   justify-content: space-around;
   padding-top: 10px;

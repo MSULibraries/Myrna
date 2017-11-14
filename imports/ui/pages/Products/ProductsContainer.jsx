@@ -10,6 +10,8 @@ import Helmet from 'react-helmet';
 import StackGrid, { transitions } from 'react-stack-grid';
 import styled from 'styled-components';
 import { parse } from 'query-string';
+
+import { media } from './../../breakpoints';
 import ProductCard from './../../components/ProductCard/index';
 import Cart from './../../../api/cart';
 import Dress from './../../../api/dresses';
@@ -159,17 +161,17 @@ class ProductsContainer extends Component {
    */
   paginateBackwards() {
     if (this.state.paginationOffset > 0) {
-      window.scrollTo(0, 0);      
+      window.scrollTo(0, 0);
       this.setState({ paginationOffset: this.state.paginationOffset - this.state.itemsPerPage });
     }
   }
-  
+
   /**
    * Decrements the  pagination offset by current states itemsPerPage
    */
   paginateForwards() {
     if (this.state.paginationOffset >= 0) {
-      window.scrollTo(0, 0);      
+      window.scrollTo(0, 0);
       this.setState({ paginationOffset: this.state.paginationOffset + this.state.itemsPerPage });
     }
   }
@@ -293,6 +295,6 @@ ProductsContainer.proptypes = {
 export default ProductsContainer;
 
 const SideNav = styled(Col)`
-  position: sticky !important;
+  ${media.desktop`position: initial !important;`} position: sticky !important;
   top: 10px;
 `;

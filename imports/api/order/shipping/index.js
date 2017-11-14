@@ -16,6 +16,18 @@ export class EasyPostInterface {
   }
 
   /**
+ * Finds the shipmentId attached to an order
+ * Buys the shipment with that shipment Id
+ * @example - https://www.easypost.com/docs/api/node.html#shipments-buy-codesample
+ * @param {String} orderId
+ */
+  async buyShipment(shipmentId) {
+    let shipment = await this.api.Shipment.retrieve(shipmentId);
+    shipment = await shipment.buy(shipment.lowestRate());
+    return shipment;
+  }
+
+  /**
      * Creates and saves a to address
      */
   createToAddress(company, street1, city, state, zip) {
@@ -80,10 +92,5 @@ export class EasyPostInterface {
 
     return shipment.save();
   }
-
-  /**
-     * Buys a shipment
-     */
-  // buyShipment() {}
 }
 export default EasyPostInterface;

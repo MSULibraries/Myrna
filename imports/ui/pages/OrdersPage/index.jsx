@@ -1,4 +1,4 @@
-import CircularProgress from 'material-ui/CircularProgress';
+import { find } from 'lodash';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import {
@@ -25,6 +25,7 @@ import OrderTrackingId from './../../../api/order/bridges/orderTrackingId';
 import LeftNav from '../../components/LeftNav/LeftNav';
 import { Col, Container, Row } from 'react-grid-system';
 
+import { Loader } from './../../components/Loader/index';
 // Adjusted contrast to help with a11y
 const darkerTableHeaders = {
   color: '#575757',
@@ -39,11 +40,12 @@ const centerColumn = {
   alignItems: 'center',
 };
 
-class OrdersPage extends Component {
+export class OrdersPage extends Component {
   constructor() {
     super();
 
     this.state = {
+      approvingOrder: false,
       isBuyingOrder: false,
       modalBuyingOpen: false,
       modalOpen: false,
@@ -61,13 +63,16 @@ class OrdersPage extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.orders !== nextProps.orders) {
+    if (this.props.orders !== nextProps.orders && nextProps.orders.length > 0) {
       this.getOrderAddresses(nextProps.orders);
     }
   }
 
   approveOrder(id) {
-    Meteor.call('order.approve', id);
+    this.setState({ approvingOrder: true });
+    Meteor.call('order.approve', id, () => {
+      this.setState({ approvingOrder: false });
+    });
   }
 
   buyOrder(orderId) {
@@ -82,7 +87,7 @@ class OrdersPage extends Component {
   }
 
   deleteOrder(id) {
-    Meteor.call('order.delete', id);
+    Meteor.call('order.remove', id);
   }
 
   getOrderAddresses(orders) {
@@ -96,12 +101,31 @@ class OrdersPage extends Component {
     const { addressId } = OrderAddress.findOne({ orderId });
 
     const orderAddress = Addresses.findOne({ _id: addressId });
-
-    this.setState({ selectedOrderAddress: orderAddress });
+    return orderAddress;
   }
 
+  /**
+   * Opens modal to select addresses to ship to
+   */
+  handleOpen = orderId => {
+    const { addressId } = find(this.props.orderAddresses, { orderId: orderId });
+    const address = find(this.props.addresses, { _id: addressId });
+    this.setState({ modalOpen: true, selectedOrderAddress: address });
+  };
+
+  /**
+   * Closes modal to select addresses to ship to
+   */
+  handleClose = () => {
+    this.setState({ modalOpen: false });
+  };
+
+  reOrderOrder = orderId => {
+    Meteor.call('order.reorder', orderId);
+  };
+
   renderOrderTrackingLink({ _id: orderId, status }) {
-    if (status === 'Active') {
+    if (status !== 'Approved' || status !== 'Un-Approved') {
       const orderTrackingIdObject = OrderTrackingId.findOne({ orderId });
       if (orderTrackingIdObject !== undefined) {
         return (
@@ -114,20 +138,6 @@ class OrdersPage extends Component {
     }
     return 'None';
   }
-
-  /**
-   * Opens modal to select addresses to ship to
-   */
-  handleOpen = id => {
-    this.setState({ modalOpen: true });
-  };
-
-  /**
-   * Closes modal to select addresses to ship to
-   */
-  handleClose = () => {
-    this.setState({ modalOpen: false });
-  };
 
   render() {
     return (
@@ -160,6 +170,9 @@ class OrdersPage extends Component {
                   </TableHeaderColumn>
                   <TableHeaderColumn style={{ darkerTableHeaders, ...alignCenter }}>
                     Cancel
+                  </TableHeaderColumn>
+                  <TableHeaderColumn style={{ darkerTableHeaders, ...alignCenter }}>
+                    Re-Order
                   </TableHeaderColumn>
 
                   {isMaintainer() && (
@@ -208,15 +221,28 @@ class OrdersPage extends Component {
                       <FlatButton onClick={() => this.deleteOrder(order._id)} secondary label="X" />
                     </TableRowColumn>
 
+                    {/* Re Order */}
+                    <TableRowColumn>
+                      <FlatButton
+                        onClick={() => this.reOrderOrder(order._id)}
+                        secondary
+                        label="Re-Order"
+                      />
+                    </TableRowColumn>
+
                     {/* Approve Button */}
                     {isMaintainer() && (
                       <TableRowColumn>
-                        <FlatButton
-                          disabled={order.status === 'Approved'}
-                          onClick={() => this.approveOrder(order._id)}
-                          secondary
-                          label="✓"
-                        />
+                        {this.state.approvingOrder ? (
+                          <Loader />
+                        ) : (
+                          <FlatButton
+                            disabled={order.status !== 'Un-Approved'}
+                            onClick={() => this.approveOrder(order._id)}
+                            secondary
+                            label="✓"
+                          />
+                        )}
                       </TableRowColumn>
                     )}
                   </TableRow>
@@ -230,9 +256,13 @@ class OrdersPage extends Component {
               onRequestClose={() => this.setState({ modalBuyingOpen: false })}
             >
               {this.state.isBuyingOrder ? (
-                <CircularProgress />
+                <div>
+                  <p>Preparing Order</p>
+                  <Loader />
+                </div>
               ) : (
                 <div>
+                  <p>This link will expire in 5 minutes</p>
                   <p>Please have your Credit Card information ready</p>
                   <a href={this.state.paymentUrl} target="_blank">
                     <FlatButton label="Continue" />
@@ -271,6 +301,7 @@ export default withTracker(props => {
   Meteor.subscribe('orders');
 
   return {
+    addresses: Addresses.find({}).fetch(),
     orders: Order.find({}).fetch(),
     orderAddresses: OrderAddress.find({}).fetch(),
     orderTrackingId: OrderTrackingId.find({}).fetch(),

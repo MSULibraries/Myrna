@@ -18,25 +18,38 @@ function userLoggedIn() {
 export const OrderTrackingId = new Mongo.Collection('order.trackingId');
 
 const OrderTrackingIdSchema = new SimpleSchema({
+  dateAdded: {
+    type: Date,
+    label: 'dateAdded',
+  },
   orderId: {
     type: String,
     label: 'userId',
   },
-  trackingId: {
+  rate: {
     type: String,
-    label: 'dateAdded',
+    label: 'Cost of the shipment',
   },
   labelImageUrl: {
     type: String,
     label: 'labelImageUrl',
+    optional: true,
   },
+  shipmentId: {
+    type: String,
+    label: 'Id of shipment in shipping API',
+    optional: true,
+  },
+  trackingId: {
+    type: String,
+    label: 'dateAdded',
+    optional: true,
+  },
+
   trackingUrl: {
     type: String,
     label: 'trackingUrl',
-  },
-  dateAdded: {
-    type: Date,
-    label: 'dateAdded',
+    optional: true,
   },
 });
 
@@ -70,29 +83,82 @@ if (Meteor.isServer) {
 }
 
 Meteor.methods({
-  'order.trackingId.insert': function OrderTrackingIdInsert(
-    orderId,
-    trackingId,
-    trackingUrl,
-    labelImageUrl,
-  ) {
+  'order.trackingId.insert': function OrderTrackingIdInsert(orderId, shipmentId, rate) {
     if (userLoggedIn()) {
       const newOrderTrackingId = {
         orderId,
-        trackingId,
-        trackingUrl,
-        labelImageUrl,
+        shipmentId,
+        rate,
         dateAdded: new Date(),
       };
 
       check(orderId, String);
-      check(trackingId, String);
-      check(trackingUrl, String);
-      check(labelImageUrl, String);
+      check(shipmentId, String);
+      check(rate, String);
       check(newOrderTrackingId, OrderTrackingIdSchema);
       OrderTrackingId.insert(newOrderTrackingId);
     }
   },
+  'order.trackingId.update.tracking': function OrderTrackingIdInsert(
+    orderId,
+    trackingId,
+    labelImageUrl,
+    trackingUrl,
+  ) {
+    if (userLoggedIn()) {
+      check(orderId, String);
+      check(trackingId, String);
+      check(labelImageUrl, String);
+      check(trackingUrl, String);
+
+      OrderTrackingId.update(
+        { orderId },
+        {
+          $set: {
+            trackingId,
+            labelImageUrl,
+            trackingUrl,
+          },
+        },
+      );
+    }
+  },
+
+  /**
+   * Reads ordedId by looking up order by shippingId
+   * @param {String} - shipId - Shipping API's id for the shipment
+   * @return {String} - orderId - orderId of order that has shipId
+   */
+  'order.trackingId.read.orderId': function orderTrackingIdReadRate(shipmentId) {
+    if (!this.isSimulation) {
+      check(shipmentId, String);
+
+      const order = OrderTrackingId.findOne({ shipmentId });
+      if (order) {
+        const { orderId } = order;
+        return orderId;
+      }
+      return undefined;
+    }
+    return undefined;
+  },
+
+  /**
+   * Returns an order's shipping rate
+   * An order must be approved before it has a shipping rate
+   * @param {String} orderId
+   * @returns {Number|undefined}
+   */
+  'order.trackingId.read.rate': function orderTrackingIdReadRate(orderId) {
+    if (userLoggedIn()) {
+      check(orderId, String);
+
+      const { rate } = OrderTrackingId.findOne({ orderId });
+      return +rate;
+    }
+    return undefined;
+  },
+
   'order.trackingId.remove': function OrderTrackingIdRemove(id) {
     if (userLoggedIn()) {
       check(id, String);

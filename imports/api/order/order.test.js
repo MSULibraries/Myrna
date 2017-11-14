@@ -4,6 +4,7 @@ import { Meteor } from 'meteor/meteor';
 import { assert } from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import { Random } from 'meteor/random';
+import moment from 'moment';
 
 import * as OrderApi from './order';
 import { Payment } from './../../../lib/payment';
@@ -27,10 +28,13 @@ if (Meteor.isServer) {
         // clearing Order collection
         OrderApi.Order.remove({});
 
-        // Inserting Orders
+        /**
+         * Inserting Orders
+         */
         // 'Active' status
         mockOrderId = OrderApi.Order.insert({
           userId: Meteor.userId(),
+          isPickUp: false,
           dateAdded: Date.now(),
           dateToArriveBy: new Date(),
           dateToShipBack: new Date(),
@@ -41,6 +45,7 @@ if (Meteor.isServer) {
         // 'Approved' status
         OrderApi.Order.insert({
           userId: Meteor.userId(),
+          isPickUp: false,
           dateAdded: Date.now(),
           dateToArriveBy: new Date(),
           dateToShipBack: new Date(),
@@ -51,6 +56,7 @@ if (Meteor.isServer) {
         // 'Cancelled' status
         OrderApi.Order.insert({
           userId: Meteor.userId(),
+          isPickUp: false,
           dateAdded: Date.now(),
           dateToArriveBy: new Date(),
           dateToShipBack: new Date(),
@@ -61,6 +67,7 @@ if (Meteor.isServer) {
         // 'Complete' status
         OrderApi.Order.insert({
           userId: Meteor.userId(),
+          isPickUp: false,
           dateAdded: Date.now(),
           dateToArriveBy: new Date(),
           dateToShipBack: new Date(),
@@ -68,10 +75,10 @@ if (Meteor.isServer) {
           specialInstr: 'None',
           status: 'Complete',
         });
-
         // 'Un-Approved'
         OrderApi.Order.insert({
           userId: Meteor.userId(),
+          isPickUp: false,
           dateAdded: Date.now(),
           dateToArriveBy: new Date(),
           dateToShipBack: new Date(),
@@ -86,13 +93,44 @@ if (Meteor.isServer) {
         Meteor.userId.restore();
       });
 
-      it("order.approve updates order status to 'Approved'", () => {
-        const activateOrder = Meteor.server.method_handlers['order.approve'];
-        // Set up a fake method invocation that looks like what the method expects
+      describe('order.activate', () => {
+        it("updates status to 'Active'", () => {
+          const activateOrder = Meteor.server.method_handlers['order.activate'];
+          // Set up a fake method invocation that looks like what the method expects
+          const invocation = { userId };
+          const expectedStatus = 'Active';
+
+          activateOrder.apply(invocation, [mockOrderId]);
+          assert.equal(OrderApi.Order.findOne({ _id: mockOrderId }).status, expectedStatus);
+        });
+      });
+
+      describe('order.buy', () => {
+        let getRateStub;
+        beforeEach(() => {
+          getRateStub = sinon.stub(Meteor, 'call');
+        });
+
+        afterEach(() => {
+          Meteor.call.restore();
+        });
+
+        it('gets rate for package', () => {
+          const buyOrder = Meteor.server.method_handlers['order.buy'];
+          const invocation = { userId };
+          getRateStub.withArgs('order.trackingId.read.rate').returns(50);
+          buyOrder.apply(invocation, [mockOrderId]);
+
+          sinon.assert.calledOnce(getRateStub.withArgs('order.trackingId.read.rate'));
+        });
+      });
+
+      it("order.approve updates order status to 'Approved'", async () => {
+        const approveOrder = Meteor.server.method_handlers['order.approve'];
         const invocation = { userId };
         const expectedStatus = 'Approved';
 
-        activateOrder.apply(invocation, [mockOrderId]);
+        await approveOrder.apply(invocation, [mockOrderId]);
         assert.equal(OrderApi.Order.findOne({ _id: mockOrderId }).status, expectedStatus);
       });
 
@@ -172,8 +210,31 @@ if (Meteor.isServer) {
         });
       });
 
-      it('order.delete removes order from collection', () => {
-        const readOrder = Meteor.server.method_handlers['order.delete'];
+      describe('order.delivered', () => {
+        it('updates status to delivered', () => {
+          const activateOrder = Meteor.server.method_handlers['order.delivered'];
+          // Set up a fake method invocation that looks like what the method expects
+          const invocation = { userId };
+          const expectedStatus = 'Delivered';
+
+          activateOrder.apply(invocation, [mockOrderId]);
+          assert.equal(OrderApi.Order.findOne({ _id: mockOrderId }).status, expectedStatus);
+        });
+        it("updates 'dateDelivered' to today's date ", () => {
+          const activateOrder = Meteor.server.method_handlers['order.delivered'];
+          // Set up a fake method invocation that looks like what the method expects
+          const invocation = { userId };
+
+          activateOrder.apply(invocation, [mockOrderId]);
+
+          const { dateDelivered } = OrderApi.Order.findOne({ _id: mockOrderId });
+
+          assert.equal(moment(dateDelivered).format('LL'), moment(new Date()).format('LL'));
+        });
+      });
+
+      it('order.remove removes order from collection', () => {
+        const readOrder = Meteor.server.method_handlers['order.remove'];
         // Set up a fake method invocation that looks like what the method expects
         const invocation = { userId };
 
@@ -183,14 +244,26 @@ if (Meteor.isServer) {
 
       it('order.insert inserts', () => {
         const insertOrder = Meteor.server.method_handlers['order.insert'];
-
         // Set up a fake method invocation that looks like what the method expects
         const invocation = { userId };
 
-        // Inserting expects a dateToArriveBy, dateToShipBack, and special instr
-        insertOrder.apply(invocation, [new Date(), new Date(), 'Send pizza with order']);
+        // Inserting expects a dateToArriveBy, dateToShipBack, isPickUp and special instr
+        insertOrder.apply(invocation, [new Date(), new Date(), false, 'Send pizza with order']);
 
         assert.equal(OrderApi.Order.find().count(), totalOrders + 1);
+      });
+
+      describe('order.reorder', () => {
+        it("adds an order's contents to the user's cart", () => {
+          const reOrderOrder = Meteor.server.method_handlers['order.reorder'];
+          const invocation = { userId };
+
+          reOrderOrder.apply(invocation, [mockOrderId]);
+
+          const productIdsInCart = Meteor.call('cart.read').map(({ productId }) => productId);
+
+          assert.deepEqual(productIdsInCart, mockCartProductIds);
+        });
       });
     });
 

@@ -17,27 +17,46 @@ The Myrna costume website allows users to browse costume pieces and learn more a
 * **Browse Costumes**
   * None Auth'd users can still browse costumes
 
-* **Add to Cart**
-  * There is a cart system that will allow users to add product to cart. The cart will filter out duplicate entries. From the cart, you can either "Submit An Order" or "Create a Show."
+* **Cart**
+  * There is a cart system that will allow users to add product to cart. The cart will ignore duplicate entries.
     * Flow
       1. Go to `/products`
       1. Add Products to Cart (*Must be signed in*)
+      1. Go to `/cart`
 
-    * **Submit Order** - A user can submit the items in their cart to be ordered. This will create an entry to be approved by a maintainer. Once approved, a customer will have the option to 'buy' the order from the `/orders` page. If they click on the 'buy' button they will be redirected to the Nelnet system for payment. After the user has payed for the order, a shipment will be made. After the shipment has been made, we will store a tracking number, a tracking URL, and an image of the shipping label for that package.
+    * **Submit Order** - A user can submit the items in their cart to be ordered. This will create an entry to be approved by a maintainer. 
       * Flow
 
-        1. Go to `/cart`
         1. Click Submit Order
         1. Pick an address to ship to
         1. Select the date that the shipment needs to arrive by
         1. Select the date that the shipment will be shipped back by
         1. Enter any 'Special Instructions' if needed
+        1. Select whether the order needs to be picked up or shipped
 
     * **Create a Show** - Creating a show saves all of the product id's in a user's cart as a show. This will allows users who run similar shows to easily pull costumes between each show.
       * Flow
-        1. Go to `/cart`
         1. Click 'Create a Show'
         1. Enter the name of the show
+
+    * **Pull a Show** - Pulls all product Id's from saved 'show', clears the cart, and then adds those product Id's to the cart.
+      * Flow
+        1. Click 'Pull a Show'
+        1. Select a Show From the Dropdown
+        1. Click 'Pull Show'
+
+  * **Order**
+    * A user can view different aspects of their current or previous orders such as products from that order, when the order was placed, what address the order was sent to, and the status of each order.
+
+    * **Statuses** - There are various different 'statuses' of orders. Below are explainations of what each mean.
+      * **Active** - The order has been paid for. 
+      * **Approved** - The order has been approved and is availible for purchase. Once approved, a customer will have the option to 'buy' the order. When a user clicks 'Buy' they will receive a link that will expire in 5 minutes. When they visit the link, they will be sent to the payment system. After completing their payment, they will be redirected back to a success page. This page will validate the response from the payment system. If valid, the order's shipment will be bought and started.
+      * **Cancelled** - *Not in use*
+      * **Complete** - The order has shipped, returned, and processed
+      * **Delivered** - The shipment has reached it's destination. This is handled by am [EasyPost Webhook](https://www.easypost.com/webhooks-guide.html)
+      * **Un-Approved** - The order has been made, but has not been approved by a maintainer
+
+    * **Re-Order** - A user has an option to re order a previous order. Once a user clicks an order 'Re-Order' button, it will clear the user's cart and then add that order's products to the cart.
 
 * **EasyPost Shipping** - We are using the [EasyPost API](https://www.easypost.com/) to handle shipping. EasyPost provides a [facade](https://en.wikipedia.org/wiki/Facade_pattern) for other shipping APIs allowing us to interface with EasyPost and then letting EasyPost translate what we want to other shipping APIs. After signing up for an account, EasyPost will give you a production key and a test key. While developing, we will use the test key to make fake shipments.
 
@@ -50,9 +69,24 @@ The Myrna costume website allows users to browse costume pieces and learn more a
 * Example
   ```json
   {
-    "public": { "EASYPOST_TEST_API_KEY": "abcdef1234567890" }
+    "public": {
+      // API Key for EasyPost
+      "EASYPOST_TEST_API_KEY": ""
+    },
+    "private": {
+      // Read payment docs for more info
+      "payment": {
+        "endpoint": "",
+        "orderType": "",
+        "paymentMethod": "",
+        "redirectUrl": "",
+        "redirectUrlParameters": "",
+        "secret": ""
+      }
+    }
   }
   ```
+
 * Install Dependencies *(command: `npm i`)*
 * Start Server *(command: `meteor --settings settings.json`)*
 

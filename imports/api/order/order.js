@@ -7,6 +7,7 @@ import { isMaintainer } from './../../../lib/roles';
 
 import { Addresses } from './../addresses';
 import { OrderAddress } from './../order/bridges/orderAddress';
+import { OrderTrackingId } from './../order/bridges/orderTrackingId';
 import { Payment } from './../../../lib/payment';
 
 const EasyPost = new EasyPostInterface();
@@ -30,6 +31,12 @@ const orderSchema = new SimpleSchema({
     type: Date,
     label: 'Date Added',
   },
+  dateDelivered: {
+    defaultValue: null,
+    type: Date,
+    label: 'Date To Ship Back',
+    optional: true,
+  },
   dateToArriveBy: {
     type: Date,
     label: 'Date To Arrive By',
@@ -37,6 +44,10 @@ const orderSchema = new SimpleSchema({
   dateToShipBack: {
     type: Date,
     label: 'Date To Ship Back',
+  },
+  isPickUp: {
+    type: Boolean,
+    label: 'Order will be picked up',
   },
   productIds: {
     type: [String],
@@ -49,7 +60,7 @@ const orderSchema = new SimpleSchema({
     label: 'Special Instructions',
   },
   status: {
-    allowedValues: ['Active', 'Approved', 'Cancelled', 'Complete', 'Un-Approved'],
+    allowedValues: ['Active', 'Approved', 'Cancelled', 'Complete', 'Delivered', 'Un-Approved'],
     type: String,
     label: 'status',
   },
@@ -103,33 +114,14 @@ export function savePaymentUrl(orderId = '', paymentUrl = '') {
   return Meteor.call('order.payment.insert', orderId, paymentUrl);
 }
 
-export function saveTrackingId(
-  orderId = '',
-  trackingId = '',
-  trackingUrl = '',
-  labelImageUrl = '',
-) {
-  if (trackingId === '') {
-    throw new Error('trackingId is required');
-  }
-
-  if (orderId === '') {
-    throw new Error('orderId is required');
-  }
-  if (trackingUrl === '') {
-    throw new Error('trackingUrl is required');
-  }
-  if (labelImageUrl === '') {
-    throw new Error('labelImageUrl is required');
-  }
-
-  Meteor.call('order.trackingId.insert', orderId, trackingId, trackingUrl, labelImageUrl);
+export function saveTrackingId(orderId, shipmentId, rate) {
+  Meteor.call('order.trackingId.insert', orderId, shipmentId, rate);
 }
 
 /**
  *
  * @param {String} orderId
- * @param {Number} currentAmountDue
+ * @param {Number} currentAmountDue - dollar amount
  */
 export function createPaymentUrl(orderId, amountDue) {
   const payment = new Payment(Meteor.settings.private.payment.secret);
@@ -147,48 +139,82 @@ export function createPaymentUrl(orderId, amountDue) {
  * @param {String} orderId
  * @returns {Object} shipmentInfo - https://www.easypost.com/docs/api#shipment-object
  */
-export async function createShipment(orderId) {
-  const {
-    company, street1, city, state, zip,
-  } = Order.findOne({ _id: orderId }).address(orderId);
+export function createShipment(orderId) {
+  return new Promise(async (resolve, reject) => {
+    const isPickUpOrder = Order.findOne({ _id: orderId }).isPickUp;
+    let rate = '0';
+    let shipmentId = '';
 
-  // Creating Shipment
-  const fromAddress = await EasyPost.createFromAddress();
-  const toAddress = await EasyPost.createToAddress(company, street1, city, state, zip);
-  const parcel = await EasyPost.createParcel(9, 6, 2, 10);
-  const shipment = await EasyPost.createShipment(fromAddress, toAddress, parcel);
-  const shipmentInfo = await shipment.buy(shipment.lowestRate(['USPS'], ['First']));
+    if (!isPickUpOrder) {
+      const {
+        company, street1, city, state, zip,
+      } = Order.findOne({ _id: orderId }).address(orderId);
 
-  saveTrackingId(
-    orderId,
-    shipmentInfo.tracking_code,
-    shipment.tracker.public_url,
-    shipment.postage_label.label_url,
-  );
+      // Creating Shipment
+      const fromAddress = await EasyPost.createFromAddress();
+      const toAddress = await EasyPost.createToAddress(company, street1, city, state, zip);
+      const parcel = await EasyPost.createParcel(10, 10, 10, 10);
+      const shipment = await EasyPost.createShipment(fromAddress, toAddress, parcel);
 
-  return shipmentInfo;
+      try {
+        const { rate: shipmentRate } = shipment.lowestRate(['USPS'], ['First']);
+        shipmentId = shipment.id;
+        rate = shipmentRate;
+      } catch (error) {
+        reject(new Error(`Failed to get shipment rate for order number: ${orderId} with Error: ${error}`));
+      }
+
+      resolve(shipment);
+    } else {
+      resolve(undefined);
+    }
+    saveTrackingId(orderId, shipmentId, rate);
+  });
 }
 
 /**
  *  Methods
  */
 Meteor.methods({
-  'order.approve': function orderApprove(orderId) {
+  'order.activate': function orderActivate(orderId) {
     if (userLoggedIn()) {
       // Updating order status
+      Order.update({ _id: orderId }, { $set: { status: 'Active' } }, async (error) => {
+        if (!error && !Meteor.isTest) {
+          const { shipmentId } = OrderTrackingId.findOne({ orderId });
+          const shipment = await EasyPost.buyShipment(shipmentId);
+
+          Meteor.call(
+            'order.trackingId.update.tracking',
+            orderId,
+            shipment.tracker.id,
+            shipment.postage_label.label_url,
+            shipment.tracker.public_url,
+          );
+        }
+      });
+    }
+  },
+  'order.approve': async function orderApprove(orderId) {
+    if (userLoggedIn()) {
+      if (!Meteor.isTest) {
+        await createShipment(orderId);
+      }
+
       Order.update({ _id: orderId }, { $set: { status: 'Approved' } });
     }
   },
 
-  'order.buy': async function orderBuy(orderId) {
+  'order.buy': function orderBuy(orderId) {
     if (userLoggedIn() && !this.isSimulation) {
       // Only run on server
-      const mockAmountDue = 50;
+      const clothingCost = 0;
 
-      // await createShipment(orderId);
+      const shippingCost = Meteor.call('order.trackingId.read.rate', orderId);
 
-      const paymentUrl = createPaymentUrl(orderId, mockAmountDue);
-      savePaymentUrl(orderId, paymentUrl);
+      const balanceDue = clothingCost + shippingCost;
+
+      const paymentUrl = createPaymentUrl(orderId, balanceDue);
       return paymentUrl;
     }
     return undefined;
@@ -210,17 +236,15 @@ Meteor.methods({
    * Accepts info about an order and tells you if is a legitimate order
    * This is used on payment success page to make sure someone didn't
    * just visit the page to spoof order info
-   * @param {String} amountDue
    * @param {String} orderNumber
    * @param {String} timestamp
    * @param {String} userHash
    * @returns {Bool}
    */
-  'order.check': function orderCheck(amountDue, orderNumber, timestamp, userHash) {
+  'order.check': function orderCheck(orderNumber, timestamp, userHash) {
     if (!this.isSimulation) {
       const payment = new Payment();
-      const actualHash = payment.createPaymentHash(amountDue, orderNumber, timestamp);
-      return actualHash === userHash;
+      return payment.validateHash({ orderNumber, timestamp }, userHash);
     }
     return undefined;
   },
@@ -243,13 +267,11 @@ Meteor.methods({
   },
 
   /**
-   * Removes an orders entry from the collection and the orders attached addresss
-   * @param {string} orderId - id of the order
+   * Updates the status of an order to 'Delivered'
    */
-  'order.delete': function orderDelete(orderId) {
-    check(orderId, String);
-    if (userLoggedIn()) {
-      Order.remove({ _id: orderId });
+  'order.delivered': function orderDelivered(orderId) {
+    if (!this.isSimulation) {
+      Order.update({ _id: orderId }, { $set: { status: 'Delivered', dateDelivered: new Date() } });
     }
   },
 
@@ -258,36 +280,64 @@ Meteor.methods({
    * Sets status to 'Un-Approved' by default so that
    * a maintainer can approve the order
    */
-  'order.insert': function orderInsert(dateToArriveBy, dateToShipBack, specialInstr = '') {
+  'order.insert': (dateToArriveBy, dateToShipBack, isPickUp, specialInstr = '') => {
     if (userLoggedIn()) {
       // Getting all item information from cart
       const cartProductIds = Meteor.call('cart.read.productIds');
+      const orderId = Order.insert(
+        {
+          userId: Meteor.userId(),
+          dateAdded: Date.now(),
+          dateToArriveBy,
+          dateToShipBack,
+          isPickUp,
+          productIds: cartProductIds,
+          status: 'Un-Approved',
+          specialInstr,
+        },
+        (error) => {
+          if (!error) {
+            // Waiting on this. This causes failures for order.insert sometimes
+            // because the test aren't waiting for this to finish
+            // Meteor.call('cart.clear');
+          }
+        },
+      );
       Meteor.call('cart.clear');
 
-      const orderId = Order.insert({
-        userId: Meteor.userId(),
-        dateAdded: Date.now(),
-        dateToArriveBy,
-        dateToShipBack,
-        productIds: cartProductIds,
-        status: 'Un-Approved',
-        specialInstr,
-      });
       return orderId;
     }
     return undefined;
   },
-});
 
-/**
- * Hooks
- */
+  /**
+   * Removes an orders entry from the collection and the orders attached addresss
+   * @param {string} orderId - id of the order
+   */
+  'order.remove': function orderDelete(orderId) {
+    check(orderId, String);
+    if (userLoggedIn()) {
+      Order.remove({ _id: orderId });
+      Meteor.call('order.address.remove.by.orderId', orderId);
+      Meteor.call('order.trackingId.remove.by.orderId', orderId);
+      Meteor.call('order.payment.remove.by.orderId', orderId);
+    }
+  },
 
-// Removing associated documents
-Order.before.remove((doc) => {
-  Meteor.call('order.address.remove.by.orderId', doc);
-  Meteor.call('order.trackingId.remove.by.orderId', doc);
-  Meteor.call('order.payment.remove.by.orderId', doc);
+  /**
+   * Adds an order's products to a user's cart that has
+   * an id of 'orderId'
+   * @param {String} - orderId
+   */
+  'order.reorder': function orderReOrder(orderId) {
+    check(orderId, String);
+
+    // Clear Cart
+    Meteor.call('cart.clear');
+
+    const { productIds } = Order.findOne({ _id: orderId }, { fields: { productIds: 1 } });
+    Meteor.call('cart.insert.productIds', productIds);
+  },
 });
 
 export default Order;

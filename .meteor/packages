@@ -26,3 +26,4 @@ practicalmeteor:mocha
 dispatch:mocha
 dburles:collection-helpers
 matb33:collection-hooks
+meteorhacks:picker
