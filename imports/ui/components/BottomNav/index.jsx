@@ -8,7 +8,7 @@ export const BottomNav = ({ userLoggedIn }) =>
   userLoggedIn && (
     <BottomNavContainer>
       <Item>
-        <BottomNavLink to="cart">
+        <BottomNavLink to="/cart">
           Cart
           <img
             src={`${document.location.origin}/icons/ic_shopping_cart_white_24px.svg`}
@@ -17,13 +17,13 @@ export const BottomNav = ({ userLoggedIn }) =>
         </BottomNavLink>
       </Item>
       <Item>
-        <BottomNavLink to="orders">
+        <BottomNavLink to="/orders">
           Orders
           <img src={`${document.location.origin}/icons/ic_list_white_24px.svg`} alt="Orders Icon" />
         </BottomNavLink>
       </Item>
       <Item>
-        <BottomNavLink to="profile">
+        <BottomNavLink to="/profile">
           Profile
           <img
             src={`${document.location.origin}/icons/ic_account_box_white_24px.svg`}
