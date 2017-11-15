@@ -276,41 +276,6 @@ Meteor.methods({
   },
 
   /**
-   * Adds a new order to the collection
-   * Sets status to 'Un-Approved' by default so that
-   * a maintainer can approve the order
-   */
-  'order.insert': (dateToArriveBy, dateToShipBack, isPickUp, specialInstr = '') => {
-    if (userLoggedIn()) {
-      // Getting all item information from cart
-      const cartProductIds = Meteor.call('cart.read.productIds');
-      const orderId = Order.insert(
-        {
-          userId: Meteor.userId(),
-          dateAdded: Date.now(),
-          dateToArriveBy,
-          dateToShipBack,
-          isPickUp,
-          productIds: cartProductIds,
-          status: 'Un-Approved',
-          specialInstr,
-        },
-        (error) => {
-          if (!error) {
-            // Waiting on this. This causes failures for order.insert sometimes
-            // because the test aren't waiting for this to finish
-            // Meteor.call('cart.clear');
-          }
-        },
-      );
-      Meteor.call('cart.clear');
-
-      return orderId;
-    }
-    return undefined;
-  },
-
-  /**
    * Removes an orders entry from the collection and the orders attached addresss
    * @param {string} orderId - id of the order
    */

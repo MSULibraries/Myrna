@@ -34,13 +34,13 @@ describe('ItemDesc', () => {
       });
 
       it("sets 'isAvailible' to 'false'", () => {
-        setAvailible._execute({ userId: 1 }, { itemId: mockItemDescId, isAvailible: false });
+        setAvailible._execute({ userId: 1 }, { itemIds: [mockItemDescId], isAvailible: false });
 
         assert.equal(ItemDesc.findOne({ _id: mockItemDescId }).isAvailible, false);
       });
 
       it("sets 'isAvailible' to 'true'", () => {
-        setAvailible._execute({ userId: 1 }, { itemId: mockItemDescId, isAvailible: true });
+        setAvailible._execute({ userId: 1 }, { itemIds: [mockItemDescId], isAvailible: true });
 
         assert.equal(ItemDesc.findOne({ _id: mockItemDescId }).isAvailible, true);
       });

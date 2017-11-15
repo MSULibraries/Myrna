@@ -242,17 +242,6 @@ if (Meteor.isServer) {
         assert.equal(OrderApi.Order.find().count(), totalOrders - 1);
       });
 
-      it('order.insert inserts', () => {
-        const insertOrder = Meteor.server.method_handlers['order.insert'];
-        // Set up a fake method invocation that looks like what the method expects
-        const invocation = { userId };
-
-        // Inserting expects a dateToArriveBy, dateToShipBack, isPickUp and special instr
-        insertOrder.apply(invocation, [new Date(), new Date(), false, 'Send pizza with order']);
-
-        assert.equal(OrderApi.Order.find().count(), totalOrders + 1);
-      });
-
       describe('order.reorder', () => {
         it("adds an order's contents to the user's cart", () => {
           const reOrderOrder = Meteor.server.method_handlers['order.reorder'];
