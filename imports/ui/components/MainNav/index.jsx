@@ -14,7 +14,10 @@ import { media } from './../../breakpoints';
 export const MainNav = ({ userLoggedIn }) => (
   <MainNavContainer>
     <LogoContainer>
-      <img src="images/main_logo.png" alt="Myrna Colley-Lee Costume Collection Logo" />
+      <img
+        src={`${document.location.origin}/images/main_logo.png`}
+        alt="Myrna Colley-Lee Costume Collection Logo"
+      />
     </LogoContainer>
     <LinkListContainer>
       <LinkList>
