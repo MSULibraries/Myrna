@@ -42,6 +42,7 @@ export class OrdersPage extends Component {
     super();
 
     this.state = {
+      hideInactive: false,
       approvingOrder: false,
       isBuyingOrder: false,
       modalBuyingOpen: false,
@@ -54,9 +55,11 @@ export class OrdersPage extends Component {
     this.approveOrder = this.approveOrder.bind(this);
     this.buyOrder = this.buyOrder.bind(this);
     this.deleteOrder = this.deleteOrder.bind(this);
+    this.filterInactive = this.filterInactive.bind(this);
     this.getOrderAddress = this.getOrderAddress.bind(this);
     this.getOrderAddresses = this.getOrderAddresses.bind(this);
     this.renderOrderTrackingLink = this.renderOrderTrackingLink.bind(this);
+    
   }
 
   componentWillReceiveProps(nextProps) {
@@ -136,6 +139,20 @@ export class OrdersPage extends Component {
     return 'None';
   }
 
+  togglehideInactive(){
+    this.setState({
+        hideInactive: !this.state.hideInactive,
+    });
+  }
+
+  filterInactive(order){
+    if (!this.state.hideInactive){
+      return order.status !== "Complete"
+    }
+    else
+      return true;
+  }
+
   render() {
     return (
       <Container>
@@ -150,6 +167,15 @@ export class OrdersPage extends Component {
         />
         <h1>Orders</h1>
         <BreadCrumbs crumbs={['Profile', 'Orders']} />
+        <label className="hide-inactive">
+            <input
+              type="checkbox"
+              readOnly
+              checked={this.state.hideInactive}
+              onClick={this.togglehideInactive.bind(this)}
+            />
+            Show All Orders
+          </label>
         <Table>
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
             <TableRow>
@@ -177,7 +203,7 @@ export class OrdersPage extends Component {
             </TableRow>
           </TableHeader>
           <TableBody displayRowCheckbox={false}>
-            {this.props.orders.map(order => (
+            {this.props.orders.filter(order => this.filterInactive(order)).map(order => (
               <TableRow key={order._id}>
                 {/* Order Owner */}
                 <TableRowColumn>{Meteor.user(order.userId).emails[0].address}</TableRowColumn>
