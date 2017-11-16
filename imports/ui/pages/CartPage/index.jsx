@@ -221,14 +221,16 @@ export class CartPage extends Component {
   /**
    * Inserts order information into order and order.address collections
    */
-  submitOrder(dateToArrive, dateToShipBack, isPickupOrder, specialInstr, selectedAddressId) {
+  submitOrder(dateToArriveBy, dateToShipBack, isPickUp, specialInstr, selectedAddressId) {
     this.closeNewOrderModal();
     Meteor.call(
       'order.insert',
-      dateToArrive,
-      dateToShipBack,
-      isPickupOrder,
-      specialInstr,
+      {
+        dateToArriveBy,
+        dateToShipBack,
+        isPickUp,
+        specialInstr,
+      },
       (err, orderId) => {
         if (err) {
           console.error(err);
