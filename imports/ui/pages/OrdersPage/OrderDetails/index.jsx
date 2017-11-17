@@ -59,7 +59,6 @@ class OrderDetails extends Component {
   };
 
   getProductsDesc = ({ productIds }) => {
-    console.log(productIds);
     getProductsInfo.call({ productIds }, (error, result) => {
       let itemDesc = {};
       result.forEach(item => (itemDesc[item._id] = { ...item }));
