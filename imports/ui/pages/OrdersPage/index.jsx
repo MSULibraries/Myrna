@@ -193,7 +193,7 @@ export class OrdersPage extends Component {
 
                 {/* Details Link */}
                 <TableRowColumn>
-                  <Link to={'/orders/checkin/' + order._id}>Details</Link>
+                  <Link to={'/orders/details/' + order._id}>Details</Link>
                 </TableRowColumn>
 
                 {/* Status */}

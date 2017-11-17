@@ -15,7 +15,7 @@ import CartPage from './../../ui/pages/CartPage/index';
 import HomePage from './../../ui/pages/HomePage/index';
 import LoginPage from './../../ui/pages/LoginPage/index';
 import OrdersPage from './../../ui/pages/OrdersPage/index';
-import OrdersCheckIn from './../../ui/pages/OrdersPage/OrdersCheckIn/index';
+import OrderDetails from './../../ui/pages/OrdersPage/OrderDetails/index';
 import NotFoundPage from './../../ui/pages/NotFoundPage/index';
 import PaymentSuccess from './../../ui/pages/PaymentSuccess/index';
 import PoliciesPage from './../../ui/pages/PoliciesPage/index';
@@ -48,8 +48,8 @@ const Routes = ({ userLoggedIn }) => (
           <AuthRoute
             userLoggedIn={userLoggedIn}
             exact
-            path="/orders/checkin/:orderId"
-            component={OrdersCheckIn}
+            path="/orders/details/:orderId"
+            component={OrderDetails}
           />
           <AuthRoute
             userLoggedIn={userLoggedIn}

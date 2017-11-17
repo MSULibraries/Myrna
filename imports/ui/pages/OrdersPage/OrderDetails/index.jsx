@@ -14,7 +14,7 @@ import { getProductsInfo } from './../../../../api/ItemDesc/methods/getProductsI
 import { isMaintainer } from './../../../../../lib/roles';
 import { media } from './../../../breakpoints';
 
-class OrdersCheckIn extends Component {
+class OrderDetails extends Component {
   constructor() {
     super();
 
@@ -79,7 +79,7 @@ class OrdersCheckIn extends Component {
 
     return (
       <Container>
-        <h1>Check In Order</h1>
+        <h1> Order Details</h1>
         {this.state.orderIdValid && this.state.itemDescLoaded ? (
           <div>
             <p>Order Status: {this.props.order.status}</p>
@@ -146,7 +146,7 @@ export default withTracker(({ match: { params: { orderId } } }) => {
   return {
     order: Order.findOne({ _id: orderId }),
   };
-})(OrdersCheckIn);
+})(OrderDetails);
 
 const ChipWrapper = styled.div`
   display: flex;
