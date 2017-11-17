@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Container } from 'react-grid-system';
 import Helmet from 'react-helmet';
+import { Link } from 'react-router-dom';
 
 import AddressList from './../../components/AddressList/index';
 import BreadCrumbs from './../../components/BreadCrumbs/index';
@@ -156,7 +157,7 @@ export class OrdersPage extends Component {
               <TableHeaderColumn style={darkerTableHeaders}>Order Owner</TableHeaderColumn>
               <TableHeaderColumn style={darkerTableHeaders}>Tracking ID</TableHeaderColumn>
               <TableHeaderColumn style={darkerTableHeaders}>Ordered On</TableHeaderColumn>
-              <TableHeaderColumn style={darkerTableHeaders}>Product Ids</TableHeaderColumn>
+              <TableHeaderColumn style={darkerTableHeaders}>Details</TableHeaderColumn>
               <TableHeaderColumn style={darkerTableHeaders}>Status</TableHeaderColumn>
               <TableHeaderColumn style={{ darkerTableHeaders }}>Address</TableHeaderColumn>
               <TableHeaderColumn style={{ darkerTableHeaders, ...alignCenter }}>
@@ -190,8 +191,10 @@ export class OrdersPage extends Component {
                   {new Date(order.dateAdded).toLocaleDateString('en-US')}
                 </TableRowColumn>
 
-                {/* Product IDs */}
-                <TableRowColumn>{JSON.stringify(order.productIds)}</TableRowColumn>
+                {/* Details Link */}
+                <TableRowColumn>
+                  <Link to={'/orders/checkin/' + order._id}>Details</Link>
+                </TableRowColumn>
 
                 {/* Status */}
                 <TableRowColumn>{order.status}</TableRowColumn>
