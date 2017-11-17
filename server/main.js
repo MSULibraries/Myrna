@@ -4,6 +4,7 @@ import '../imports/api/addresses';
 import '../imports/api/cart';
 import '../imports/api/dresses';
 import '../imports/api/ItemDesc/index';
+import '../imports/api/ItemDesc/methods/getProductAvailibility/index';
 import '../imports/api/ItemDesc/methods/getProductsInfo/index';
 import '../imports/api/ItemDesc/methods/setAvailible/index';
 import '../imports/api/order/order';

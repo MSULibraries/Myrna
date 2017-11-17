@@ -12,6 +12,7 @@ import { LoggedInMixin } from 'meteor/tunifight:loggedin-mixin';
 import { ItemDesc } from './../../index';
 
 export const getProductAvailibility = new ValidatedMethod({
+  /* eslint-disable no-underscore-dangle */
   name: 'ItemDesc.methods.getProductAvailibility',
   mixins: [LoggedInMixin],
   checkLoggedInError: {
@@ -30,7 +31,7 @@ export const getProductAvailibility = new ValidatedMethod({
     ).fetch();
 
     isAvailible.forEach((item) => {
-      isAvailibleById[item.id] = item.isAvailible;
+      isAvailibleById[item._id] = item.isAvailible;
     });
 
     return isAvailibleById;
