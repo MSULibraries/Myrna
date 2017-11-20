@@ -10,7 +10,6 @@ const DescriptionContainer = styled.div`padding: 10px;`;
 const ProductImage = styled.img`
   min-height: 250px;
   filter: ${({ isAvailible }) => {
-    console.log(isAvailible);
     if (isAvailible === false) {
       return 'grayscale(100%)';
     }

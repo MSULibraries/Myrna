@@ -201,7 +201,7 @@ export class CartPage extends Component {
   }
 
   setNewShowName(showName) {
-    const cartProductIds = this.props.cartItems.map(item => item._id);
+    const cartProductIds = this.props.cartItems.map(item => item.productId);
     Meteor.call('show.insert', showName, cartProductIds, err => {
       if (!err) {
         this.openToast(`'${showName}' Made`);

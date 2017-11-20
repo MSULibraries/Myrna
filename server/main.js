@@ -15,7 +15,8 @@ import '../imports/api/order/bridges/orderPayment';
 import '../imports/api/order/bridges/orderShow';
 import '../imports/api/order/bridges/orderTrackingId';
 import '../imports/api/public/api';
-import '../imports/api/show';
+import '../imports/api/show/index';
+import '../imports/api/show/methods/pullShow/index';
 
 import { roles } from './../lib/roles';
 
