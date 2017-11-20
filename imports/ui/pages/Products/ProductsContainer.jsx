@@ -87,7 +87,7 @@ class ProductsContainer extends Component {
    * Adds item to cart in DB
    * @param {String} productId
    */
-  addProductToCart({ _str: productId }) {
+  addProductToCart( productId) {
     Meteor.call('cart.insert', productId);
   }
 
@@ -267,7 +267,7 @@ class ProductsContainer extends Component {
               {this.state.currentProducts.length <= this.state.itemsPerPage ? (
                 this.state.currentProducts.map(clothing => (
                   <ProductCard
-                    addProductToCart={this.addProductToCart}
+                    addProductToCart={()=> this.addProductToCart(clothing._id)}
                     isAuthed={Meteor.userId() !== null}
                     key={clothing._id}
                     {...clothing}

@@ -31,7 +31,7 @@ import BreadCrumbs from './../../components/BreadCrumbs/index';
 import Toast from './../../components/Toast/index';
 import Cart from './../../../api/cart';
 import Show from './../../../api/show';
-
+import { getProductAvailibility } from './../../../api/ItemDesc/methods/getProductAvailibility/index';
 // Adjusted contrast to help with a11y
 const darkerTableHeaders = {
   color: '#575757',
@@ -88,6 +88,10 @@ export class CartPage extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    if (this.props.cartItems !== prevProps.cartItems) {
+      this.getProductAvailibility();
+    }
+
     // If user has gone through all the steps
     if (this.state.step > this.state.totalSteps) {
       // Finish Order and Reset
@@ -125,6 +129,19 @@ export class CartPage extends Component {
       this.state.selectedAddressId,
     );
   }
+
+  getProductAvailibility = () => {
+    getProductAvailibility.call(
+      {
+        productIds: this.props.cartItems.map(({ productId }) => productId),
+      },
+      (error, result) => {
+        this.setState({
+          itemsAvailible: result,
+        });
+      },
+    );
+  };
 
   /**
    * Closes modal to select addresses to ship to
@@ -221,14 +238,16 @@ export class CartPage extends Component {
   /**
    * Inserts order information into order and order.address collections
    */
-  submitOrder(dateToArrive, dateToShipBack, isPickupOrder, specialInstr, selectedAddressId) {
+  submitOrder(dateToArriveBy, dateToShipBack, isPickUp, specialInstr, selectedAddressId) {
     this.closeNewOrderModal();
     Meteor.call(
       'order.insert',
-      dateToArrive,
-      dateToShipBack,
-      isPickupOrder,
-      specialInstr,
+      {
+        dateToArriveBy,
+        dateToShipBack,
+        isPickUp,
+        specialInstr,
+      },
       (err, orderId) => {
         if (err) {
           console.error(err);
@@ -356,7 +375,7 @@ export class CartPage extends Component {
         <Table>
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
             <TableRow>
-              <TableHeaderColumn style={darkerTableHeaders}>Product ID</TableHeaderColumn>
+              <TableHeaderColumn style={darkerTableHeaders}>Status</TableHeaderColumn>
               <TableHeaderColumn style={darkerTableHeaders}>Added On </TableHeaderColumn>
 
               <TableHeaderColumn style={{ darkerTableHeaders, ...alignCenter }}>
@@ -367,7 +386,10 @@ export class CartPage extends Component {
           <TableBody displayRowCheckbox={false}>
             {this.props.cartItems.map(item => (
               <TableRow key={item._id}>
-                <TableRowColumn>{item.productId}</TableRowColumn>
+                <TableRowColumn>
+                  {this.state.itemsAvailible &&
+                    this.state.itemsAvailible[item.productId] && <span> Availible</span>}
+                </TableRowColumn>
                 <TableRowColumn>
                   {new Date(item.dateAdded).toLocaleDateString('en-US')}
                 </TableRowColumn>

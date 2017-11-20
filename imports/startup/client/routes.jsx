@@ -15,11 +15,13 @@ import CartPage from './../../ui/pages/CartPage/index';
 import HomePage from './../../ui/pages/HomePage/index';
 import LoginPage from './../../ui/pages/LoginPage/index';
 import OrdersPage from './../../ui/pages/OrdersPage/index';
+import OrderDetails from './../../ui/pages/OrdersPage/OrderDetails/index';
 import NotFoundPage from './../../ui/pages/NotFoundPage/index';
 import PaymentSuccess from './../../ui/pages/PaymentSuccess/index';
 import PoliciesPage from './../../ui/pages/PoliciesPage/index';
 import ProductsContainer from './../../ui/pages/Products/ProductsContainer';
 import ProfilePage from './../../ui/pages/ProfilePage/index';
+import RestrictedPage from './../../ui/pages/RestrictedPage/index';
 
 const Routes = ({ userLoggedIn }) => (
   <Router>
@@ -46,6 +48,12 @@ const Routes = ({ userLoggedIn }) => (
           <AuthRoute
             userLoggedIn={userLoggedIn}
             exact
+            path="/orders/details/:orderId"
+            component={OrderDetails}
+          />
+          <AuthRoute
+            userLoggedIn={userLoggedIn}
+            exact
             path="/payment/success"
             component={PaymentSuccess}
           />
@@ -56,6 +64,7 @@ const Routes = ({ userLoggedIn }) => (
           <Route exact path="/login" component={LoginPage} />
           <Route exact path="/policies" component={PoliciesPage} />
           <Route exact path="/products" component={ProductsContainer} />
+          <Route exact path="/restricted" component={RestrictedPage} />
 
           <Route component={NotFoundPage} />
         </Switch>
