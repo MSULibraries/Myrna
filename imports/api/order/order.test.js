@@ -8,6 +8,7 @@ import moment from 'moment';
 
 import * as OrderApi from './order';
 import { Payment } from './../../../lib/payment';
+import { setAvailible } from './../ItemDesc/methods/setAvailible/index';
 
 if (Meteor.isServer) {
   describe('Order', () => {
@@ -136,12 +137,16 @@ if (Meteor.isServer) {
 
       it("order.cancel updates order status to 'Cancelled'", () => {
         const cancelOrder = Meteor.server.method_handlers['order.cancel'];
+
+        sinon.stub(setAvailible, 'call');
+
         // Set up a fake method invocation that looks like what the method expects
         const invocation = { userId };
         const expectedStatus = 'Cancelled';
         cancelOrder.apply(invocation, [mockOrderId]);
 
         assert.equal(OrderApi.Order.findOne({ _id: mockOrderId }).status, expectedStatus);
+        setAvailible.call.restore();
       });
       describe('order.count', () => {
         it('returns the number of orders a user has regardless of order status', () => {
@@ -234,12 +239,14 @@ if (Meteor.isServer) {
       });
 
       it('order.remove removes order from collection', () => {
+        sinon.stub(setAvailible, 'call');
         const readOrder = Meteor.server.method_handlers['order.remove'];
         // Set up a fake method invocation that looks like what the method expects
         const invocation = { userId };
 
         readOrder.apply(invocation, [mockOrderId]);
         assert.equal(OrderApi.Order.find().count(), totalOrders - 1);
+        setAvailible.call.restore();
       });
 
       describe('order.reorder', () => {

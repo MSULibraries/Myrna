@@ -221,6 +221,7 @@ export class OrdersPage extends Component {
                 {/* Re Order */}
                 <TableRowColumn>
                   <FlatButton
+                    disabled={order.status !== 'Completed'}
                     onClick={() => this.reOrderOrder(order._id)}
                     secondary
                     label="Re-Order"
