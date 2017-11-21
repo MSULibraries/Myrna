@@ -30,8 +30,8 @@ import PullShowPrompt from './PullShowPrompt';
 import BreadCrumbs from './../../components/BreadCrumbs/index';
 import Toast from './../../components/Toast/index';
 import Cart from './../../../api/cart';
-import Show from './../../../api/show';
 import { getProductAvailibility } from './../../../api/ItemDesc/methods/getProductAvailibility/index';
+import Show from './../../../api/show';
 // Adjusted contrast to help with a11y
 const darkerTableHeaders = {
   color: '#575757',
@@ -68,23 +68,6 @@ export class CartPage extends Component {
       */
       totalSteps: 4,
     };
-
-    this.createNewShow = this.createNewShow.bind(this);
-    this.decStep = this.decStep.bind(this);
-    this.openNewOrderModal = this.openNewOrderModal.bind(this);
-    this.openToast = this.openToast.bind(this);
-    this.closeNewOrderModal = this.closeNewOrderModal.bind(this);
-    this.closeToast = this.closeToast.bind(this);
-    this.incStep = this.incStep.bind(this);
-    this.pullShow = this.pullShow.bind(this);
-    this.removeProductFromCart = this.removeProductFromCart.bind(this);
-    this.renderPullShow = this.renderPullShow.bind(this);
-    this.renderStep = this.renderStep.bind(this);
-    this.setSpecialIntr = this.setSpecialIntr.bind(this);
-    this.setNewShowName = this.setNewShowName.bind(this);
-    this.setOrderDates = this.setOrderDates.bind(this);
-    this.startOrder = this.startOrder.bind(this);
-    this.submitOrder = this.submitOrder.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -99,13 +82,28 @@ export class CartPage extends Component {
     }
   }
 
+  /**
+   * If the cart items availibility is loaded,
+   * returns whether all the items are availible
+   * @returns bool
+   */
+  cartHasUnAvailibleItems() {
+    if (this.state.itemsAvailible) {
+      let allCartItemsAvailible = true;
+      Object.keys(this.state.itemsAvailible).forEach(productId => {
+        allCartItemsAvailible = this.state.itemsAvailible[productId] === true;
+      });
+      return allCartItemsAvailible;
+    }
+  }
+
   clearCart = () => {
     Meteor.call('cart.clear');
   };
 
-  createNewShow() {
+  createNewShow = () => {
     this.setState({ newShowModalOpen: true });
-  }
+  };
 
   /**
    * Decreases the current step counter
@@ -119,7 +117,7 @@ export class CartPage extends Component {
   * Calls function to save order to DB
   * Closes Modal
   */
-  finishOrder() {
+  finishOrder = () => {
     this.setState({ step: 0 });
     this.submitOrder(
       this.state.dateToArrive,
@@ -128,7 +126,7 @@ export class CartPage extends Component {
       this.state.specialInstr,
       this.state.selectedAddressId,
     );
-  }
+  };
 
   getProductAvailibility = () => {
     getProductAvailibility.call(
@@ -152,9 +150,9 @@ export class CartPage extends Component {
     this.setState({ orderModalOpen: false, step: 0 });
   };
 
-  closeToast() {
+  closeToast = () => {
     this.setState({ toasting: false });
-  }
+  };
 
   /**
    * Opens modal to select addresses to ship to
@@ -163,12 +161,12 @@ export class CartPage extends Component {
     this.setState({ orderModalOpen: true });
   };
 
-  openToast(message) {
+  openToast = message => {
     this.setState({
       toasting: true,
       toastMessage: message,
     });
-  }
+  };
 
   /**
    * Increases the current step counter
@@ -184,24 +182,24 @@ export class CartPage extends Component {
   /**
    * Removes product from user's cart collection
    */
-  removeProductFromCart(id) {
+  removeProductFromCart = id => {
     Meteor.call('cart.remove', id);
-  }
+  };
 
   /**
    * Sets state to the user's selected addressId
    * Increments step
    * @param {string} id
    */
-  selectAddress(id) {
+  selectAddress = id => {
     this.setState({
       selectedAddressId: id,
     });
     this.incStep();
-  }
+  };
 
-  setNewShowName(showName) {
-    const cartProductIds = this.props.cartItems.map(item => item._id);
+  setNewShowName = showName => {
+    const cartProductIds = this.props.cartItems.map(item => item.productId);
     Meteor.call('show.insert', showName, cartProductIds, err => {
       if (!err) {
         this.openToast(`'${showName}' Made`);
@@ -210,35 +208,35 @@ export class CartPage extends Component {
       }
     });
     this.setState({ newShowModalOpen: false });
-  }
+  };
 
   /**
  * When a user submits their dates,
  * set the state to those dates
  * then increments step
  */
-  setOrderDates(dateToArrive, dateToShipBack) {
+  setOrderDates = (dateToArrive, dateToShipBack) => {
     this.setState({ dateToArrive, dateToShipBack });
     this.incStep();
-  }
+  };
 
-  setSpecialIntr(text) {
+  setSpecialIntr = text => {
     this.setState({ specialInstr: text });
     this.incStep();
-  }
+  };
 
   /**
    * Driver for submitting an order
    */
-  startOrder() {
+  startOrder = () => {
     this.openNewOrderModal();
     this.incStep();
-  }
+  };
 
   /**
    * Inserts order information into order and order.address collections
    */
-  submitOrder(dateToArriveBy, dateToShipBack, isPickUp, specialInstr, selectedAddressId) {
+  submitOrder = (dateToArriveBy, dateToShipBack, isPickUp, specialInstr, selectedAddressId) => {
     this.closeNewOrderModal();
     Meteor.call(
       'order.insert',
@@ -263,9 +261,9 @@ export class CartPage extends Component {
         }
       },
     );
-  }
+  };
 
-  renderPullShow() {
+  renderPullShow = () => {
     return (
       <Dialog
         title="Pull Show"
@@ -276,9 +274,9 @@ export class CartPage extends Component {
         <PullShowPrompt close={() => this.setState({ pullShowModalOpen: false })} />
       </Dialog>
     );
-  }
+  };
 
-  renderNewShowPrompt() {
+  renderNewShowPrompt = () => {
     return (
       <Dialog
         title="New Show"
@@ -289,9 +287,9 @@ export class CartPage extends Component {
         <NewShowPrompt setNewShowName={newShowName => this.setNewShowName(newShowName)} />
       </Dialog>
     );
-  }
+  };
 
-  renderStep(step = this.state.step) {
+  renderStep = (step = this.state.step) => {
     switch (step) {
       case 1: {
         return (
@@ -356,7 +354,7 @@ export class CartPage extends Component {
         );
       }
     }
-  }
+  };
 
   render() {
     return (
@@ -387,8 +385,11 @@ export class CartPage extends Component {
             {this.props.cartItems.map(item => (
               <TableRow key={item._id}>
                 <TableRowColumn>
-                  {this.state.itemsAvailible &&
-                    this.state.itemsAvailible[item.productId] && <span> Availible</span>}
+                  {this.state.itemsAvailible && this.state.itemsAvailible[item.productId] ? (
+                    <span> Availible</span>
+                  ) : (
+                    <span> Un-Availible</span>
+                  )}
                 </TableRowColumn>
                 <TableRowColumn>
                   {new Date(item.dateAdded).toLocaleDateString('en-US')}
@@ -418,10 +419,21 @@ export class CartPage extends Component {
           */}
         {this.props.cartItems.length > 0 && (
           <span>
-            <FlatButton onClick={() => this.startOrder()} label="Submit Order" />
+            <FlatButton
+              disabled={!this.cartHasUnAvailibleItems()}
+              onClick={() => this.startOrder()}
+              label="Submit Order"
+            />
             <FlatButton secondary onClick={() => this.createNewShow()} label="Create a Show" />
             <FlatButton secondary onClick={() => this.clearCart()} label="Clear Cart" />
           </span>
+        )}
+
+        {/* Displaying warning if a user has 'Un-Availible' items in their cart */}
+        {!this.cartHasUnAvailibleItems() && (
+          <div>
+            <em>Please remove the 'Un-Availible' items from your cart before ordering</em>
+          </div>
         )}
 
         {this.renderPullShow()}

@@ -9,6 +9,7 @@ import { Addresses } from './../addresses';
 import { OrderAddress } from './../order/bridges/orderAddress';
 import { OrderTrackingId } from './../order/bridges/orderTrackingId';
 import { Payment } from './../../../lib/payment';
+import { setAvailible } from './../ItemDesc/methods/setAvailible/index';
 
 const EasyPost = new EasyPostInterface();
 export const Order = new Mongo.Collection('orders');
@@ -229,6 +230,9 @@ Meteor.methods({
       check(orderId, String);
 
       Order.update({ _id: orderId }, { $set: { status: 'Cancelled' } });
+
+      const ordersProductIds = Order.findOne({ _id: orderId }).productIds;
+      setAvailible.call({ itemIds: ordersProductIds, isAvailible: true });
     }
   },
 
@@ -276,12 +280,18 @@ Meteor.methods({
   },
 
   /**
-   * Removes an orders entry from the collection and the orders attached addresss
+   * Makes an order's product availible, Removes an orders entry from
+   * the collection and the orders attached addresss
    * @param {string} orderId - id of the order
    */
   'order.remove': function orderDelete(orderId) {
     check(orderId, String);
     if (userLoggedIn()) {
+      // Making order's product availible again
+      const ordersProductIds = Order.findOne({ _id: orderId }).productIds;
+      setAvailible.call({ itemIds: ordersProductIds, isAvailible: true });
+
+      // Remove order and associated entries
       Order.remove({ _id: orderId });
       Meteor.call('order.address.remove.by.orderId', orderId);
       Meteor.call('order.trackingId.remove.by.orderId', orderId);

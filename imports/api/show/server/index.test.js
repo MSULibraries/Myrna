@@ -5,7 +5,7 @@ import { assert, expect } from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import { Random } from 'meteor/random';
 
-import { Show } from './show';
+import { Show } from './../index';
 
 if (Meteor.isServer) {
   describe('Shows', () => {

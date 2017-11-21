@@ -1,4 +1,5 @@
 import Chip from 'material-ui/Chip';
+import FlatButton from 'material-ui/FlatButton';
 import { Card, CardActions, CardHeader, CardMedia, CardTitle, CardText } from 'material-ui/Card';
 import Toggle from 'material-ui/Toggle';
 import { withTracker } from 'meteor/react-meteor-data';
@@ -10,6 +11,7 @@ import styled from 'styled-components';
 
 import Loader from './../../../components/Loader/index';
 import { Order } from './../../../../api/order/order';
+import { checkIn } from './../../../../api/order/methods/checkIn/index';
 import { getProductsInfo } from './../../../../api/ItemDesc/methods/getProductsInfo/index';
 import { isMaintainer } from './../../../../../lib/roles';
 import { media } from './../../../breakpoints';
@@ -41,6 +43,10 @@ class OrderDetails extends Component {
       this.getProductsDesc(this.props.order);
     }
   }
+
+  checkInOrder = orderId => {
+    checkIn.call({ orderId });
+  };
 
   handleExpandChange = (id, expanded) => {
     this.setState({ expanded: { ...this.state.expanded, id: expanded } });
@@ -82,6 +88,11 @@ class OrderDetails extends Component {
         {this.state.orderIdValid && this.state.itemDescLoaded ? (
           <div>
             <p>Order Status: {this.props.order.status}</p>
+            <FlatButton
+              disabled={this.props.order.status !== 'Delivered'}
+              label="Check In"
+              onClick={() => this.checkInOrder(this.props.order._id)}
+            />
             <div>
               <CardsWrapper>
                 {this.props.order.productIds.map(id => (
