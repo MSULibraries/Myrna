@@ -14,6 +14,7 @@ describe('Order', () => {
       let setAvailibleStub;
       const newMockOrder = {
         userId: '1',
+        costumeCost: 1,
         dateAdded: new Date(),
         dateToArriveBy: new Date(),
         dateToShipBack: new Date(),
@@ -38,6 +39,7 @@ describe('Order', () => {
 
       it('inserts an order into the collection', () => {
         const newOrder = {
+          costumeCost: 2,
           dateToArriveBy: new Date(),
           dateToShipBack: new Date(),
           isPickUp: true,
@@ -51,6 +53,7 @@ describe('Order', () => {
 
       it("calls 'setAvailible'", () => {
         const newOrder = {
+          costumeCost: 2,
           dateToArriveBy: new Date(),
           dateToShipBack: new Date(),
           isPickUp: true,

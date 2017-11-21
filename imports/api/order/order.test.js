@@ -35,6 +35,7 @@ if (Meteor.isServer) {
         // 'Active' status
         mockOrderId = OrderApi.Order.insert({
           userId: Meteor.userId(),
+          costumeCost: 1,
           isPickUp: false,
           dateAdded: Date.now(),
           dateToArriveBy: new Date(),
@@ -46,6 +47,7 @@ if (Meteor.isServer) {
         // 'Approved' status
         OrderApi.Order.insert({
           userId: Meteor.userId(),
+          costumeCost: 1,
           isPickUp: false,
           dateAdded: Date.now(),
           dateToArriveBy: new Date(),
@@ -57,6 +59,7 @@ if (Meteor.isServer) {
         // 'Cancelled' status
         OrderApi.Order.insert({
           userId: Meteor.userId(),
+          costumeCost: 1,
           isPickUp: false,
           dateAdded: Date.now(),
           dateToArriveBy: new Date(),
@@ -68,6 +71,7 @@ if (Meteor.isServer) {
         // 'Complete' status
         OrderApi.Order.insert({
           userId: Meteor.userId(),
+          costumeCost: 1,
           isPickUp: false,
           dateAdded: Date.now(),
           dateToArriveBy: new Date(),
@@ -79,6 +83,7 @@ if (Meteor.isServer) {
         // 'Un-Approved'
         OrderApi.Order.insert({
           userId: Meteor.userId(),
+          costumeCost: 1,
           isPickUp: false,
           dateAdded: Date.now(),
           dateToArriveBy: new Date(),

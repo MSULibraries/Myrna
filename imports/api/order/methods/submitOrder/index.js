@@ -20,6 +20,7 @@ export const submitOrder = new ValidatedMethod({
     message: 'Error in submitOrder: You must be logged in to submit an order',
   },
   validate: new SimpleSchema({
+    costumeCost: { type: Number },
     dateToArriveBy: { type: Date },
     dateToShipBack: { type: Date },
     isPickUp: { type: Boolean },
@@ -27,7 +28,7 @@ export const submitOrder = new ValidatedMethod({
   }).validator(),
 
   run({
-    dateToArriveBy, dateToShipBack, isPickUp, specialInstr,
+    costumeCost, dateToArriveBy, dateToShipBack, isPickUp, specialInstr,
   }) {
     const { userId } = this;
     // Getting all item information from cart
@@ -59,6 +60,7 @@ export const submitOrder = new ValidatedMethod({
     const orderId = Order.insert(
       {
         userId,
+        costumeCost,
         dateAdded: Date.now(),
         dateToArriveBy,
         dateToShipBack,
