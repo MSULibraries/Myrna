@@ -26,7 +26,6 @@ describe('Order', () => {
       beforeEach(() => {
         Order.remove({});
         Order.insert(newMockOrder);
-
         meteorCallStub = sinon.stub(Meteor, 'call');
         meteorCallStub.withArgs('cart.read.productIds').returns(['1', '2']);
         setAvailibleStub = sinon.stub(setAvailible, 'call');

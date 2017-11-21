@@ -9,6 +9,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { LoggedInMixin } from 'meteor/tunifight:loggedin-mixin';
 
 import { Order } from './../../order';
+import { getProductAvailibility } from './../../../ItemDesc/methods/getProductAvailibility/index';
 import { setAvailible } from './../../../ItemDesc/methods/setAvailible/index';
 
 export const submitOrder = new ValidatedMethod({
@@ -31,6 +32,30 @@ export const submitOrder = new ValidatedMethod({
     const { userId } = this;
     // Getting all item information from cart
     const cartProductIds = Meteor.call('cart.read.productIds');
+
+    const productAvailibility = getProductAvailibility._execute(
+      { userId: this.userId },
+      { productIds: cartProductIds },
+    );
+
+    let allProductsAvailible = true;
+    const unAvailibleProducts = [];
+
+    Object.keys(productAvailibility).forEach((productId) => {
+      if (!productAvailibility[productId]) {
+        unAvailibleProducts.push(productId);
+        allProductsAvailible = false;
+      }
+    });
+
+    if (allProductsAvailible != true) {
+      throw new Meteor.Error(
+        'Un-Availible-Product',
+        'Products in cart are not availible',
+        unAvailibleProducts,
+      );
+    }
+
     const orderId = Order.insert(
       {
         userId,
