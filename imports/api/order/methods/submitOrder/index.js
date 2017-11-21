@@ -48,7 +48,7 @@ export const submitOrder = new ValidatedMethod({
       }
     });
 
-    if (allProductsAvailible != true) {
+    if (allProductsAvailible !== true) {
       throw new Meteor.Error(
         'Un-Availible-Product',
         'Products in cart are not availible',
