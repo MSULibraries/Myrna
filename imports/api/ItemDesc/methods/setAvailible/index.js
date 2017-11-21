@@ -21,7 +21,7 @@ export const setAvailible = new ValidatedMethod({
   }).validator(),
 
   run({ itemIds, isAvailible }) {
-    ItemDesc.update({ _id: { $in: itemIds } }, { $set: { isAvailible } });
+    ItemDesc.update({ _id: { $in: itemIds } }, { $set: { isAvailible } }, { multi: true });
   },
 });
 export default setAvailible;

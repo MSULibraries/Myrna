@@ -387,8 +387,11 @@ export class CartPage extends Component {
             {this.props.cartItems.map(item => (
               <TableRow key={item._id}>
                 <TableRowColumn>
-                  {this.state.itemsAvailible &&
-                    this.state.itemsAvailible[item.productId] && <span> Availible</span>}
+                  {this.state.itemsAvailible && this.state.itemsAvailible[item.productId] ? (
+                    <span> Availible</span>
+                  ) : (
+                    <span> Un-Availible</span>
+                  )}
                 </TableRowColumn>
                 <TableRowColumn>
                   {new Date(item.dateAdded).toLocaleDateString('en-US')}
