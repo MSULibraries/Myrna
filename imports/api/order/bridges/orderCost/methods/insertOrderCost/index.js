@@ -5,7 +5,7 @@
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { LoggedInMixin } from 'meteor/tunifight:loggedin-mixin';
-
+import { round } from 'lodash';
 import { OrderCost } from './../../index';
 import { roles } from './../../../../../../../lib/roles';
 
@@ -25,12 +25,12 @@ export const insertOrderCost = new ValidatedMethod({
   },
   validate: new SimpleSchema({
     orderId: { type: String },
-    costumeCost: { type: Number },
+    costumeCost: { type: Number, decimal: true },
   }).validator(),
 
   run({ costumeCost, orderId }) {
     OrderCost.insert({
-      costumeCost,
+      costumeCost: round(costumeCost, 2),
       dateAdded: new Date(),
       maintainerId: this.userId,
       orderId,

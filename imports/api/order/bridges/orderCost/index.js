@@ -8,6 +8,7 @@ export const OrderCost = new Mongo.Collection('order.cost');
 
 const orderCostSchema = new SimpleSchema({
   costumeCost: {
+    decimal: true,
     type: Number,
     label: 'Cost of the Costumes',
   },
