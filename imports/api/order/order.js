@@ -28,10 +28,6 @@ const orderSchema = new SimpleSchema({
     type: String,
     label: 'Users Id',
   },
-  costumeCost: {
-    type: Number,
-    label: 'The cost of the costumes in the order',
-  },
   dateAdded: {
     type: Date,
     label: 'Date Added',
