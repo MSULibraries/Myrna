@@ -1,8 +1,8 @@
 /**
-* Adds a new order to the collection
-* Sets status to 'Un-Approved' by default so that
-* a maintainer can approve the order
-*/
+ * Adds a new order to the collection
+ * Sets status to 'Un-Approved' by default so that
+ * a maintainer can approve the order
+ */
 
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
@@ -20,7 +20,6 @@ export const submitOrder = new ValidatedMethod({
     message: 'Error in submitOrder: You must be logged in to submit an order',
   },
   validate: new SimpleSchema({
-    costumeCost: { type: Number },
     dateToArriveBy: { type: Date },
     dateToShipBack: { type: Date },
     isPickUp: { type: Boolean },
@@ -28,7 +27,7 @@ export const submitOrder = new ValidatedMethod({
   }).validator(),
 
   run({
-    costumeCost, dateToArriveBy, dateToShipBack, isPickUp, specialInstr,
+    dateToArriveBy, dateToShipBack, isPickUp, specialInstr,
   }) {
     const { userId } = this;
     // Getting all item information from cart
@@ -60,7 +59,6 @@ export const submitOrder = new ValidatedMethod({
     const orderId = Order.insert(
       {
         userId,
-        costumeCost,
         dateAdded: Date.now(),
         dateToArriveBy,
         dateToShipBack,
