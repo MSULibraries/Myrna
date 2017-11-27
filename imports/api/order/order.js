@@ -10,6 +10,7 @@ import { OrderAddress } from './../order/bridges/orderAddress';
 import { OrderTrackingId } from './../order/bridges/orderTrackingId';
 import { Payment } from './../../../lib/payment';
 import { setAvailible } from './../ItemDesc/methods/setAvailible/index';
+import { removeOrderCost } from './bridges/orderCost/methods/removeOrderCost/index';
 
 const EasyPost = new EasyPostInterface();
 export const Order = new Mongo.Collection('orders');
@@ -296,6 +297,7 @@ Meteor.methods({
       Meteor.call('order.address.remove.by.orderId', orderId);
       Meteor.call('order.trackingId.remove.by.orderId', orderId);
       Meteor.call('order.payment.remove.by.orderId', orderId);
+      removeOrderCost._execute({ userId: this.userId }, { orderId });
     }
   },
 

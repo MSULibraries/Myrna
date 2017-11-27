@@ -6,6 +6,7 @@ import { sinon } from 'meteor/practicalmeteor:sinon';
 import { Random } from 'meteor/random';
 import moment from 'moment';
 
+import { createMockUsers, users } from './../../../lib/server/testUtil/createMockRoles';
 import * as OrderApi from './order';
 import { Payment } from './../../../lib/payment';
 import { setAvailible } from './../ItemDesc/methods/setAvailible/index';
@@ -20,6 +21,9 @@ if (Meteor.isServer) {
       let totalOrders;
 
       beforeEach(() => {
+        // Creating mock users
+        createMockUsers();
+
         // Stubbing soome of meteors global functions
         const userIdStub = sinon.stub(Meteor, 'userId');
         totalOrders = 5;
@@ -242,7 +246,7 @@ if (Meteor.isServer) {
         sinon.stub(setAvailible, 'call');
         const readOrder = Meteor.server.method_handlers['order.remove'];
         // Set up a fake method invocation that looks like what the method expects
-        const invocation = { userId };
+        const invocation = { userId: users.eve.uid };
 
         readOrder.apply(invocation, [mockOrderId]);
         assert.equal(OrderApi.Order.find().count(), totalOrders - 1);
