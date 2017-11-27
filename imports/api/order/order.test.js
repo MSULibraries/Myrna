@@ -10,6 +10,7 @@ import { createMockUsers, users } from './../../../lib/server/testUtil/createMoc
 import * as OrderApi from './order';
 import { Payment } from './../../../lib/payment';
 import { setAvailible } from './../ItemDesc/methods/setAvailible/index';
+import { getOrderCost } from './bridges/orderCost/methods/getOrderCost/index';
 
 if (Meteor.isServer) {
   describe('Order', () => {
@@ -121,12 +122,15 @@ if (Meteor.isServer) {
         });
 
         it('gets rate for package', () => {
+          sinon.stub(getOrderCost, '_execute').returns(3.51);
+
           const buyOrder = Meteor.server.method_handlers['order.buy'];
           const invocation = { userId };
           getRateStub.withArgs('order.trackingId.read.rate').returns(50);
           buyOrder.apply(invocation, [mockOrderId]);
 
           sinon.assert.calledOnce(getRateStub.withArgs('order.trackingId.read.rate'));
+          getOrderCost._execute.restore();
         });
       });
 

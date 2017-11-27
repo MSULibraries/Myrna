@@ -11,6 +11,7 @@ import { OrderTrackingId } from './../order/bridges/orderTrackingId';
 import { Payment } from './../../../lib/payment';
 import { setAvailible } from './../ItemDesc/methods/setAvailible/index';
 import { removeOrderCost } from './bridges/orderCost/methods/removeOrderCost/index';
+import { getOrderCost } from './bridges/orderCost/methods/getOrderCost/index';
 
 const EasyPost = new EasyPostInterface();
 export const Order = new Mongo.Collection('orders');
@@ -209,14 +210,11 @@ Meteor.methods({
 
   'order.buy': function orderBuy(orderId) {
     if (userLoggedIn() && !this.isSimulation) {
-      // Only run on server
-      const clothingCost = 0;
-
+      const costumeCost = getOrderCost._execute({ userId: this.userId }, { orderId });
       const shippingCost = Meteor.call('order.trackingId.read.rate', orderId);
-
-      const balanceDue = clothingCost + shippingCost;
-
+      const balanceDue = costumeCost + shippingCost;
       const paymentUrl = createPaymentUrl(orderId, balanceDue);
+
       return paymentUrl;
     }
     return undefined;

@@ -3,7 +3,7 @@
 import { assert } from 'meteor/practicalmeteor:chai';
 import { Random } from 'meteor/random';
 
-import getOrderCost from './../index';
+import { getOrderCost } from './../index';
 import { OrderCost } from './../../../index';
 import {
   users,
@@ -14,7 +14,7 @@ describe('Order', () => {
   describe('methods', () => {
     const costumeCost = 90.91;
     const orderId = Random.id();
-    console.log(orderId);
+
     function removeAllOrderCost() {
       OrderCost.remove({});
     }
