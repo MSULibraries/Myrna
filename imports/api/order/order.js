@@ -32,12 +32,6 @@ const orderSchema = new SimpleSchema({
     type: Date,
     label: 'Date Added',
   },
-  dateDelivered: {
-    defaultValue: null,
-    type: Date,
-    label: 'Date To Ship Back',
-    optional: true,
-  },
   dateToArriveBy: {
     type: Date,
     label: 'Date To Arrive By',
@@ -54,16 +48,22 @@ const orderSchema = new SimpleSchema({
     type: [String],
     label: 'productIds',
   },
+  status: {
+    allowedValues: ['Active', 'Approved', 'Cancelled', 'Complete', 'Delivered', 'Un-Approved'],
+    type: String,
+    label: 'status',
+  },
+  dateDelivered: {
+    defaultValue: null,
+    optional: true,
+    type: Date,
+    label: 'Date To Ship Back',
+  },
   specialInstr: {
     defaultValue: '',
     optional: true,
     type: String,
     label: 'Special Instructions',
-  },
-  status: {
-    allowedValues: ['Active', 'Approved', 'Cancelled', 'Complete', 'Delivered', 'Un-Approved'],
-    type: String,
-    label: 'status',
   },
 });
 

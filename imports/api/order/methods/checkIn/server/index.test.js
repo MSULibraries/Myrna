@@ -14,6 +14,7 @@ describe('Order', () => {
       let setAvailibleStub;
       const newMockOrder = {
         userId: '1',
+        costumeCost: 1,
         dateAdded: new Date(),
         dateToArriveBy: new Date(),
         dateToShipBack: new Date(),

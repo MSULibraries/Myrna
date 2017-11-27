@@ -1,8 +1,8 @@
 /**
-* Adds a new order to the collection
-* Sets status to 'Un-Approved' by default so that
-* a maintainer can approve the order
-*/
+ * Adds a new order to the collection
+ * Sets status to 'Un-Approved' by default so that
+ * a maintainer can approve the order
+ */
 
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';

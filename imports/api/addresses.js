@@ -15,7 +15,7 @@ const addressSchema = new SimpleSchema({
   zip: { type: String, label: 'zip', optional: false },
 });
 
-const addressContext = addressSchema.newContext();
+Addresses.attachSchema(addressSchema);
 
 if (Meteor.isServer) {
   // This code only runs on the server
@@ -42,15 +42,15 @@ Meteor.methods({
       company,
       createdAt: new Date(),
       name,
-      userId: Meteor.userId(),
+      owner: Meteor.userId(),
       street1,
       state,
       zip,
     };
 
-    if (addressContext.isValid(newAddress)) {
-      Addresses.insert(newAddress);
-    }
+    check(newAddress, addressSchema);
+
+    Addresses.insert(newAddress);
   },
   'addresses.remove': function addressesRemove(addressId) {
     check(addressId, String);
