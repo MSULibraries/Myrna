@@ -1,4 +1,6 @@
+import DropDownMenu from 'material-ui/DropDownMenu';
 import FlatButton from 'material-ui/FlatButton';
+import MenuItem from 'material-ui/MenuItem';
 import TextField from 'material-ui/TextField';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -8,30 +10,28 @@ class NewAddressForm extends Component {
     super(props);
 
     this.state = {
+      allowedStates: ['Mississippi', 'Alabama', 'Tennessee', 'Louisiana'],
       company: '',
       city: '',
       name: '',
       streetAddress: '',
-      state: '',
+      state: null,
       zip: '',
     };
-
-    this.processFormData = this.processFormData.bind(this);
-    this.updateFormState = this.updateFormState.bind(this);
   }
 
-  updateFormState(key, value) {
+  updateFormState = (key, value) => {
     this.setState({ [key]: value });
-  }
+  };
 
-  processFormData() {
+  processFormData = () => {
     this.props.submitForm(this.state);
-  }
+  };
 
   render() {
     return (
       <form
-        onSubmit={(e) => {
+        onSubmit={e => {
           e.preventDefault();
           this.processFormData();
         }}
@@ -50,7 +50,17 @@ class NewAddressForm extends Component {
         <br />
         <TextField hintText="City" onChange={e => this.updateFormState('city', e.target.value)} />
         <br />
-        <TextField hintText="State" onChange={e => this.updateFormState('state', e.target.value)} />
+        <DropDownMenu
+          value={this.state.allowedStates[0]}
+          onChange={e => this.updateFormState('state', e.target.value)}
+          iconStyle={{ right: 0, margin: 0, padding: 0, width: 'auto' }}
+          labelStyle={{ paddingLeft: 0 }}
+          underlineStyle={{ margin: 0 }}
+        >
+          {this.state.allowedStates.map(state => (
+            <MenuItem key={state} value={state} primaryText={state} />
+          ))}
+        </DropDownMenu>
         <br />
         <TextField hintText="Zip" onChange={e => this.updateFormState('zip', e.target.value)} />
         <br />

@@ -38,9 +38,6 @@ export class AddressesPage extends Component {
     this.state = {
       addingNewAddress: false,
     };
-
-    this.addNewAddress = this.addNewAddress.bind(this);
-    this.toggleAddingNewAddress = this.toggleAddingNewAddress.bind(this);
   }
 
   componentWillMount() {
@@ -59,12 +56,10 @@ export class AddressesPage extends Component {
    * @param {String} streetAddress
    * @param {String} zip
    */
-  addNewAddress({
-    city, company, name, state, streetAddress, zip,
-  }) {
+  addNewAddress = ({ city, company, name, state, streetAddress, zip }) => {
     Meteor.call('addresses.insert', city, company, name, state, streetAddress, zip);
     this.setState({ addingNewAddress: false });
-  }
+  };
 
   /**
    * Removes address from collection by id
@@ -77,9 +72,9 @@ export class AddressesPage extends Component {
   /**
    * Hides or Shows new address form
    */
-  toggleAddingNewAddress() {
+  toggleAddingNewAddress = () => {
     this.setState({ addingNewAddress: !this.state.addingNewAddress });
-  }
+  };
 
   render() {
     return (

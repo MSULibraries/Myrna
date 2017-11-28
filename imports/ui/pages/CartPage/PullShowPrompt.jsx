@@ -35,7 +35,7 @@ export class PullShowPrompt extends Component {
       if (!error) {
         this.props.close();
       } else {
-        console.log(error);
+        console.error(error);
       }
     });
   };

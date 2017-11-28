@@ -19,15 +19,15 @@ Addresses.attachSchema(addressSchema);
 
 if (Meteor.isServer) {
   // This code only runs on the server
-  Meteor.publish('addresses', () => Addresses.find({ userId: Meteor.userId() }));
+  Meteor.publish('addresses', () => Addresses.find({ userId: this.userId }));
 }
 
 Meteor.methods({
-  'addresses.insert': function addressesInsert(city, company, name, state, street1, zip) {
+  'addresses.insert': function addressesInsert(city, company, name, state, streetAddress, zip) {
     // Checking Input Var Types
     check(name, String);
     check(company, String);
-    check(street1, String);
+    check(streetAddress, String);
     check(city, String);
     check(state, String);
     check(zip, String);
@@ -43,7 +43,7 @@ Meteor.methods({
       createdAt: new Date(),
       name,
       owner: Meteor.userId(),
-      street1,
+      street1: streetAddress,
       state,
       zip,
     };
