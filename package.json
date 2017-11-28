@@ -6,9 +6,11 @@
     "lint:fix": "eslint . --fix",
     "precommit": "npm test",
     "pretest": "npm run lint --silent",
-    "start": "meteor run --settings settings.json",
-    "test": "meteor --settings settings.json test --once --driver-package dispatch:mocha",
-    "test:watch": "meteor --settings settings.json test --driver-package practicalmeteor:mocha --port 3100"
+    "start": "meteor run",
+    "test":
+      "meteor --settings settings.json test --once --driver-package dispatch:mocha",
+    "test:watch":
+      "meteor --settings settings.json test --driver-package practicalmeteor:mocha --port 3100"
   },
   "dependencies": {
     "@easypost/api": "^3.0.12",
@@ -46,8 +48,5 @@
     "husky": "^0.14.3",
     "react-test-renderer": "^15.6.2",
     "regenerator-runtime": "^0.11.0"
-  },
-  "eslintConfig": {
-    "extends": "@meteorjs/eslint-config-meteor"
   }
 }

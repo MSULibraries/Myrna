@@ -5,7 +5,7 @@ import { assert } from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import { Random } from 'meteor/random';
 
-import { ItemDesc } from './itemDesc';
+import { ItemDesc } from './index';
 
 if (Meteor.isServer) {
   describe('ItemDesc', () => {
@@ -21,6 +21,7 @@ if (Meteor.isServer) {
       const maxTimeframe = 'asdf';
       const timeframe = 'asdf';
       const category = 'asdf';
+      const isAvailible = true;
       const minimumTimeframe = 'asdf';
       const shippingRate = 'asdf';
       const expectedReturn = 'asdf';
@@ -44,6 +45,7 @@ if (Meteor.isServer) {
           oldId,
           name,
           description,
+          isAvailible,
           costPerTimeframe,
           maxTimeframe,
           timeframe,
@@ -65,17 +67,18 @@ if (Meteor.isServer) {
       });
 
       it('itemDesc.insert inserts', () => {
-        const insertDress = Meteor.server.method_handlers['itemDesc.insert'];
+        const instertDesc = Meteor.server.method_handlers['itemDesc.insert'];
         // Set up a fake method invocation that looks like what the method expects
         const invocation = { userId };
 
-        insertDress.apply(invocation, [
+        instertDesc.apply(invocation, [
           oldId,
           name,
           description,
           costPerTimeframe,
           maxTimeframe,
           timeframe,
+          isAvailible,
           category,
           minimumTimeframe,
           shippingRate,

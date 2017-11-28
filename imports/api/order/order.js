@@ -9,6 +9,9 @@ import { Addresses } from './../addresses';
 import { OrderAddress } from './../order/bridges/orderAddress';
 import { OrderTrackingId } from './../order/bridges/orderTrackingId';
 import { Payment } from './../../../lib/payment';
+import { setAvailible } from './../ItemDesc/methods/setAvailible/index';
+import { removeOrderCost } from './bridges/orderCost/methods/removeOrderCost/index';
+import { getOrderCost } from './bridges/orderCost/methods/getOrderCost/index';
 
 const EasyPost = new EasyPostInterface();
 export const Order = new Mongo.Collection('orders');
@@ -31,12 +34,6 @@ const orderSchema = new SimpleSchema({
     type: Date,
     label: 'Date Added',
   },
-  dateDelivered: {
-    defaultValue: null,
-    type: Date,
-    label: 'Date To Ship Back',
-    optional: true,
-  },
   dateToArriveBy: {
     type: Date,
     label: 'Date To Arrive By',
@@ -53,16 +50,22 @@ const orderSchema = new SimpleSchema({
     type: [String],
     label: 'productIds',
   },
+  status: {
+    allowedValues: ['Active', 'Approved', 'Cancelled', 'Complete', 'Delivered', 'Un-Approved'],
+    type: String,
+    label: 'status',
+  },
+  dateDelivered: {
+    defaultValue: null,
+    optional: true,
+    type: Date,
+    label: 'Date To Ship Back',
+  },
   specialInstr: {
     defaultValue: '',
     optional: true,
     type: String,
     label: 'Special Instructions',
-  },
-  status: {
-    allowedValues: ['Active', 'Approved', 'Cancelled', 'Complete', 'Delivered', 'Un-Approved'],
-    type: String,
-    label: 'status',
   },
 });
 
@@ -207,14 +210,11 @@ Meteor.methods({
 
   'order.buy': function orderBuy(orderId) {
     if (userLoggedIn() && !this.isSimulation) {
-      // Only run on server
-      const clothingCost = 0;
-
+      const costumeCost = getOrderCost._execute({ userId: this.userId }, { orderId });
       const shippingCost = Meteor.call('order.trackingId.read.rate', orderId);
-
-      const balanceDue = clothingCost + shippingCost;
-
+      const balanceDue = costumeCost + shippingCost;
       const paymentUrl = createPaymentUrl(orderId, balanceDue);
+
       return paymentUrl;
     }
     return undefined;
@@ -229,6 +229,9 @@ Meteor.methods({
       check(orderId, String);
 
       Order.update({ _id: orderId }, { $set: { status: 'Cancelled' } });
+
+      const ordersProductIds = Order.findOne({ _id: orderId }).productIds;
+      setAvailible.call({ itemIds: ordersProductIds, isAvailible: true });
     }
   },
 
@@ -276,51 +279,23 @@ Meteor.methods({
   },
 
   /**
-   * Adds a new order to the collection
-   * Sets status to 'Un-Approved' by default so that
-   * a maintainer can approve the order
-   */
-  'order.insert': (dateToArriveBy, dateToShipBack, isPickUp, specialInstr = '') => {
-    if (userLoggedIn()) {
-      // Getting all item information from cart
-      const cartProductIds = Meteor.call('cart.read.productIds');
-      const orderId = Order.insert(
-        {
-          userId: Meteor.userId(),
-          dateAdded: Date.now(),
-          dateToArriveBy,
-          dateToShipBack,
-          isPickUp,
-          productIds: cartProductIds,
-          status: 'Un-Approved',
-          specialInstr,
-        },
-        (error) => {
-          if (!error) {
-            // Waiting on this. This causes failures for order.insert sometimes
-            // because the test aren't waiting for this to finish
-            // Meteor.call('cart.clear');
-          }
-        },
-      );
-      Meteor.call('cart.clear');
-
-      return orderId;
-    }
-    return undefined;
-  },
-
-  /**
-   * Removes an orders entry from the collection and the orders attached addresss
+   * Makes an order's product availible, Removes an orders entry from
+   * the collection and the orders attached addresss
    * @param {string} orderId - id of the order
    */
   'order.remove': function orderDelete(orderId) {
     check(orderId, String);
     if (userLoggedIn()) {
+      // Making order's product availible again
+      const ordersProductIds = Order.findOne({ _id: orderId }).productIds;
+      setAvailible.call({ itemIds: ordersProductIds, isAvailible: true });
+
+      // Remove order and associated entries
       Order.remove({ _id: orderId });
       Meteor.call('order.address.remove.by.orderId', orderId);
       Meteor.call('order.trackingId.remove.by.orderId', orderId);
       Meteor.call('order.payment.remove.by.orderId', orderId);
+      removeOrderCost._execute({ userId: this.userId }, { orderId });
     }
   },
 

@@ -15,19 +15,19 @@ const addressSchema = new SimpleSchema({
   zip: { type: String, label: 'zip', optional: false },
 });
 
-const addressContext = addressSchema.newContext();
+Addresses.attachSchema(addressSchema);
 
 if (Meteor.isServer) {
   // This code only runs on the server
-  Meteor.publish('addresses', () => Addresses.find({ userId: Meteor.userId() }));
+  Meteor.publish('addresses', () => Addresses.find({ userId: this.userId }));
 }
 
 Meteor.methods({
-  'addresses.insert': function addressesInsert(city, company, name, state, street1, zip) {
+  'addresses.insert': function addressesInsert(city, company, name, state, streetAddress, zip) {
     // Checking Input Var Types
     check(name, String);
     check(company, String);
-    check(street1, String);
+    check(streetAddress, String);
     check(city, String);
     check(state, String);
     check(zip, String);
@@ -42,15 +42,15 @@ Meteor.methods({
       company,
       createdAt: new Date(),
       name,
-      userId: Meteor.userId(),
-      street1,
+      owner: Meteor.userId(),
+      street1: streetAddress,
       state,
       zip,
     };
 
-    if (addressContext.isValid(newAddress)) {
-      Addresses.insert(newAddress);
-    }
+    check(newAddress, addressSchema);
+
+    Addresses.insert(newAddress);
   },
   'addresses.remove': function addressesRemove(addressId) {
     check(addressId, String);

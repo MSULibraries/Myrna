@@ -9,8 +9,8 @@ const DescriptionContainer = styled.div`padding: 10px;`;
 
 const ProductImage = styled.img`
   min-height: 250px;
-  filter: ${(props) => {
-    if (props.disabled) {
+  filter: ${({ isAvailible }) => {
+    if (isAvailible === false) {
       return 'grayscale(100%)';
     }
     return 'grayscale(0%)';
@@ -29,21 +29,26 @@ export const ProductCard = ({
   name,
   oldId,
   description,
-  disabled = false,
+  isAvailible = false,
   imgSrc,
   shortDescription,
 }) => (
   <Paper zDepth={3}>
     <Card>
       <PageDetailLink>
-        {disabled ? (
+        {!isAvailible ? (
           <CardMediaContainer overlay={<CardTitle subtitle="Out Of Stock" />}>
-            <ProductImage disabled={disabled} src={imgSrc} alt={shortDescription} />
+            <ProductImage
+              disabled={!isAvailible}
+              src={`images/clothing/${category.toLowerCase()}/${oldId}/small/${JSON.parse(description).picture_1}`}
+              alt={`images/clothing/${category}/${oldId}/small/${JSON.parse(description)
+                .picture_1}`}
+            />
           </CardMediaContainer>
         ) : (
           <CardMediaContainer>
             <ProductImage
-              disabled={disabled}
+              disabled={!isAvailible}
               src={`images/clothing/${category.toLowerCase()}/${oldId}/small/${JSON.parse(description).picture_1}`}
               alt={`images/clothing/${category}/${oldId}/small/${JSON.parse(description)
                 .picture_1}`}
@@ -58,18 +63,24 @@ export const ProductCard = ({
         </PageDetailLink>
       </DescriptionContainer>
       <CardActions>
-        {isAuthed && <FlatButton label="Add To Cart" onClick={() => addProductToCart(_id)} />}
+        {isAuthed && (
+          <FlatButton
+            disabled={!isAvailible}
+            label="Add To Cart"
+            onClick={() => addProductToCart(_id)}
+          />
+        )}
       </CardActions>
     </Card>
   </Paper>
 );
 
 ProductCard.propTypes = {
-  _id: PropTypes.object,
+  _id: PropTypes.string,
   addProductToCart: PropTypes.func,
   category: PropTypes.string,
   description: PropTypes.string,
-  disabled: PropTypes.string,
+  isAvailible: PropTypes.bool,
   imgSrc: PropTypes.string,
   isAuthed: PropTypes.bool,
   name: PropTypes.string,

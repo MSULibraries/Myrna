@@ -6,6 +6,7 @@ import React, { Component } from 'react';
 import FlatButton from 'material-ui/FlatButton';
 
 import { Show } from './../../../api/show';
+import { pullShow } from './../../../api/show/methods/pullShow/index.js';
 
 export class PullShowPrompt extends Component {
   constructor() {
@@ -29,13 +30,13 @@ export class PullShowPrompt extends Component {
     // Clearing Cart
     Meteor.call('cart.clear');
 
-    // Pulling show's product
-    Meteor.call('show.read', showId, (error, { productIds }) => {
-      // Adding show product to cart
-      Meteor.call('cart.insert.productIds', productIds);
-
-      // closing modal
-      this.props.close();
+    // Adding a show's items to cart
+    pullShow.call({ showId: showId }, (error, result) => {
+      if (!error) {
+        this.props.close();
+      } else {
+        console.error(error);
+      }
     });
   };
 

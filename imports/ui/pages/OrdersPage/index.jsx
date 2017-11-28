@@ -9,12 +9,14 @@ import {
   TableRow,
   TableRowColumn,
 } from 'material-ui/Table';
+import TextField from 'material-ui/TextField';
 import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-/* import { Container } from 'react-grid-system'; */
+import { Col, Container, Row } from 'react-grid-system';
 import Helmet from 'react-helmet';
-
+import { Link } from 'react-router-dom';
+import { LeftNav } from './../../components/LeftNav/LeftNav';
 import AddressList from './../../components/AddressList/index';
 import BreadCrumbs from './../../components/BreadCrumbs/index';
 import { isMaintainer } from './../../../../lib/roles';
@@ -22,10 +24,9 @@ import Addresses from './../../../api/addresses';
 import Order from './../../../api/order/order';
 import OrderAddress from './../../../api/order/bridges/orderAddress';
 import OrderTrackingId from './../../../api/order/bridges/orderTrackingId';
-import LeftNav from '../../components/LeftNav/LeftNav';
-import { Col, Container, Row } from 'react-grid-system';
-
 import { Loader } from './../../components/Loader/index';
+import insertOrderCost from './../../../api/order/bridges/orderCost/methods/insertOrderCost/index';
+
 // Adjusted contrast to help with a11y
 const darkerTableHeaders = {
   color: '#575757',
@@ -45,18 +46,23 @@ export class OrdersPage extends Component {
     super();
 
     this.state = {
+      hideInactive: false,
       approvingOrder: false,
+      costumeCost: null,
       isBuyingOrder: false,
       modalBuyingOpen: false,
+      modalOrderCostOpen: false,
       modalOpen: false,
-      paymentUrl: null,
       orderAddresses: {},
+      paymentUrl: null,
       selectedOrderAddress: undefined,
+      targetOrderId: null,
     };
 
     this.approveOrder = this.approveOrder.bind(this);
     this.buyOrder = this.buyOrder.bind(this);
     this.deleteOrder = this.deleteOrder.bind(this);
+    this.filterInactive = this.filterInactive.bind(this);
     this.getOrderAddress = this.getOrderAddress.bind(this);
     this.getOrderAddresses = this.getOrderAddresses.bind(this);
     this.renderOrderTrackingLink = this.renderOrderTrackingLink.bind(this);
@@ -68,11 +74,24 @@ export class OrdersPage extends Component {
     }
   }
 
-  approveOrder(id) {
+  approveOrder() {
     this.setState({ approvingOrder: true });
-    Meteor.call('order.approve', id, () => {
-      this.setState({ approvingOrder: false });
-    });
+
+    insertOrderCost.call(
+      {
+        orderId: this.state.targetOrderId,
+        costumeCost: this.state.costumeCost,
+      },
+      (error, result) => {
+        if (!error) {
+          Meteor.call('order.approve', this.state.targetOrderId, () => {
+            this.setState({ approvingOrder: false });
+          });
+        } else {
+          console.error(error);
+        }
+      },
+    );
   }
 
   buyOrder(orderId) {
@@ -139,6 +158,18 @@ export class OrdersPage extends Component {
     return 'None';
   }
 
+  togglehideInactive() {
+    this.setState({
+      hideInactive: !this.state.hideInactive,
+    });
+  }
+
+  filterInactive(order) {
+    if (!this.state.hideInactive) {
+      return order.status !== 'Complete';
+    } else return true;
+  }
+
   render() {
     return (
       <Container>
@@ -156,13 +187,22 @@ export class OrdersPage extends Component {
           <LeftNav />
           <Col sm={8}>
             <BreadCrumbs crumbs={['Profile', 'Orders']} />
+            <label className="hide-inactive">
+              <input
+                type="checkbox"
+                readOnly
+                checked={this.state.hideInactive}
+                onClick={this.togglehideInactive.bind(this)}
+              />
+              Show All Orders
+            </label>
             <Table>
               <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
                 <TableRow>
                   <TableHeaderColumn style={darkerTableHeaders}>Order Owner</TableHeaderColumn>
                   <TableHeaderColumn style={darkerTableHeaders}>Tracking ID</TableHeaderColumn>
                   <TableHeaderColumn style={darkerTableHeaders}>Ordered On</TableHeaderColumn>
-                  <TableHeaderColumn style={darkerTableHeaders}>Product Ids</TableHeaderColumn>
+                  <TableHeaderColumn style={darkerTableHeaders}>Details</TableHeaderColumn>
                   <TableHeaderColumn style={darkerTableHeaders}>Status</TableHeaderColumn>
                   <TableHeaderColumn style={{ darkerTableHeaders }}>Address</TableHeaderColumn>
                   <TableHeaderColumn style={{ darkerTableHeaders, ...alignCenter }}>
@@ -183,7 +223,7 @@ export class OrdersPage extends Component {
                 </TableRow>
               </TableHeader>
               <TableBody displayRowCheckbox={false}>
-                {this.props.orders.map(order => (
+                {this.props.orders.filter(order => this.filterInactive(order)).map(order => (
                   <TableRow key={order._id}>
                     {/* Order Owner */}
                     <TableRowColumn>{Meteor.user(order.userId).emails[0].address}</TableRowColumn>
@@ -196,8 +236,10 @@ export class OrdersPage extends Component {
                       {new Date(order.dateAdded).toLocaleDateString('en-US')}
                     </TableRowColumn>
 
-                    {/* Product IDs */}
-                    <TableRowColumn>{JSON.stringify(order.productIds)}</TableRowColumn>
+                    {/* Details Link */}
+                    <TableRowColumn>
+                      <Link to={'/orders/details/' + order._id}>Details</Link>
+                    </TableRowColumn>
 
                     {/* Status */}
                     <TableRowColumn>{order.status}</TableRowColumn>
@@ -224,6 +266,7 @@ export class OrdersPage extends Component {
                     {/* Re Order */}
                     <TableRowColumn>
                       <FlatButton
+                        disabled={order.status !== 'Complete'}
                         onClick={() => this.reOrderOrder(order._id)}
                         secondary
                         label="Re-Order"
@@ -233,12 +276,17 @@ export class OrdersPage extends Component {
                     {/* Approve Button */}
                     {isMaintainer() && (
                       <TableRowColumn>
-                        {this.state.approvingOrder ? (
+                        {this.state.approvingOrder && order._id === this.state.targetOrderId ? (
                           <Loader />
                         ) : (
                           <FlatButton
                             disabled={order.status !== 'Un-Approved'}
-                            onClick={() => this.approveOrder(order._id)}
+                            onClick={() =>
+                              this.setState({
+                                targetOrderId: order._id,
+                                modalOrderCostOpen: true,
+                              })
+                            }
                             secondary
                             label="✓"
                           />
@@ -278,6 +326,29 @@ export class OrdersPage extends Component {
             >
               <AddressList addresses={[this.state.selectedOrderAddress]} />
               <FlatButton onClick={() => this.handleClose()} label="Close" />
+            </Dialog>
+
+            <Dialog
+              title="Order Cost"
+              modal={false}
+              open={this.state.modalOrderCostOpen}
+              onRequestClose={() => this.setState({ modalOrderCostOpen: false })}
+            >
+              <TextField
+                onChange={({ target: { value: newCost } }) => {
+                  this.setState({ costumeCost: +newCost });
+                }}
+                hintText="Cost"
+                label="Cost"
+              />
+
+              <FlatButton
+                label="Submit"
+                onClick={() => {
+                  this.approveOrder();
+                  this.setState({ modalOrderCostOpen: false });
+                }}
+              />
             </Dialog>
           </Col>
         </Row>

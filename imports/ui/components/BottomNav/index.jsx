@@ -8,21 +8,27 @@ export const BottomNav = ({ userLoggedIn }) =>
   userLoggedIn && (
     <BottomNavContainer>
       <Item>
-        <BottomNavLink to="cart">
+        <BottomNavLink to="/cart">
           Cart
-          <img src="icons/ic_shopping_cart_white_24px.svg" alt="Cart Icon" />
+          <img
+            src={`${document.location.origin}/icons/ic_shopping_cart_white_24px.svg`}
+            alt="Cart Icon"
+          />
         </BottomNavLink>
       </Item>
       <Item>
-        <BottomNavLink to="orders">
+        <BottomNavLink to="/orders">
           Orders
-          <img src="icons/ic_list_white_24px.svg" alt="Orders Icon" />
+          <img src={`${document.location.origin}/icons/ic_list_white_24px.svg`} alt="Orders Icon" />
         </BottomNavLink>
       </Item>
       <Item>
-        <BottomNavLink to="profile">
+        <BottomNavLink to="/profile">
           Profile
-          <img src="icons/ic_account_box_white_24px.svg" alt="Profile Icon" />
+          <img
+            src={`${document.location.origin}/icons/ic_account_box_white_24px.svg`}
+            alt="Profile Icon"
+          />
         </BottomNavLink>
       </Item>
     </BottomNavContainer>

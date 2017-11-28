@@ -1,19 +1,22 @@
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
 
-export default (AuthRoute = ({ component: Component, ...rest }) => (
-  <Route
-    {...rest}
-    render={props =>
-      (Meteor.user() ? (
-        <Component {...props} />
-      ) : (
-        <Redirect
-          to={{
-            pathname: '/login',
-            state: { from: props.location },
-          }}
-        />
-      ))}
-  />
-));
+export const AuthRoute = ({ userLoggedIn = '', component: Component, ...rest }) =>
+  userLoggedIn !== '' && (
+    <Route
+      {...rest}
+      render={props =>
+        (userLoggedIn ? (
+          <Component {...props} />
+        ) : (
+          <Redirect
+            to={{
+              pathname: '/login',
+              state: { from: props.location },
+            }}
+          />
+        ))}
+    />
+  );
+
+export default AuthRoute;

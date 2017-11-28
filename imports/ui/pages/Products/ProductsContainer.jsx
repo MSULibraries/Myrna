@@ -15,7 +15,7 @@ import { media } from './../../breakpoints';
 import ProductCard from './../../components/ProductCard/index';
 import Cart from './../../../api/cart';
 import Dress from './../../../api/dresses';
-import ItemDesc from './../../../api/itemDesc';
+import ItemDesc from './../../../api/ItemDesc/index';
 
 const { fadeUp } = transitions;
 
@@ -87,7 +87,7 @@ class ProductsContainer extends Component {
    * Adds item to cart in DB
    * @param {String} productId
    */
-  addProductToCart({ _str: productId }) {
+  addProductToCart( productId) {
     Meteor.call('cart.insert', productId);
   }
 
@@ -267,7 +267,7 @@ class ProductsContainer extends Component {
               {this.state.currentProducts.length <= this.state.itemsPerPage ? (
                 this.state.currentProducts.map(clothing => (
                   <ProductCard
-                    addProductToCart={this.addProductToCart}
+                    addProductToCart={()=> this.addProductToCart(clothing._id)}
                     isAuthed={Meteor.userId() !== null}
                     key={clothing._id}
                     {...clothing}

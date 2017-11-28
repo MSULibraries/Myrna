@@ -6,8 +6,11 @@ import { sinon } from 'meteor/practicalmeteor:sinon';
 import { Random } from 'meteor/random';
 import moment from 'moment';
 
+import { createMockUsers, users } from './../../../lib/server/testUtil/createMockRoles';
 import * as OrderApi from './order';
 import { Payment } from './../../../lib/payment';
+import { setAvailible } from './../ItemDesc/methods/setAvailible/index';
+import { getOrderCost } from './bridges/orderCost/methods/getOrderCost/index';
 
 if (Meteor.isServer) {
   describe('Order', () => {
@@ -19,6 +22,9 @@ if (Meteor.isServer) {
       let totalOrders;
 
       beforeEach(() => {
+        // Creating mock users
+        createMockUsers();
+
         // Stubbing soome of meteors global functions
         const userIdStub = sinon.stub(Meteor, 'userId');
         totalOrders = 5;
@@ -116,12 +122,15 @@ if (Meteor.isServer) {
         });
 
         it('gets rate for package', () => {
+          sinon.stub(getOrderCost, '_execute').returns(3.51);
+
           const buyOrder = Meteor.server.method_handlers['order.buy'];
           const invocation = { userId };
           getRateStub.withArgs('order.trackingId.read.rate').returns(50);
           buyOrder.apply(invocation, [mockOrderId]);
 
           sinon.assert.calledOnce(getRateStub.withArgs('order.trackingId.read.rate'));
+          getOrderCost._execute.restore();
         });
       });
 
@@ -136,12 +145,16 @@ if (Meteor.isServer) {
 
       it("order.cancel updates order status to 'Cancelled'", () => {
         const cancelOrder = Meteor.server.method_handlers['order.cancel'];
+
+        sinon.stub(setAvailible, 'call');
+
         // Set up a fake method invocation that looks like what the method expects
         const invocation = { userId };
         const expectedStatus = 'Cancelled';
         cancelOrder.apply(invocation, [mockOrderId]);
 
         assert.equal(OrderApi.Order.findOne({ _id: mockOrderId }).status, expectedStatus);
+        setAvailible.call.restore();
       });
       describe('order.count', () => {
         it('returns the number of orders a user has regardless of order status', () => {
@@ -234,23 +247,14 @@ if (Meteor.isServer) {
       });
 
       it('order.remove removes order from collection', () => {
+        sinon.stub(setAvailible, 'call');
         const readOrder = Meteor.server.method_handlers['order.remove'];
         // Set up a fake method invocation that looks like what the method expects
-        const invocation = { userId };
+        const invocation = { userId: users.eve.uid };
 
         readOrder.apply(invocation, [mockOrderId]);
         assert.equal(OrderApi.Order.find().count(), totalOrders - 1);
-      });
-
-      it('order.insert inserts', () => {
-        const insertOrder = Meteor.server.method_handlers['order.insert'];
-        // Set up a fake method invocation that looks like what the method expects
-        const invocation = { userId };
-
-        // Inserting expects a dateToArriveBy, dateToShipBack, isPickUp and special instr
-        insertOrder.apply(invocation, [new Date(), new Date(), false, 'Send pizza with order']);
-
-        assert.equal(OrderApi.Order.find().count(), totalOrders + 1);
+        setAvailible.call.restore();
       });
 
       describe('order.reorder', () => {
