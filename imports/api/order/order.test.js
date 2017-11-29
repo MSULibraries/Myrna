@@ -106,7 +106,25 @@ if (Meteor.isServer) {
           const invocation = { userId };
           const expectedStatus = 'Active';
 
+          sinon.stub(OrderApi.Order, 'findOne').returns({ isPickUp: false });
+
           activateOrder.apply(invocation, [mockOrderId]);
+
+          OrderApi.Order.findOne.restore();
+
+          assert.equal(OrderApi.Order.findOne({ _id: mockOrderId }).status, expectedStatus);
+        });
+        it("updates status to 'Delivered' if is a pick up order", () => {
+          const activateOrder = Meteor.server.method_handlers['order.activate'];
+          // Set up a fake method invocation that looks like what the method expects
+          const invocation = { userId };
+          const expectedStatus = 'Delivered';
+          sinon.stub(OrderApi.Order, 'findOne').returns({ isPickUp: true });
+
+          activateOrder.apply(invocation, [mockOrderId]);
+
+          OrderApi.Order.findOne.restore();
+
           assert.equal(OrderApi.Order.findOne({ _id: mockOrderId }).status, expectedStatus);
         });
       });

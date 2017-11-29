@@ -183,21 +183,26 @@ export function createShipment(orderId) {
 Meteor.methods({
   'order.activate': function orderActivate(orderId) {
     if (userLoggedIn()) {
-      // Updating order status
-      Order.update({ _id: orderId }, { $set: { status: 'Active' } }, async (error) => {
-        if (!error && !Meteor.isTest) {
-          const { shipmentId } = OrderTrackingId.findOne({ orderId });
-          const shipment = await EasyPost.buyShipment(shipmentId);
+      const { isPickUp } = Order.findOne({ _id: orderId });
+      if (!isPickUp) {
+        // Updating order status
+        Order.update({ _id: orderId }, { $set: { status: 'Active' } }, async (error) => {
+          if (!error && !Meteor.isTest) {
+            const { shipmentId } = OrderTrackingId.findOne({ orderId });
+            const shipment = await EasyPost.buyShipment(shipmentId);
 
-          Meteor.call(
-            'order.trackingId.update.tracking',
-            orderId,
-            shipment.tracker.id,
-            shipment.postage_label.label_url,
-            shipment.tracker.public_url,
-          );
-        }
-      });
+            Meteor.call(
+              'order.trackingId.update.tracking',
+              orderId,
+              shipment.tracker.id,
+              shipment.postage_label.label_url,
+              shipment.tracker.public_url,
+            );
+          }
+        });
+      } else {
+        Order.update({ _id: orderId }, { $set: { status: 'Delivered' } });
+      }
     }
   },
   'order.approve': async function orderApprove(orderId) {
