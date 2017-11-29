@@ -44,9 +44,11 @@ describe('Order', () => {
           specialInstr: 'Drop that beat!',
         };
 
-        submitOrder._execute({ userId: 1 }, newOrder);
-
-        assert.equal(Order.find().count(), 2);
+        submitOrder._execute({ userId: 1 }, newOrder, (error) => {
+          if (!error) {
+            assert.equal(Order.find().count(), 2);
+          }
+        });
       });
 
       it("calls 'setAvailible'", () => {

@@ -66,7 +66,6 @@ export class OrdersPage extends Component {
     this.getOrderAddress = this.getOrderAddress.bind(this);
     this.getOrderAddresses = this.getOrderAddresses.bind(this);
     this.renderOrderTrackingLink = this.renderOrderTrackingLink.bind(this);
-    
   }
 
   componentWillReceiveProps(nextProps) {
@@ -159,18 +158,16 @@ export class OrdersPage extends Component {
     return 'None';
   }
 
-  togglehideInactive(){
+  togglehideInactive() {
     this.setState({
-        hideInactive: !this.state.hideInactive,
+      hideInactive: !this.state.hideInactive,
     });
   }
 
-  filterInactive(order){
-    if (!this.state.hideInactive){
-      return order.status !== "Complete"
-    }
-    else
-      return true;
+  filterInactive(order) {
+    if (!this.state.hideInactive) {
+      return order.status !== 'Complete';
+    } else return true;
   }
 
   render() {
@@ -188,14 +185,14 @@ export class OrdersPage extends Component {
         <h1>Orders</h1>
         <BreadCrumbs crumbs={['Profile', 'Orders']} />
         <label className="hide-inactive">
-            <input
-              type="checkbox"
-              readOnly
-              checked={this.state.hideInactive}
-              onClick={this.togglehideInactive.bind(this)}
-            />
-            Show All Orders
-          </label>
+          <input
+            type="checkbox"
+            readOnly
+            checked={this.state.hideInactive}
+            onClick={this.togglehideInactive.bind(this)}
+          />
+          Show All Orders
+        </label>
         <Table>
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
             <TableRow>

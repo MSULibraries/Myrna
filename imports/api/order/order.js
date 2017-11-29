@@ -169,7 +169,9 @@ export function createShipment(orderId) {
 
       resolve(shipment);
     } else {
-      resolve(undefined);
+      // Pick up orders are automatically set to "Delivered"
+      Meteor.call('order.delivered', orderId);
+      resolve('Ready For Pick Up');
     }
     saveTrackingId(orderId, shipmentId, rate);
   });
