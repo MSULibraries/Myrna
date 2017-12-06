@@ -25,6 +25,6 @@ import { roles } from './../lib/roles';
 
 Meteor.startup(() => {
   // Adding account 'broabect' to maintainers group for testing
-  Roles.addUsersToRoles('T6QqPcncdheoJyRxG', [roles.maintainers]);
+  Roles.addUsersToRoles('WNbqBXZ6xnceSfW72', [roles.maintainers]);
   // code to run on server at startup
 });
