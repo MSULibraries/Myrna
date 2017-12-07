@@ -60,7 +60,8 @@ export class OrdersPage extends Component {
       packageWeight: null,
       packageWidth: null,
       paymentUrl: null,
-      selectedOrderAddress: undefined,
+      selectedOrder: null,
+      selectedOrderAddress: null,
       orderId: null,
     };
 
@@ -122,7 +123,6 @@ export class OrdersPage extends Component {
     const updateStatus = () =>
       new Promise((resolve, reject) => {
         Meteor.call('order.approve', this.state.orderId, error => {
-          this.setState({ approvingOrder: false });
           if (!error) {
             resolve();
           } else {
@@ -132,8 +132,14 @@ export class OrdersPage extends Component {
       });
 
     await addCost();
-    await addDimensions();
+
+    //Only need to add dimensions to orders that will be shipped
+    if (!this.state.selectedOrder.isPickUp) {
+      await addDimensions();
+    }
     await updateStatus();
+
+    this.setState({ approvingOrder: false });
   }
 
   buyOrder(orderId) {
@@ -178,7 +184,7 @@ export class OrdersPage extends Component {
    * Closes modal to select addresses to ship to
    */
   handleClose = () => {
-    this.setState({ modalOpen: false });
+    this.setState({ modalOpen: false, selectedOrderAddress: null });
   };
 
   reOrderOrder = orderId => {
@@ -321,7 +327,11 @@ export class OrdersPage extends Component {
                       <FlatButton
                         disabled={order.status !== 'Un-Approved'}
                         onClick={() =>
-                          this.setState({ orderId: order._id, modalOrderCostOpen: true })
+                          this.setState({
+                            orderId: order._id,
+                            modalOrderCostOpen: true,
+                            selectedOrder: order,
+                          })
                         }
                         secondary
                         label="✓"
@@ -368,11 +378,12 @@ export class OrdersPage extends Component {
           title="Order Cost"
           modal={false}
           open={this.state.modalOrderCostOpen}
-          onRequestClose={() => this.setState({ modalOrderCostOpen: false })}
+          onRequestClose={() => this.setState({ modalOrderCostOpen: false, orderId: null })}
           style={{ overflow: 'scroll' }}
         >
-          <h4>Costume Cost</h4>
+          <h2>Costume Cost</h2>
           <TextField
+            fullWidth
             onChange={({ target: { value: newCost } }) => {
               this.setState({ costumeCost: +newCost });
             }}
@@ -380,42 +391,55 @@ export class OrdersPage extends Component {
             label="Dollar Amount"
           />
 
-          <h4>Package Dimensions</h4>
-          <TextField
-            onChange={({ target: { value: newWidth } }) => {
-              this.setState({ packageWidth: +newWidth });
-            }}
-            hintText="Width"
-            label="Width"
-          />
-          <br />
-          <TextField
-            onChange={({ target: { value: newLength } }) => {
-              this.setState({ packageLength: +newLength });
-            }}
-            hintText="Length"
-            label="Length"
-          />
-          <br />
-          <TextField
-            onChange={({ target: { value: newHeight } }) => {
-              this.setState({ packageHeight: +newHeight });
-            }}
-            hintText="Height"
-            label="Height"
-          />
-          <br />
-          <em>*Dimensions are in inches</em>
-          <br />
-          <h4>Weight</h4>
-          <TextField
-            onChange={({ target: { value: newWeight } }) => {
-              this.setState({ packageWeight: +newWeight });
-            }}
-            hintText="Pounds"
-            label="Pounds"
-          />
-          <br />
+          <h2>Shipping Info</h2>
+          {this.state.selectedOrder && this.state.selectedOrder.isPickUp === false ? (
+            <div>
+              <h3>Package Dimensions</h3>
+              <TextField
+                fullWidth
+                onChange={({ target: { value: newWidth } }) => {
+                  this.setState({ packageWidth: +newWidth });
+                }}
+                hintText="Width"
+                label="Width"
+              />
+              <br />
+              <TextField
+                fullWidth
+                onChange={({ target: { value: newLength } }) => {
+                  this.setState({ packageLength: +newLength });
+                }}
+                hintText="Length"
+                label="Length"
+              />
+              <br />
+              <TextField
+                fullWidth
+                onChange={({ target: { value: newHeight } }) => {
+                  this.setState({ packageHeight: +newHeight });
+                }}
+                hintText="Height"
+                label="Height"
+              />
+              <br />
+              <em>*Dimensions are in inches</em>
+              <br />
+              <h3>Weight</h3>
+              <TextField
+                fullWidth
+                onChange={({ target: { value: newWeight } }) => {
+                  this.setState({ packageWeight: +newWeight });
+                }}
+                hintText="Pounds"
+                label="Pounds"
+              />
+              <br />
+            </div>
+          ) : (
+            <p>
+              <em>This is a pick up order and does not need shipment info. </em>
+            </p>
+          )}
           <FlatButton
             label="Submit"
             onClick={() => {
