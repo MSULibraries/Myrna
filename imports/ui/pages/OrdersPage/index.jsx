@@ -26,6 +26,7 @@ import OrderAddress from './../../../api/order/bridges/orderAddress';
 import OrderTrackingId from './../../../api/order/bridges/orderTrackingId';
 import { Loader } from './../../components/Loader/index';
 import insertOrderCost from './../../../api/order/bridges/orderCost/methods/insertOrderCost/index';
+import insertParcelDimensions from './../../../api/order/bridges/orderParcelDimensions/methods/insertParcelDimensions/index';
 
 // Adjusted contrast to help with a11y
 const darkerTableHeaders = {
@@ -54,9 +55,13 @@ export class OrdersPage extends Component {
       modalOrderCostOpen: false,
       modalOpen: false,
       orderAddresses: {},
+      packageHeight: null,
+      packageLength: null,
+      packageWeight: null,
+      packageWidth: null,
       paymentUrl: null,
       selectedOrderAddress: undefined,
-      targetOrderId: null,
+      orderId: null,
     };
 
     this.approveOrder = this.approveOrder.bind(this);
@@ -77,21 +82,22 @@ export class OrdersPage extends Component {
   approveOrder() {
     this.setState({ approvingOrder: true });
 
-    insertOrderCost.call(
-      {
-        orderId: this.state.targetOrderId,
-        costumeCost: this.state.costumeCost,
-      },
-      (error, result) => {
-        if (!error) {
-          Meteor.call('order.approve', this.state.targetOrderId, () => {
-            this.setState({ approvingOrder: false });
-          });
-        } else {
-          console.error(error);
-        }
-      },
-    );
+    insertOrderCost.call({
+      orderId: this.state.orderId,
+      costumeCost: this.state.costumeCost,
+    });
+
+    insertParcelDimensions.call({
+      orderId: this.state.orderId,
+      height: this.state.packageHeight,
+      length: this.state.packageLength,
+      weight: this.state.packageWeight,
+      width: this.state.packageWidth,
+    });
+
+    Meteor.call('order.approve', this.state.orderId, () => {
+      this.setState({ approvingOrder: false });
+    });
   }
 
   buyOrder(orderId) {
@@ -273,13 +279,13 @@ export class OrdersPage extends Component {
                 {/* Approve Button */}
                 {isMaintainer() && (
                   <TableRowColumn>
-                    {this.state.approvingOrder && order._id === this.state.targetOrderId ? (
+                    {this.state.approvingOrder && order._id === this.state.orderId ? (
                       <Loader />
                     ) : (
                       <FlatButton
                         disabled={order.status !== 'Un-Approved'}
                         onClick={() =>
-                          this.setState({ targetOrderId: order._id, modalOrderCostOpen: true })
+                          this.setState({ orderId: order._id, modalOrderCostOpen: true })
                         }
                         secondary
                         label="✓"
@@ -327,15 +333,53 @@ export class OrdersPage extends Component {
           modal={false}
           open={this.state.modalOrderCostOpen}
           onRequestClose={() => this.setState({ modalOrderCostOpen: false })}
+          style={{ overflow: 'scroll' }}
         >
+          <h4>Costume Cost</h4>
           <TextField
             onChange={({ target: { value: newCost } }) => {
               this.setState({ costumeCost: +newCost });
             }}
-            hintText="Cost"
-            label="Cost"
+            hintText="Dollar Amount"
+            label="Dollar Amount"
           />
 
+          <h4>Package Dimensions</h4>
+          <TextField
+            onChange={({ target: { value: newWidth } }) => {
+              this.setState({ packageWidth: +newWidth });
+            }}
+            hintText="Width"
+            label="Width"
+          />
+          <br />
+          <TextField
+            onChange={({ target: { value: newLength } }) => {
+              this.setState({ packageLength: +newLength });
+            }}
+            hintText="Length"
+            label="Length"
+          />
+          <br />
+          <TextField
+            onChange={({ target: { value: newHeight } }) => {
+              this.setState({ packageHeight: +newHeight });
+            }}
+            hintText="Height"
+            label="Height"
+          />
+          <br />
+          <em>*Dimensions are in inches</em>
+          <br />
+          <h4>Weight</h4>
+          <TextField
+            onChange={({ target: { value: newWeight } }) => {
+              this.setState({ packageWeight: +newWeight });
+            }}
+            hintText="Pounds"
+            label="Pounds"
+          />
+          <br />
           <FlatButton
             label="Submit"
             onClick={() => {

@@ -8,7 +8,7 @@ import { LoggedInMixin } from 'meteor/tunifight:loggedin-mixin';
 import { OrderParcelDimensions } from './../../index';
 import { roles } from './../../../../../../../lib/roles';
 
-export const removeOrderParcelDimensions = new ValidatedMethod({
+export const removeParcelDimensions = new ValidatedMethod({
   name: 'order.orderParcelDimensions.remove',
   mixins: [LoggedInMixin],
   checkRoles: {
@@ -21,7 +21,7 @@ export const removeOrderParcelDimensions = new ValidatedMethod({
   checkLoggedInError: {
     error: 'notLogged',
     message:
-      'Error in removeOrderParcelDimensions : You must be logged in to submit the cost of an order',
+      'Error in removeParcelDimensions : You must be logged in to submit the cost of an order',
   },
   validate: new SimpleSchema({
     orderId: { type: String },
@@ -34,4 +34,4 @@ export const removeOrderParcelDimensions = new ValidatedMethod({
   },
 });
 
-export default removeOrderParcelDimensions;
+export default removeParcelDimensions;

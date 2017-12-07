@@ -3,7 +3,7 @@
 import { assert } from 'meteor/practicalmeteor:chai';
 import { Random } from 'meteor/random';
 
-import { removeOrderParcelDimensions } from '../index';
+import { removeParcelDimensions } from '../index';
 import { OrderParcelDimensions } from './../../../index';
 import {
   users,
@@ -35,7 +35,7 @@ describe('OrderParcelDimensions', () => {
     });
 
     it('removes an orderCost for a maintainer', () => {
-      removeOrderParcelDimensions._execute(
+      removeParcelDimensions._execute(
         { userId: users.eve.uid },
         {
           orderId,
@@ -47,7 +47,7 @@ describe('OrderParcelDimensions', () => {
     });
     it("throws error if someone is not a 'maintainer'", () => {
       assert.throws(() =>
-        removeOrderParcelDimensions._execute(
+        removeParcelDimensions._execute(
           { userId: users.bob.uid },
           {
             orderId,

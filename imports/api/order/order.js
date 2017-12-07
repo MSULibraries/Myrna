@@ -12,6 +12,7 @@ import { Payment } from './../../../lib/payment';
 import { setAvailible } from './../ItemDesc/methods/setAvailible/index';
 import { removeOrderCost } from './bridges/orderCost/methods/removeOrderCost/index';
 import { getOrderCost } from './bridges/orderCost/methods/getOrderCost/index';
+import { removeParcelDimensions } from './bridges/orderParcelDimensions/methods/removeParcelDimensions/index';
 
 const EasyPost = new EasyPostInterface();
 export const Order = new Mongo.Collection('orders');
@@ -303,6 +304,7 @@ Meteor.methods({
       Meteor.call('order.trackingId.remove.by.orderId', orderId);
       Meteor.call('order.payment.remove.by.orderId', orderId);
       removeOrderCost._execute({ userId: this.userId }, { orderId });
+      removeParcelDimensions._execute({ userId: this.userId }, { orderId });
     }
   },
 
