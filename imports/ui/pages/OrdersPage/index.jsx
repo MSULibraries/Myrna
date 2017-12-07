@@ -79,25 +79,61 @@ export class OrdersPage extends Component {
     }
   }
 
-  approveOrder() {
+  async approveOrder() {
     this.setState({ approvingOrder: true });
 
-    insertOrderCost.call({
-      orderId: this.state.orderId,
-      costumeCost: this.state.costumeCost,
-    });
+    const addCost = () =>
+      new Promise((resolve, reject) => {
+        insertOrderCost.call(
+          {
+            orderId: this.state.orderId,
+            costumeCost: this.state.costumeCost,
+          },
+          error => {
+            if (!error) {
+              resolve();
+            } else {
+              reject(error);
+            }
+          },
+        );
+      });
 
-    insertParcelDimensions.call({
-      orderId: this.state.orderId,
-      height: this.state.packageHeight,
-      length: this.state.packageLength,
-      weight: this.state.packageWeight,
-      width: this.state.packageWidth,
-    });
+    const addDimensions = () =>
+      new Promise((resolve, reject) => {
+        insertParcelDimensions.call(
+          {
+            orderId: this.state.orderId,
+            height: this.state.packageHeight,
+            length: this.state.packageLength,
+            weight: this.state.packageWeight,
+            width: this.state.packageWidth,
+          },
+          error => {
+            if (!error) {
+              resolve();
+            } else {
+              reject(error);
+            }
+          },
+        );
+      });
 
-    Meteor.call('order.approve', this.state.orderId, () => {
-      this.setState({ approvingOrder: false });
-    });
+    const updateStatus = () =>
+      new Promise((resolve, reject) => {
+        Meteor.call('order.approve', this.state.orderId, error => {
+          this.setState({ approvingOrder: false });
+          if (!error) {
+            resolve();
+          } else {
+            reject(error);
+          }
+        });
+      });
+
+    await addCost();
+    await addDimensions();
+    await updateStatus();
   }
 
   buyOrder(orderId) {
