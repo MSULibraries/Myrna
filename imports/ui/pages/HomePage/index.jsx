@@ -2,8 +2,10 @@ import React from 'react';
 import { Container } from 'react-grid-system';
 import Helmet from 'react-helmet';
 
+import CategoriesSection from './CategoriesSection';
 import HeroSection from './HeroSection';
 import Search from './Search';
+import TriInfo from './TriInfo';
 
 export const HomePage = () => (
   <div>
@@ -24,6 +26,10 @@ export const HomePage = () => (
 
     <Container>
       <Search />
+    </Container>
+    <TriInfo />
+    <Container>
+      <CategoriesSection />
     </Container>
   </div>
 );
