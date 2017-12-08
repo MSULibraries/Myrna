@@ -3,6 +3,7 @@ import { Container } from 'react-grid-system';
 import Helmet from 'react-helmet';
 
 import HeroSection from './HeroSection';
+import Search from './Search';
 
 export const HomePage = () => (
   <div>
@@ -20,6 +21,10 @@ export const HomePage = () => (
     </Container>
 
     <HeroSection />
+
+    <Container>
+      <Search />
+    </Container>
   </div>
 );
 
