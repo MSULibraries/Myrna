@@ -38,7 +38,11 @@ class Search extends Component {
   render() {
     return (
       <Paper style={{ marginTop: '20px', marginBottom: '20px' }} zDepth={2}>
-        {this.state.submitQuery && <Redirect to={`products?searchQuery=` + this.state.query} />}
+        {this.state.submitQuery && (
+          <Redirect
+            to={`products?searchQuery=${this.state.query}&categories=${this.state.activeCategory}`}
+          />
+        )}
         <form
           onSubmit={e => {
             this.submitSearch(e);

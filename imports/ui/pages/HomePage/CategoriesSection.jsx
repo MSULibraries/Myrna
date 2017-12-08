@@ -6,11 +6,11 @@ import { media } from './../../breakpoints';
 
 const CategoriesSection = () => (
   <Container>
-    <CategoryLinkContainer to="/products?categories=Dresses">
+    <CategoryLinkContainer to="/products?categories=Dress">
       <img src="http://via.placeholder.com/150x150" alt="" />
       <p>Dresses</p>
     </CategoryLinkContainer>
-    <CategoryLinkContainer to="/products?categories=Shirts">
+    <CategoryLinkContainer to="/products?categories=Shirt">
       <img src="http://via.placeholder.com/150x150" alt="" />
       <p>Shirts</p>
     </CategoryLinkContainer>
@@ -18,15 +18,15 @@ const CategoriesSection = () => (
       <img src="http://via.placeholder.com/150x150" alt="" />
       <p>Pants</p>
     </CategoryLinkContainer>
-    <CategoryLinkContainer to="/products?categories=Capes">
+    <CategoryLinkContainer to="/products?categories=Cape">
       <img src="http://via.placeholder.com/150x150" alt="" />
       <p>Capes</p>
     </CategoryLinkContainer>
-    <CategoryLinkContainer to="/products?categories=Dresses">
+    <CategoryLinkContainer to="/products?categories=Dress">
       <img src="http://via.placeholder.com/150x150" alt="" />
       <p>Dresses</p>
     </CategoryLinkContainer>
-    <CategoryLinkContainer to="/products?categories=Shirts">
+    <CategoryLinkContainer to="/products?categories=Shirt">
       <img src="http://via.placeholder.com/150x150" alt="" />
       <p>Shirts</p>
     </CategoryLinkContainer>
@@ -34,7 +34,7 @@ const CategoriesSection = () => (
       <img src="http://via.placeholder.com/150x150" alt="" />
       <p>Pants</p>
     </CategoryLinkContainer>
-    <CategoryLinkContainer to="/products?categories=Capes">
+    <CategoryLinkContainer to="/products?categories=Cape">
       <img src="http://via.placeholder.com/150x150" alt="" />
       <p>Capes</p>
     </CategoryLinkContainer>

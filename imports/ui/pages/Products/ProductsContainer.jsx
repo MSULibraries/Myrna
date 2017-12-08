@@ -123,8 +123,9 @@ class ProductsContainer extends Component {
       this.setState({ paginationOffset: +this.state.urlParams.paginationOffset });
     }
 
-    if (this.state.urlParams.activeFilters) {
-      this.setState({ activeFilters: this.state.urlParams.activeFilters });
+    if (this.state.urlParams.categories) {
+      const category = String(this.state.urlParams.categories).toLowerCase();
+      this.setState({ activeFilters: {...this.state.activeFilters, [category]: true} });
     }
     this.getCurrentItems();
   }
