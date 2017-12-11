@@ -11,7 +11,7 @@ class Search extends Component {
   constructor() {
     super();
 
-    const possibleCategories = ['Dress', 'Pants', 'Shirts', 'Gowns'];
+    const possibleCategories = ['Categories', 'Dress', 'Pants', 'Shirts', 'Gowns'];
     this.state = {
       activeCategory: possibleCategories[0],
       query: '',
@@ -21,7 +21,12 @@ class Search extends Component {
   }
 
   handleNewCategory = newCategory => {
-    this.setState({ activeCategory: newCategory });
+    // If the
+    if (newCategory === possibleCategories[0]) {
+      this.setState({ activeCategory: '' });
+    } else {
+      this.setState({ activeCategory: newCategory });
+    }
   };
 
   handleNewSearch = newQuery => {

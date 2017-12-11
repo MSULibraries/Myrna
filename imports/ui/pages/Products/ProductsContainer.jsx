@@ -125,7 +125,11 @@ class ProductsContainer extends Component {
 
     if (this.state.urlParams.categories) {
       const category = String(this.state.urlParams.categories).toLowerCase();
-      this.setState({ activeFilters: {...this.state.activeFilters, [category]: true} });
+
+      // If the category is one that we have info for
+      if (category in Object.keys(this.state.activeFilters)) {
+        this.setState({ activeFilters: { ...this.state.activeFilters, [category]: true } });
+      }
     }
     this.getCurrentItems();
   }
