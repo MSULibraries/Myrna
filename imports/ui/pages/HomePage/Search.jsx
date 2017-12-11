@@ -7,24 +7,24 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { media } from './../../breakpoints';
+
 class Search extends Component {
   constructor() {
     super();
 
-    const possibleCategories = ['Categories', 'Dress', 'Pants', 'Shirts', 'Gowns'];
+    this.possibleCategories = ['Categories', 'Dress', 'Pants', 'Shirts', 'Skirt'];
     this.state = {
-      activeCategory: possibleCategories[0],
+      activeCategory: this.possibleCategories[0],
       query: '',
-      possibleCategories,
+      possibleCategories: this.possibleCategories,
       submitQuery: false,
     };
   }
 
   handleNewCategory = newCategory => {
-    // If the
-    if (newCategory === possibleCategories[0]) {
-      this.setState({ activeCategory: '' });
-    } else {
+    // If the new category isn't the one telling a user to pick something
+    if (newCategory !== this.possibleCategories[0]) {
       this.setState({ activeCategory: newCategory });
     }
   };
@@ -54,19 +54,20 @@ class Search extends Component {
           }}
         >
           <SearchContainer>
-            <div>
+            <DropDownContainer>
               <DropDownMenu
                 value={this.state.activeCategory}
                 onChange={(e, t, newCategory) => this.handleNewCategory(newCategory)}
                 selectedMenuItemStyle={{
                   color: '#9e52c7',
                 }}
+                style={{ width: '100%' }}
               >
                 {this.state.possibleCategories.map(category => (
                   <MenuItem key={category} value={category} primaryText={category} />
                 ))}
               </DropDownMenu>
-            </div>
+            </DropDownContainer>
 
             <SearchFieldContainer>
               <TextField
@@ -89,6 +90,7 @@ class Search extends Component {
                 disabled={this.state.query === ''}
                 label="Submit"
                 onClick={() => this.submitSearch()}
+                fullWidth
               />
             </SubmitButtonContainer>
           </SearchContainer>
@@ -100,17 +102,23 @@ class Search extends Component {
 
 export default Search;
 
+const DropDownContainer = styled.div`
+  ${media.tablet` width: 100%; !important;`}width: auto;
+`;
+
 const SearchContainer = styled.div`
   align-items: center;
   display: flex;
-  flex-direction: row;
+  ${media.tablet`flex-direction: column !important;`} flex-direction: row;
   justify-content: space-around;
 `;
 
 const SearchFieldContainer = styled.div`
   flex-grow: 1;
+  width: 90%;
 `;
 
 const SubmitButtonContainer = styled.div`
-  padding-right: 24px;
+  ${media.tablet` width: 90%; padding-right: 0px; !important;`}width: auto; padding-right: 24px;
+  
 `;
