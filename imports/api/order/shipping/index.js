@@ -16,11 +16,11 @@ export class EasyPostInterface {
   }
 
   /**
- * Finds the shipmentId attached to an order
- * Buys the shipment with that shipment Id
- * @example - https://www.easypost.com/docs/api/node.html#shipments-buy-codesample
- * @param {String} orderId
- */
+   * Finds the shipmentId attached to an order
+   * Buys the shipment with that shipment Id
+   * @example - https://www.easypost.com/docs/api/node.html#shipments-buy-codesample
+   * @param {String} orderId
+   */
   async buyShipment(shipmentId) {
     let shipment = await this.api.Shipment.retrieve(shipmentId);
     shipment = await shipment.buy(shipment.lowestRate());
@@ -28,8 +28,8 @@ export class EasyPostInterface {
   }
 
   /**
-     * Creates and saves a to address
-     */
+   * Creates and saves a to address
+   */
   createToAddress(company, street1, city, state, zip) {
     const toAddress = new this.api.Address({
       company,
@@ -43,8 +43,8 @@ export class EasyPostInterface {
   }
 
   /**
-     * Creates and saves a from address
-     */
+   * Creates and saves a from address
+   */
   createFromAddress() {
     // Defaulting to library PO box for now
     const library = {
@@ -67,9 +67,11 @@ export class EasyPostInterface {
   }
 
   /**
-     * Creates and saves a parcel
-     */
-  createParcel(length, width, height, weight) {
+   * Creates and saves a parcel
+   */
+  createParcel({
+    length, width, height, weight,
+  }) {
     const parcel = new this.api.Parcel({
       length,
       width,
@@ -81,8 +83,8 @@ export class EasyPostInterface {
   }
 
   /**
-     * Creates and saves a shipment
-     */
+   * Creates and saves a shipment
+   */
   createShipment(fromAddress, toAddress, parcel) {
     const shipment = new this.api.Shipment({
       to_address: toAddress,
