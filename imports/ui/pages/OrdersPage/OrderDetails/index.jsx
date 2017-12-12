@@ -77,9 +77,9 @@ class OrderDetails extends Component {
               onClick={() => this.checkInOrder(this.props.order._id)}
             />
             <div>
-              <CardsWrapper>
+              <div>
                 {this.props.order.productIds.map(id => (
-                  <CardStyle key={id} expanded={this.state.expanded[id]}>
+                  <Card key={id} expanded={this.state.expanded[id]}>
                     <CardHeader
                       title={id}
                       subtitle={this.state.itemDesc[id].shortDescription}
@@ -92,10 +92,10 @@ class OrderDetails extends Component {
                       onClick={() => this.handleToggle(!this.expanded[id], id)}
                     />
                     <CardText>
-                      <ChipWrapper>
+                      <div>
                         <Chip>Condition: {this.state.itemDesc[id].itemStatus}</Chip>
                         <Chip>Type: {this.state.itemDesc[id].category}</Chip>
-                      </ChipWrapper>
+                      </div>
                     </CardText>
                     <CardMedia expandable={true}>
                       <img
@@ -107,9 +107,9 @@ class OrderDetails extends Component {
                         alt={this.state.itemDesc[id].shortDescription || ''}
                       />
                     </CardMedia>
-                  </CardStyle>
+                  </Card>
                 ))}
-              </CardsWrapper>
+              </div>
             </div>
           </div>
         ) : (
@@ -130,18 +130,3 @@ export default withTracker(({ match: { params: { orderId } } }) => {
     order: Order.findOne({ _id: orderId }),
   };
 })(OrderDetails);
-
-const ChipWrapper = styled.div`
-  display: flex;
-  flexwrap: 'wrap';
-`;
-
-const CardsWrapper = styled.div`
-  // display: flex;
-  // flex-wrap: wrap;
-`;
-
-const CardStyle = styled(Card)`
-  margin: 10px;
-  ${media.desktop`width: calc(50% - 3%)`} ${media.tablet`width: 100%`} width: calc(33% - 3%);
-`;
