@@ -386,7 +386,6 @@ export class OrdersPage extends Component {
             fullWidth
             onChange={({ target: { value: newCost } }) => {
               const re = /^\d{0,2}?.\d{0,2}$/;
-              console.log(newCost);
               if (newCost === '' || (re.test(newCost) && !isNaN(newCost))) {
                 this.setState({ costumeCost: newCost });
               }

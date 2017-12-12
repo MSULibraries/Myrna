@@ -26,7 +26,7 @@ export const insertOrderCost = new ValidatedMethod({
   validate: new SimpleSchema({
     orderId: { type: String },
     costumeCost: { type: Number, decimal: true },
-  }).validator(),
+  }).validator({ clean: true }),
 
   run({ costumeCost, orderId }) {
     OrderCost.insert({
