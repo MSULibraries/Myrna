@@ -49,7 +49,7 @@ export class OrdersPage extends Component {
     this.state = {
       hideInactive: false,
       approvingOrder: false,
-      costumeCost: null,
+      costumeCost: '',
       isBuyingOrder: false,
       modalBuyingOpen: false,
       modalOrderCostOpen: false,
@@ -385,10 +385,15 @@ export class OrdersPage extends Component {
           <TextField
             fullWidth
             onChange={({ target: { value: newCost } }) => {
-              this.setState({ costumeCost: +newCost });
+              const re = /^\d{0,2}?.\d{0,2}$/;
+              console.log(newCost);
+              if (newCost === '' || (re.test(newCost) && !isNaN(newCost))) {
+                this.setState({ costumeCost: newCost });
+              }
             }}
-            hintText="Dollar Amount"
+            floatingLabelText="Dollar Amount"
             label="Dollar Amount"
+            value={this.state.costumeCost}
           />
 
           <h2>Shipping Info</h2>
@@ -419,7 +424,7 @@ export class OrdersPage extends Component {
                     this.setState({ packageLength: +newLength });
                   }
                 }}
-                hintText="Length"
+                floatingLabelText="Length"
                 label="Length"
                 value={this.state.packageLength}
               />
@@ -434,7 +439,7 @@ export class OrdersPage extends Component {
                     this.setState({ packageHeight: +newHeight });
                   }
                 }}
-                hintText="Height"
+                floatingLabelText="Height"
                 label="Height"
                 value={this.state.packageHeight}
               />
@@ -452,7 +457,7 @@ export class OrdersPage extends Component {
                     this.setState({ packageWeight: +newWeight });
                   }
                 }}
-                hintText="Pounds"
+                floatingLabelText="Pounds"
                 label="Pounds"
                 value={this.state.packageWeight}
               />
