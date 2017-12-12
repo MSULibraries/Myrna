@@ -13,6 +13,8 @@ import '../imports/api/order/methods/checkIn/index';
 import '../imports/api/order/bridges/orderAddress';
 import '../imports/api/order/bridges/orderCost/index';
 import '../imports/api/order/bridges/orderCost/methods/insertOrderCost/index';
+import '../imports/api/order/bridges/orderParcelDimensions/methods/insertParcelDimensions/index';
+import '../imports/api/order/bridges/orderParcelDimensions/methods/removeParcelDimensions/index';
 import '../imports/api/order/bridges/orderCost/methods/removeOrderCost/index';
 import '../imports/api/order/bridges/orderPayment';
 import '../imports/api/order/bridges/orderShow';
