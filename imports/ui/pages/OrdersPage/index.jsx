@@ -55,10 +55,10 @@ export class OrdersPage extends Component {
       modalOrderCostOpen: false,
       modalOpen: false,
       orderAddresses: {},
-      packageHeight: null,
-      packageLength: null,
-      packageWeight: null,
-      packageWidth: null,
+      packageHeight: '',
+      packageLength: '',
+      packageWeight: '',
+      packageWidth: '',
       paymentUrl: null,
       selectedOrder: null,
       selectedOrderAddress: null,
@@ -398,28 +398,45 @@ export class OrdersPage extends Component {
               <TextField
                 fullWidth
                 onChange={({ target: { value: newWidth } }) => {
-                  this.setState({ packageWidth: +newWidth });
+                  //Numbers only
+                  const re = /^\d+$/;
+
+                  if (newWidth == '' || re.test(newWidth)) {
+                    this.setState({ packageWidth: +newWidth });
+                  }
                 }}
-                hintText="Width"
-                label="Width"
+                floatingLabelText="Width"
+                value={this.state.packageWidth}
               />
               <br />
               <TextField
                 fullWidth
                 onChange={({ target: { value: newLength } }) => {
-                  this.setState({ packageLength: +newLength });
+                  //Numbers only
+                  const re = /^\d+$/;
+
+                  if (newLength == '' || re.test(newLength)) {
+                    this.setState({ packageLength: +newLength });
+                  }
                 }}
                 hintText="Length"
                 label="Length"
+                value={this.state.packageLength}
               />
               <br />
               <TextField
                 fullWidth
                 onChange={({ target: { value: newHeight } }) => {
-                  this.setState({ packageHeight: +newHeight });
+                  //Numbers only
+                  const re = /^\d+$/;
+
+                  if (newHeight == '' || re.test(newHeight)) {
+                    this.setState({ packageHeight: +newHeight });
+                  }
                 }}
                 hintText="Height"
                 label="Height"
+                value={this.state.packageHeight}
               />
               <br />
               <em>*Dimensions are in inches</em>
@@ -428,10 +445,16 @@ export class OrdersPage extends Component {
               <TextField
                 fullWidth
                 onChange={({ target: { value: newWeight } }) => {
-                  this.setState({ packageWeight: +newWeight });
+                  //Numbers only
+                  const re = /^\d+$/;
+
+                  if (newWeight == '' || re.test(newWeight)) {
+                    this.setState({ packageWeight: +newWeight });
+                  }
                 }}
                 hintText="Pounds"
                 label="Pounds"
+                value={this.state.packageWeight}
               />
               <br />
             </div>
