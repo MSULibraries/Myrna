@@ -9,13 +9,15 @@ class NewAddressForm extends Component {
   constructor(props) {
     super(props);
 
+    const allowedStates = ['Mississippi', 'Alabama', 'Tennessee', 'Louisiana'];
+
     this.state = {
-      allowedStates: ['Mississippi', 'Alabama', 'Tennessee', 'Louisiana'],
+      allowedStates,
       company: '',
       city: '',
       name: '',
       streetAddress: '',
-      state: null,
+      state: allowedStates[0],
       zip: '',
     };
   }
@@ -51,8 +53,8 @@ class NewAddressForm extends Component {
         <TextField hintText="City" onChange={e => this.updateFormState('city', e.target.value)} />
         <br />
         <DropDownMenu
-          value={this.state.allowedStates[0]}
-          onChange={e => this.updateFormState('state', e.target.value)}
+          value={this.state.state}
+          onChange={(e, i, value) => this.updateFormState('state', value)}
           iconStyle={{ right: 0, margin: 0, padding: 0, width: 'auto' }}
           labelStyle={{ paddingLeft: 0 }}
           underlineStyle={{ margin: 0 }}

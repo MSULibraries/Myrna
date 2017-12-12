@@ -12,6 +12,8 @@ import { Payment } from './../../../lib/payment';
 import { setAvailible } from './../ItemDesc/methods/setAvailible/index';
 import { removeOrderCost } from './bridges/orderCost/methods/removeOrderCost/index';
 import { getOrderCost } from './bridges/orderCost/methods/getOrderCost/index';
+import { removeParcelDimensions } from './bridges/orderParcelDimensions/methods/removeParcelDimensions/index';
+import { OrderParcelDimensions } from './bridges/orderParcelDimensions/index';
 
 const EasyPost = new EasyPostInterface();
 export const Order = new Mongo.Collection('orders');
@@ -153,10 +155,12 @@ export function createShipment(orderId) {
         company, street1, city, state, zip,
       } = Order.findOne({ _id: orderId }).address(orderId);
 
+      const packageDimensions = OrderParcelDimensions.findOne({ orderId });
+
       // Creating Shipment
       const fromAddress = await EasyPost.createFromAddress();
       const toAddress = await EasyPost.createToAddress(company, street1, city, state, zip);
-      const parcel = await EasyPost.createParcel(10, 10, 10, 10);
+      const parcel = await EasyPost.createParcel(packageDimensions);
       const shipment = await EasyPost.createShipment(fromAddress, toAddress, parcel);
 
       try {
@@ -169,7 +173,9 @@ export function createShipment(orderId) {
 
       resolve(shipment);
     } else {
-      resolve(undefined);
+      // Pick up orders are automatically set to "Delivered"
+      Meteor.call('order.delivered', orderId);
+      resolve('Ready For Pick Up');
     }
     saveTrackingId(orderId, shipmentId, rate);
   });
@@ -181,21 +187,26 @@ export function createShipment(orderId) {
 Meteor.methods({
   'order.activate': function orderActivate(orderId) {
     if (userLoggedIn()) {
-      // Updating order status
-      Order.update({ _id: orderId }, { $set: { status: 'Active' } }, async (error) => {
-        if (!error && !Meteor.isTest) {
-          const { shipmentId } = OrderTrackingId.findOne({ orderId });
-          const shipment = await EasyPost.buyShipment(shipmentId);
+      const { isPickUp } = Order.findOne({ _id: orderId });
+      if (!isPickUp) {
+        // Updating order status
+        Order.update({ _id: orderId }, { $set: { status: 'Active' } }, async (error) => {
+          if (!error && !Meteor.isTest) {
+            const { shipmentId } = OrderTrackingId.findOne({ orderId });
+            const shipment = await EasyPost.buyShipment(shipmentId);
 
-          Meteor.call(
-            'order.trackingId.update.tracking',
-            orderId,
-            shipment.tracker.id,
-            shipment.postage_label.label_url,
-            shipment.tracker.public_url,
-          );
-        }
-      });
+            Meteor.call(
+              'order.trackingId.update.tracking',
+              orderId,
+              shipment.tracker.id,
+              shipment.postage_label.label_url,
+              shipment.tracker.public_url,
+            );
+          }
+        });
+      } else {
+        Order.update({ _id: orderId }, { $set: { status: 'Delivered' } });
+      }
     }
   },
   'order.approve': async function orderApprove(orderId) {
@@ -296,6 +307,7 @@ Meteor.methods({
       Meteor.call('order.trackingId.remove.by.orderId', orderId);
       Meteor.call('order.payment.remove.by.orderId', orderId);
       removeOrderCost._execute({ userId: this.userId }, { orderId });
+      removeParcelDimensions._execute({ userId: this.userId }, { orderId });
     }
   },
 

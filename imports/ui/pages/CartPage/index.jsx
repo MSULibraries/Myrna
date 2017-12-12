@@ -54,6 +54,7 @@ export class CartPage extends Component {
       dateToArrive: undefined,
       dateToShipBack: undefined,
       isPickupOrder: false,
+      itemsAvailible: {},
       newShowModalOpen: false, // modal for entering a new show is open
       orderModalOpen: false, // modal for new order is open
       pullShowModalOpen: false,
@@ -63,10 +64,10 @@ export class CartPage extends Component {
       toasting: false, // small toast is open at the bottom
       toastMessage: undefined, // message to appear in toast
       /**
-      * Number of inputs after user hits submit
-      * @example: We need toAddress, dates, and specialInstr
-      *           So there would be three steps
-      */
+       * Number of inputs after user hits submit
+       * @example: We need toAddress, dates, and specialInstr
+       *           So there would be three steps
+       */
       totalSteps: 4,
     };
   }
@@ -89,12 +90,14 @@ export class CartPage extends Component {
    * @returns bool
    */
   cartHasUnAvailibleItems() {
-    if (this.state.itemsAvailible) {
-      let allCartItemsAvailible = true;
+    if (Object.keys(this.state.itemsAvailible).length > 0) {
+      let cartHasUnAvailibleItems = false;
       Object.keys(this.state.itemsAvailible).forEach(productId => {
-        allCartItemsAvailible = this.state.itemsAvailible[productId] === true;
+        cartHasUnAvailibleItems = !this.state.itemsAvailible[productId];
       });
-      return allCartItemsAvailible;
+      return cartHasUnAvailibleItems;
+    } else {
+      return false;
     }
   }
 
@@ -114,10 +117,10 @@ export class CartPage extends Component {
   };
 
   /**
-  * Driver for finishing and submitting an order
-  * Calls function to save order to DB
-  * Closes Modal
-  */
+   * Driver for finishing and submitting an order
+   * Calls function to save order to DB
+   * Closes Modal
+   */
   finishOrder = () => {
     this.setState({ step: 0 });
     this.submitOrder(
@@ -212,10 +215,10 @@ export class CartPage extends Component {
   };
 
   /**
- * When a user submits their dates,
- * set the state to those dates
- * then increments step
- */
+   * When a user submits their dates,
+   * set the state to those dates
+   * then increments step
+   */
   setOrderDates = (dateToArrive, dateToShipBack) => {
     this.setState({ dateToArrive, dateToShipBack });
     this.incStep();
@@ -424,7 +427,7 @@ export class CartPage extends Component {
         {this.props.cartItems.length > 0 && (
           <span>
             <FlatButton
-              disabled={!this.cartHasUnAvailibleItems()}
+              disabled={this.cartHasUnAvailibleItems()}
               onClick={() => this.startOrder()}
               label="Submit Order"
             />
@@ -434,7 +437,7 @@ export class CartPage extends Component {
         )}
 
         {/* Displaying warning if a user has 'Un-Availible' items in their cart */}
-        {!this.cartHasUnAvailibleItems() && (
+        {this.cartHasUnAvailibleItems() && (
           <div>
             <em>Please remove the 'Un-Availible' items from your cart before ordering</em>
           </div>

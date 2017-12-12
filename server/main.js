@@ -13,6 +13,8 @@ import '../imports/api/order/methods/checkIn/index';
 import '../imports/api/order/bridges/orderAddress';
 import '../imports/api/order/bridges/orderCost/index';
 import '../imports/api/order/bridges/orderCost/methods/insertOrderCost/index';
+import '../imports/api/order/bridges/orderParcelDimensions/methods/insertParcelDimensions/index';
+import '../imports/api/order/bridges/orderParcelDimensions/methods/removeParcelDimensions/index';
 import '../imports/api/order/bridges/orderCost/methods/removeOrderCost/index';
 import '../imports/api/order/bridges/orderPayment';
 import '../imports/api/order/bridges/orderShow';
@@ -25,6 +27,6 @@ import { roles } from './../lib/roles';
 
 Meteor.startup(() => {
   // Adding account 'broabect' to maintainers group for testing
-  Roles.addUsersToRoles('T6QqPcncdheoJyRxG', [roles.maintainers]);
+  Roles.addUsersToRoles('WNbqBXZ6xnceSfW72', [roles.maintainers]);
   // code to run on server at startup
 });
