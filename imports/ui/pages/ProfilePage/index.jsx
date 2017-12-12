@@ -40,7 +40,9 @@ export class ProfilePage extends React.PureComponent {
         />
         <h1>Profile</h1>
         <Row>
-          <LeftNav />
+          <Col sm={3}>
+            <LeftNav />
+          </Col>
           <Col sm={8}>
             <h2>Summary</h2>
             <p>

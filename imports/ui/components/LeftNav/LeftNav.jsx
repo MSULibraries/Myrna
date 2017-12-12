@@ -28,5 +28,5 @@ const LinkStyle = {
 
 const LinkText = styled(ListItem)`
   background-color: ${props =>
-    (window.location.href.includes(props.to) ? '#9E52C7' : 'auto')} !important;
+    (window.location.href.includes(props.to) ? 'gainsboro' : 'auto')} !important;
 `;
