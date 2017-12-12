@@ -6,11 +6,9 @@
     "lint:fix": "eslint . --fix",
     "precommit": "npm test",
     "pretest": "npm run lint --silent",
-    "start": "meteor run",
-    "test":
-      "meteor --settings settings.json test --once --driver-package dispatch:mocha",
-    "test:watch":
-      "meteor --settings settings.json test --driver-package practicalmeteor:mocha --port 3100"
+    "start": "meteor run --settings settings.json",
+    "test": "meteor --settings settings.json test --once --driver-package dispatch:mocha",
+    "test:watch": "meteor --settings settings.json test --driver-package practicalmeteor:mocha --port 3100"
   },
   "dependencies": {
     "@easypost/api": "^3.0.12",
@@ -31,7 +29,7 @@
     "react-helmet": "^5.2.0",
     "react-router-dom": "^4.2.2",
     "react-stack-grid": "^0.4.0",
-    "styled-components": "^2.1.2"
+    "styled-components": "^2.2.3"
   },
   "devDependencies": {
     "@meteorjs/eslint-config-meteor": "^1.0.5",
