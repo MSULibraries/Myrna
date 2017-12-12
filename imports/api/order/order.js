@@ -12,6 +12,8 @@ import { Payment } from './../../../lib/payment';
 import { setAvailible } from './../ItemDesc/methods/setAvailible/index';
 import { removeOrderCost } from './bridges/orderCost/methods/removeOrderCost/index';
 import { getOrderCost } from './bridges/orderCost/methods/getOrderCost/index';
+import { removeParcelDimensions } from './bridges/orderParcelDimensions/methods/removeParcelDimensions/index';
+import { OrderParcelDimensions } from './bridges/orderParcelDimensions/index';
 
 const EasyPost = new EasyPostInterface();
 export const Order = new Mongo.Collection('orders');
@@ -153,10 +155,12 @@ export function createShipment(orderId) {
         company, street1, city, state, zip,
       } = Order.findOne({ _id: orderId }).address(orderId);
 
+      const packageDimensions = OrderParcelDimensions.findOne({ orderId });
+
       // Creating Shipment
       const fromAddress = await EasyPost.createFromAddress();
       const toAddress = await EasyPost.createToAddress(company, street1, city, state, zip);
-      const parcel = await EasyPost.createParcel(10, 10, 10, 10);
+      const parcel = await EasyPost.createParcel(packageDimensions);
       const shipment = await EasyPost.createShipment(fromAddress, toAddress, parcel);
 
       try {
@@ -303,6 +307,7 @@ Meteor.methods({
       Meteor.call('order.trackingId.remove.by.orderId', orderId);
       Meteor.call('order.payment.remove.by.orderId', orderId);
       removeOrderCost._execute({ userId: this.userId }, { orderId });
+      removeParcelDimensions._execute({ userId: this.userId }, { orderId });
     }
   },
 

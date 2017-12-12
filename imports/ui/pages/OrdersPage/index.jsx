@@ -26,6 +26,7 @@ import OrderAddress from './../../../api/order/bridges/orderAddress';
 import OrderTrackingId from './../../../api/order/bridges/orderTrackingId';
 import { Loader } from './../../components/Loader/index';
 import insertOrderCost from './../../../api/order/bridges/orderCost/methods/insertOrderCost/index';
+import insertParcelDimensions from './../../../api/order/bridges/orderParcelDimensions/methods/insertParcelDimensions/index';
 
 // Adjusted contrast to help with a11y
 const darkerTableHeaders = {
@@ -48,15 +49,20 @@ export class OrdersPage extends Component {
     this.state = {
       hideInactive: false,
       approvingOrder: false,
-      costumeCost: null,
+      costumeCost: '',
       isBuyingOrder: false,
       modalBuyingOpen: false,
       modalOrderCostOpen: false,
       modalOpen: false,
       orderAddresses: {},
+      packageHeight: '',
+      packageLength: '',
+      packageWeight: '',
+      packageWidth: '',
       paymentUrl: null,
-      selectedOrderAddress: undefined,
-      targetOrderId: null,
+      selectedOrder: null,
+      selectedOrderAddress: null,
+      orderId: null,
     };
 
     this.approveOrder = this.approveOrder.bind(this);
@@ -74,24 +80,66 @@ export class OrdersPage extends Component {
     }
   }
 
-  approveOrder() {
+  async approveOrder() {
     this.setState({ approvingOrder: true });
 
-    insertOrderCost.call(
-      {
-        orderId: this.state.targetOrderId,
-        costumeCost: this.state.costumeCost,
-      },
-      (error, result) => {
-        if (!error) {
-          Meteor.call('order.approve', this.state.targetOrderId, () => {
-            this.setState({ approvingOrder: false });
-          });
-        } else {
-          console.error(error);
-        }
-      },
-    );
+    const addCost = () =>
+      new Promise((resolve, reject) => {
+        insertOrderCost.call(
+          {
+            orderId: this.state.orderId,
+            costumeCost: this.state.costumeCost,
+          },
+          error => {
+            if (!error) {
+              resolve();
+            } else {
+              reject(error);
+            }
+          },
+        );
+      });
+
+    const addDimensions = () =>
+      new Promise((resolve, reject) => {
+        insertParcelDimensions.call(
+          {
+            orderId: this.state.orderId,
+            height: this.state.packageHeight,
+            length: this.state.packageLength,
+            weight: this.state.packageWeight,
+            width: this.state.packageWidth,
+          },
+          error => {
+            if (!error) {
+              resolve();
+            } else {
+              reject(error);
+            }
+          },
+        );
+      });
+
+    const updateStatus = () =>
+      new Promise((resolve, reject) => {
+        Meteor.call('order.approve', this.state.orderId, error => {
+          if (!error) {
+            resolve();
+          } else {
+            reject(error);
+          }
+        });
+      });
+
+    await addCost();
+
+    //Only need to add dimensions to orders that will be shipped
+    if (!this.state.selectedOrder.isPickUp) {
+      await addDimensions();
+    }
+    await updateStatus();
+
+    this.setState({ approvingOrder: false });
   }
 
   buyOrder(orderId) {
@@ -136,7 +184,7 @@ export class OrdersPage extends Component {
    * Closes modal to select addresses to ship to
    */
   handleClose = () => {
-    this.setState({ modalOpen: false });
+    this.setState({ modalOpen: false, selectedOrderAddress: null });
   };
 
   reOrderOrder = orderId => {
@@ -273,13 +321,17 @@ export class OrdersPage extends Component {
                 {/* Approve Button */}
                 {isMaintainer() && (
                   <TableRowColumn>
-                    {this.state.approvingOrder && order._id === this.state.targetOrderId ? (
+                    {this.state.approvingOrder && order._id === this.state.orderId ? (
                       <Loader />
                     ) : (
                       <FlatButton
                         disabled={order.status !== 'Un-Approved'}
                         onClick={() =>
-                          this.setState({ targetOrderId: order._id, modalOrderCostOpen: true })
+                          this.setState({
+                            orderId: order._id,
+                            modalOrderCostOpen: true,
+                            selectedOrder: order,
+                          })
                         }
                         secondary
                         label="✓"
@@ -326,16 +378,95 @@ export class OrdersPage extends Component {
           title="Order Cost"
           modal={false}
           open={this.state.modalOrderCostOpen}
-          onRequestClose={() => this.setState({ modalOrderCostOpen: false })}
+          onRequestClose={() => this.setState({ modalOrderCostOpen: false, orderId: null })}
+          style={{ overflow: 'scroll' }}
         >
+          <h2>Costume Cost</h2>
           <TextField
+            fullWidth
             onChange={({ target: { value: newCost } }) => {
-              this.setState({ costumeCost: +newCost });
+              const re = /^\d{0,2}?.\d{0,2}$/;
+              if (newCost === '' || (re.test(newCost) && !isNaN(newCost))) {
+                this.setState({ costumeCost: newCost });
+              }
             }}
-            hintText="Cost"
-            label="Cost"
+            floatingLabelText="Dollar Amount"
+            label="Dollar Amount"
+            value={this.state.costumeCost}
           />
 
+          <h2>Shipping Info</h2>
+          {this.state.selectedOrder && this.state.selectedOrder.isPickUp === false ? (
+            <div>
+              <h3>Package Dimensions</h3>
+              <TextField
+                fullWidth
+                onChange={({ target: { value: newWidth } }) => {
+                  //Numbers only
+                  const re = /^\d+$/;
+
+                  if (newWidth == '' || re.test(newWidth)) {
+                    this.setState({ packageWidth: +newWidth });
+                  }
+                }}
+                floatingLabelText="Width"
+                value={this.state.packageWidth}
+              />
+              <br />
+              <TextField
+                fullWidth
+                onChange={({ target: { value: newLength } }) => {
+                  //Numbers only
+                  const re = /^\d+$/;
+
+                  if (newLength == '' || re.test(newLength)) {
+                    this.setState({ packageLength: +newLength });
+                  }
+                }}
+                floatingLabelText="Length"
+                label="Length"
+                value={this.state.packageLength}
+              />
+              <br />
+              <TextField
+                fullWidth
+                onChange={({ target: { value: newHeight } }) => {
+                  //Numbers only
+                  const re = /^\d+$/;
+
+                  if (newHeight == '' || re.test(newHeight)) {
+                    this.setState({ packageHeight: +newHeight });
+                  }
+                }}
+                floatingLabelText="Height"
+                label="Height"
+                value={this.state.packageHeight}
+              />
+              <br />
+              <em>*Dimensions are in inches</em>
+              <br />
+              <h3>Weight</h3>
+              <TextField
+                fullWidth
+                onChange={({ target: { value: newWeight } }) => {
+                  //Numbers only
+                  const re = /^\d+$/;
+
+                  if (newWeight == '' || re.test(newWeight)) {
+                    this.setState({ packageWeight: +newWeight });
+                  }
+                }}
+                floatingLabelText="Pounds"
+                label="Pounds"
+                value={this.state.packageWeight}
+              />
+              <br />
+            </div>
+          ) : (
+            <p>
+              <em>This is a pick up order and does not need shipment info. </em>
+            </p>
+          )}
           <FlatButton
             label="Submit"
             onClick={() => {
