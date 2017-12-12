@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import {Col, Container, Row } from 'react-grid-system';
+import { Col, Container, Row } from 'react-grid-system';
 import Helmet from 'react-helmet';
 import FlatButton from 'material-ui/FlatButton';
 import {
@@ -79,7 +79,6 @@ export class AddressesPage extends Component {
 
   render() {
     return (
-      
       <Container>
         <Helmet
           title="Addresses"
@@ -93,7 +92,9 @@ export class AddressesPage extends Component {
         <h1>Addresses</h1>
 
         <Row>
-          <LeftNav />
+          <Col sm={3}>
+            <LeftNav />
+          </Col>
           <Col sm={8}>
             <BreadCrumbs crumbs={['/Profile', 'Addresses']} />
             {!this.state.addingNewAddress && (
@@ -145,8 +146,8 @@ export class AddressesPage extends Component {
                 />
               </div>
             )}
-        </Col>
-      </Row>
+          </Col>
+        </Row>
       </Container>
     );
   }
