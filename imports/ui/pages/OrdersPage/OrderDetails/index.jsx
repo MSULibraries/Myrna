@@ -1,7 +1,6 @@
 import Chip from 'material-ui/Chip';
 import FlatButton from 'material-ui/FlatButton';
 import { Card, CardActions, CardHeader, CardMedia, CardTitle, CardText } from 'material-ui/Card';
-import Toggle from 'material-ui/Toggle';
 import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -21,7 +20,7 @@ class OrderDetails extends Component {
     super();
 
     this.state = {
-      expanded: false,
+      expanded: {},
       itemDesc: {},
       itemDescLoaded: false,
       orderIdValid: false,
@@ -48,20 +47,10 @@ class OrderDetails extends Component {
     checkIn.call({ orderId });
   };
 
-  handleExpandChange = (id, expanded) => {
-    this.setState({ expanded: { ...this.state.expanded, id: expanded } });
-  };
-
-  handleToggle = (event, toggle) => {
-    this.setState({ expanded: toggle });
-  };
-
-  handleExpand = () => {
-    this.setState({ expanded: true });
-  };
-
-  handleReduce = () => {
-    this.setState({ expanded: false });
+  handleToggle = (event, toggle, id) => {
+    console.log(toggle);
+    console.log(id);
+    this.setState({ expanded: { ...this.state.expanded, [id]: toggle } });
   };
 
   getProductsDesc = ({ productIds }) => {
@@ -75,13 +64,7 @@ class OrderDetails extends Component {
     });
   };
 
-  renderReviewCart = product => {};
-
   render() {
-    // if (!isMaintainer()) {
-    //   return <Redirect to="/restricted" push />;
-    // }
-
     return (
       <Container>
         <h1> Order Details</h1>
@@ -96,41 +79,31 @@ class OrderDetails extends Component {
             <div>
               <CardsWrapper>
                 {this.props.order.productIds.map(id => (
-                  <CardStyle
-                    key={id}
-                    expanded={this.state.expanded}
-                    onExpandChange={this.handleExpandChange}
-                  >
+                  <CardStyle key={id} expanded={this.state.expanded[id]}>
                     <CardHeader
                       title={id}
                       subtitle={this.state.itemDesc[id].shortDescription}
                       avatar={`${document.location.origin}/images/clothing/${this.state.itemDesc[
                         id
-                      ].category.toLowerCase()}/${this.state.itemDesc[id].oldId}/small/${JSON.parse(
-                        this.state.itemDesc[id].description,
-                      ).picture_1}`}
-                      actAsExpander={true}
-                      showExpandableButton={true}
+                      ].category.toLowerCase()}/${this.state.itemDesc[id].oldId}/small/${
+                        JSON.parse(this.state.itemDesc[id].description).picture_1
+                      }`}
+                      showExpandableButton
+                      onClick={() => this.handleToggle(!this.expanded[id], id)}
                     />
                     <CardText>
                       <ChipWrapper>
                         <Chip>Condition: {this.state.itemDesc[id].itemStatus}</Chip>
                         <Chip>Type: {this.state.itemDesc[id].category}</Chip>
                       </ChipWrapper>
-                      <Toggle
-                        toggled={this.state.expanded}
-                        onToggle={this.handleToggle}
-                        labelPosition="right"
-                        label="Full Image View"
-                      />
                     </CardText>
                     <CardMedia expandable={true}>
                       <img
                         src={`${document.location.origin}/images/clothing/${this.state.itemDesc[
                           id
-                        ].category.toLowerCase()}/${this.state.itemDesc[id]
-                          .oldId}/small/${JSON.parse(this.state.itemDesc[id].description)
-                          .picture_1}`}
+                        ].category.toLowerCase()}/${this.state.itemDesc[id].oldId}/small/${
+                          JSON.parse(this.state.itemDesc[id].description).picture_1
+                        }`}
                         alt={this.state.itemDesc[id].shortDescription || ''}
                       />
                     </CardMedia>
@@ -164,8 +137,8 @@ const ChipWrapper = styled.div`
 `;
 
 const CardsWrapper = styled.div`
-  display: flex;
-  flex-wrap: wrap;
+  // display: flex;
+  // flex-wrap: wrap;
 `;
 
 const CardStyle = styled(Card)`
