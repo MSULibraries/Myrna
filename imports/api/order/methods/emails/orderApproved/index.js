@@ -3,8 +3,8 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { Order } from './../../../order';
 
-export const emailOrderedDelivered = new ValidatedMethod({
-  name: 'order.emails.orderDelivered',
+export const emailOrderedApproved = new ValidatedMethod({
+  name: 'order.emails.orderApproved',
   mixins: [],
   validate: new SimpleSchema({
     orderId: { type: SimpleSchema.RegEx.Id },
@@ -29,8 +29,10 @@ export const emailOrderedDelivered = new ValidatedMethod({
           email.default.Email.send({
             from: Meteor.settings.public.siteEmail,
             to: userEmail,
-            subject: 'Myrna Costume Order Delivered | Myrna Colley Lee Costume Collection',
-            text: 'Your order has been delivered!',
+            subject: 'Myrna Costume Order Approved | Myrna Colley Lee Costume Collection',
+            text: `Your order has been approved! This means you can now purchase your order. Go to:  '${
+              Meteor.settings.public.baseUrl
+            }/orders' and click 'BUY' on the order that has the 'Approved' Status`,
           });
         }
       }
@@ -38,4 +40,4 @@ export const emailOrderedDelivered = new ValidatedMethod({
   },
 });
 
-export default emailOrderedDelivered;
+export default emailOrderedApproved;

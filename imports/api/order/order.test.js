@@ -12,6 +12,7 @@ import * as OrderApi from './order';
 import { Payment } from './../../../lib/payment';
 import { setAvailible } from './../ItemDesc/methods/setAvailible/index';
 import { getOrderCost } from './bridges/orderCost/methods/getOrderCost/index';
+import { emailOrderedApproved } from './methods/emails/orderApproved/index';
 
 if (Meteor.isServer) {
   describe('Order', () => {
@@ -153,13 +154,44 @@ if (Meteor.isServer) {
         });
       });
 
-      it("order.approve updates order status to 'Approved'", async () => {
-        const approveOrder = Meteor.server.method_handlers['order.approve'];
-        const invocation = { userId };
-        const expectedStatus = 'Approved';
+      describe('order.approve', () => {
+        let bobOrderId;
 
-        await approveOrder.apply(invocation, [mockOrderId]);
-        assert.equal(OrderApi.Order.findOne({ _id: mockOrderId }).status, expectedStatus);
+        beforeEach(() => {
+          bobOrderId = OrderApi.Order.insert({
+            userId: users.bob.uid,
+            isPickUp: false,
+            dateAdded: Date.now(),
+            dateToArriveBy: new Date(),
+            dateToShipBack: new Date(),
+            productIds: mockCartProductIds,
+            specialInstr: 'None',
+            status: 'Active',
+          });
+        });
+
+        afterEach(() => {
+          OrderApi.Order.remove({ _id: bobOrderId });
+        });
+        it("order.approve updates order status to 'Approved'", async () => {
+          const approveOrder = Meteor.server.method_handlers['order.approve'];
+          const invocation = { userId };
+          const expectedStatus = 'Approved';
+
+          await approveOrder.apply(invocation, [bobOrderId]);
+          assert.equal(OrderApi.Order.findOne({ _id: bobOrderId }).status, expectedStatus);
+        });
+
+        it('order.approve emails user', async () => {
+          const approveOrder = Meteor.server.method_handlers['order.approve'];
+          const invocation = { userId };
+
+          const emailStub = sinon.stub(emailOrderedApproved, 'call');
+
+          await approveOrder.apply(invocation, [bobOrderId]);
+          assert.isTrue(emailStub.called);
+          emailStub.restore();
+        });
       });
 
       it("order.cancel updates order status to 'Cancelled'", () => {

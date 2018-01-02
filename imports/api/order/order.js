@@ -16,6 +16,7 @@ import { removeParcelDimensions } from './bridges/orderParcelDimensions/methods/
 import { OrderParcelDimensions } from './bridges/orderParcelDimensions/index';
 
 import { emailOrderedDelivered } from './methods/emails/orderDelivered/index';
+import { emailOrderedApproved } from './methods/emails/orderApproved/index';
 
 const EasyPost = new EasyPostInterface();
 export const Order = new Mongo.Collection('orders');
@@ -218,6 +219,9 @@ Meteor.methods({
       }
 
       Order.update({ _id: orderId }, { $set: { status: 'Approved' } });
+
+      // Emailing order's owner to notify
+      emailOrderedApproved.call({ orderId });
     }
   },
 
