@@ -15,6 +15,8 @@ import { getOrderCost } from './bridges/orderCost/methods/getOrderCost/index';
 import { removeParcelDimensions } from './bridges/orderParcelDimensions/methods/removeParcelDimensions/index';
 import { OrderParcelDimensions } from './bridges/orderParcelDimensions/index';
 
+import { emailOrderedDelivered } from './methods/emails/orderDelivered/index';
+
 const EasyPost = new EasyPostInterface();
 export const Order = new Mongo.Collection('orders');
 
@@ -283,9 +285,11 @@ Meteor.methods({
   /**
    * Updates the status of an order to 'Delivered'
    */
+
   'order.delivered': function orderDelivered(orderId) {
     if (!this.isSimulation) {
       Order.update({ _id: orderId }, { $set: { status: 'Delivered', dateDelivered: new Date() } });
+      emailOrderedDelivered._execute({ userId: this.userId });
     }
   },
 

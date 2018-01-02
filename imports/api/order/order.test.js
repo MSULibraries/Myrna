@@ -4,6 +4,7 @@ import { Meteor } from 'meteor/meteor';
 import { assert } from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import { Random } from 'meteor/random';
+import { Email } from 'meteor/email';
 import moment from 'moment';
 
 import { createMockUsers, users } from './../../../lib/server/testUtil/createMockRoles';
@@ -242,6 +243,15 @@ if (Meteor.isServer) {
       });
 
       describe('order.delivered', () => {
+        let emailSendStub;
+
+        beforeEach(() => {
+          emailSendStub = sinon.stub(Email, 'send');
+        });
+
+        afterEach(() => {
+          emailSendStub.restore();
+        });
         it('updates status to delivered', () => {
           const activateOrder = Meteor.server.method_handlers['order.delivered'];
           // Set up a fake method invocation that looks like what the method expects
@@ -261,6 +271,17 @@ if (Meteor.isServer) {
           const { dateDelivered } = OrderApi.Order.findOne({ _id: mockOrderId });
 
           assert.equal(moment(dateDelivered).format('LL'), moment(new Date()).format('LL'));
+        });
+
+        describe('sends an email', () => {
+          it('calls Email.send', () => {
+            // Running function
+            const activateOrder = Meteor.server.method_handlers['order.delivered'];
+            const invocation = { userId };
+            activateOrder.apply(invocation, [mockOrderId]);
+
+            assert.isTrue(emailSendStub.called);
+          });
         });
       });
 
