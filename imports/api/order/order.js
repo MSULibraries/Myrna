@@ -289,7 +289,7 @@ Meteor.methods({
   'order.delivered': function orderDelivered(orderId) {
     if (!this.isSimulation) {
       Order.update({ _id: orderId }, { $set: { status: 'Delivered', dateDelivered: new Date() } });
-      emailOrderedDelivered._execute({ userId: this.userId });
+      emailOrderedDelivered.call({ orderId });
     }
   },
 

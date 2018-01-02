@@ -244,13 +244,25 @@ if (Meteor.isServer) {
 
       describe('order.delivered', () => {
         let emailSendStub;
+        let bobOrderId;
 
         beforeEach(() => {
+          bobOrderId = OrderApi.Order.insert({
+            userId: users.bob.uid,
+            isPickUp: false,
+            dateAdded: Date.now(),
+            dateToArriveBy: new Date(),
+            dateToShipBack: new Date(),
+            productIds: mockCartProductIds,
+            specialInstr: 'None',
+            status: 'Active',
+          });
           emailSendStub = sinon.stub(Email, 'send');
         });
 
         afterEach(() => {
           emailSendStub.restore();
+          OrderApi.Order.remove({ _id: bobOrderId });
         });
         it('updates status to delivered', () => {
           const activateOrder = Meteor.server.method_handlers['order.delivered'];
@@ -258,17 +270,17 @@ if (Meteor.isServer) {
           const invocation = { userId };
           const expectedStatus = 'Delivered';
 
-          activateOrder.apply(invocation, [mockOrderId]);
-          assert.equal(OrderApi.Order.findOne({ _id: mockOrderId }).status, expectedStatus);
+          activateOrder.apply(invocation, [bobOrderId]);
+          assert.equal(OrderApi.Order.findOne({ _id: bobOrderId }).status, expectedStatus);
         });
         it("updates 'dateDelivered' to today's date ", () => {
           const activateOrder = Meteor.server.method_handlers['order.delivered'];
           // Set up a fake method invocation that looks like what the method expects
           const invocation = { userId };
 
-          activateOrder.apply(invocation, [mockOrderId]);
+          activateOrder.apply(invocation, [bobOrderId]);
 
-          const { dateDelivered } = OrderApi.Order.findOne({ _id: mockOrderId });
+          const { dateDelivered } = OrderApi.Order.findOne({ _id: bobOrderId });
 
           assert.equal(moment(dateDelivered).format('LL'), moment(new Date()).format('LL'));
         });
@@ -276,9 +288,9 @@ if (Meteor.isServer) {
         describe('sends an email', () => {
           it('calls Email.send', () => {
             // Running function
-            const activateOrder = Meteor.server.method_handlers['order.delivered'];
-            const invocation = { userId };
-            activateOrder.apply(invocation, [mockOrderId]);
+            const orderDelivered = Meteor.server.method_handlers['order.delivered'];
+            const invocation = {};
+            orderDelivered.apply(invocation, [bobOrderId]);
 
             assert.isTrue(emailSendStub.called);
           });

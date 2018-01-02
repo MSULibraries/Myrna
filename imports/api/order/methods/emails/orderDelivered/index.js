@@ -1,30 +1,38 @@
 import * as email from 'meteor/email';
+import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
-import { LoggedInMixin } from 'meteor/tunifight:loggedin-mixin';
+import { Order } from './../../../order';
 
 export const emailOrderedDelivered = new ValidatedMethod({
   name: 'order.emails.orderDelivered',
-  mixins: [LoggedInMixin],
-  checkLoggedInError: {
-    error: 'notLogged',
-    message:
-      'Error in emailOrderedDelivered() : You must be logged in to send the orderDelivered email',
-  },
-  validate: () => {},
+  mixins: [],
+  validate: new SimpleSchema({
+    orderId: { type: SimpleSchema.RegEx.Id },
+  }).validator(),
 
-  run() {
+  run({ orderId }) {
     if (!this.isSimulation) {
-      /**
-       *  Stopping actual email from being sent until we are
-       *  allowed to  send email
-       */
-      if (Meteor.isTest) {
-        email.default.Email.send({
-          from: 'broabect@ut.utm.edu',
-          to: 'broabect@ut.utm.edu',
-          subject: 'Myrna Costume Order Delivered | Myrna Colley Lee Costume Collection',
-          text: 'Your order has been delivered!',
-        });
+      // Getting the orders details
+      const usersOrder = Order.findOne({ _id: orderId });
+
+      // If there is an order with the id of orderId
+      if (usersOrder !== undefined) {
+        // Getting users email
+        const orderOwner = Meteor.users.findOne({ _id: usersOrder.userId });
+        const { address: userEmail } = orderOwner.emails[0];
+
+        /**
+         *  Stopping actual email from being sent until we are
+         *  allowed to send email
+         */
+        if (Meteor.isProduction || Meteor.isTest) {
+          email.default.Email.send({
+            from: 'broabect@ut.utm.edu',
+            to: userEmail,
+            subject: 'Myrna Costume Order Delivered | Myrna Colley Lee Costume Collection',
+            text: 'Your order has been delivered!',
+          });
+        }
       }
     }
   },
