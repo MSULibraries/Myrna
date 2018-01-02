@@ -48,8 +48,6 @@ class OrderDetails extends Component {
   };
 
   handleToggle = (event, toggle, id) => {
-    console.log(toggle);
-    console.log(id);
     this.setState({ expanded: { ...this.state.expanded, [id]: toggle } });
   };
 

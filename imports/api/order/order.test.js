@@ -4,6 +4,7 @@ import { Meteor } from 'meteor/meteor';
 import { assert } from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import { Random } from 'meteor/random';
+import { Email } from 'meteor/email';
 import moment from 'moment';
 
 import { createMockUsers, users } from './../../../lib/server/testUtil/createMockRoles';
@@ -11,6 +12,7 @@ import * as OrderApi from './order';
 import { Payment } from './../../../lib/payment';
 import { setAvailible } from './../ItemDesc/methods/setAvailible/index';
 import { getOrderCost } from './bridges/orderCost/methods/getOrderCost/index';
+import { emailOrderedApproved } from './methods/emails/orderApproved/index';
 
 if (Meteor.isServer) {
   describe('Order', () => {
@@ -152,13 +154,44 @@ if (Meteor.isServer) {
         });
       });
 
-      it("order.approve updates order status to 'Approved'", async () => {
-        const approveOrder = Meteor.server.method_handlers['order.approve'];
-        const invocation = { userId };
-        const expectedStatus = 'Approved';
+      describe('order.approve', () => {
+        let bobOrderId;
 
-        await approveOrder.apply(invocation, [mockOrderId]);
-        assert.equal(OrderApi.Order.findOne({ _id: mockOrderId }).status, expectedStatus);
+        beforeEach(() => {
+          bobOrderId = OrderApi.Order.insert({
+            userId: users.bob.uid,
+            isPickUp: false,
+            dateAdded: Date.now(),
+            dateToArriveBy: new Date(),
+            dateToShipBack: new Date(),
+            productIds: mockCartProductIds,
+            specialInstr: 'None',
+            status: 'Active',
+          });
+        });
+
+        afterEach(() => {
+          OrderApi.Order.remove({ _id: bobOrderId });
+        });
+        it("order.approve updates order status to 'Approved'", async () => {
+          const approveOrder = Meteor.server.method_handlers['order.approve'];
+          const invocation = { userId };
+          const expectedStatus = 'Approved';
+
+          await approveOrder.apply(invocation, [bobOrderId]);
+          assert.equal(OrderApi.Order.findOne({ _id: bobOrderId }).status, expectedStatus);
+        });
+
+        it('order.approve emails user', async () => {
+          const approveOrder = Meteor.server.method_handlers['order.approve'];
+          const invocation = { userId };
+
+          const emailStub = sinon.stub(emailOrderedApproved, 'call');
+
+          await approveOrder.apply(invocation, [bobOrderId]);
+          assert.isTrue(emailStub.called);
+          emailStub.restore();
+        });
       });
 
       it("order.cancel updates order status to 'Cancelled'", () => {
@@ -242,25 +275,57 @@ if (Meteor.isServer) {
       });
 
       describe('order.delivered', () => {
+        let emailSendStub;
+        let bobOrderId;
+
+        beforeEach(() => {
+          bobOrderId = OrderApi.Order.insert({
+            userId: users.bob.uid,
+            isPickUp: false,
+            dateAdded: Date.now(),
+            dateToArriveBy: new Date(),
+            dateToShipBack: new Date(),
+            productIds: mockCartProductIds,
+            specialInstr: 'None',
+            status: 'Active',
+          });
+          emailSendStub = sinon.stub(Email, 'send');
+        });
+
+        afterEach(() => {
+          emailSendStub.restore();
+          OrderApi.Order.remove({ _id: bobOrderId });
+        });
         it('updates status to delivered', () => {
           const activateOrder = Meteor.server.method_handlers['order.delivered'];
           // Set up a fake method invocation that looks like what the method expects
           const invocation = { userId };
           const expectedStatus = 'Delivered';
 
-          activateOrder.apply(invocation, [mockOrderId]);
-          assert.equal(OrderApi.Order.findOne({ _id: mockOrderId }).status, expectedStatus);
+          activateOrder.apply(invocation, [bobOrderId]);
+          assert.equal(OrderApi.Order.findOne({ _id: bobOrderId }).status, expectedStatus);
         });
         it("updates 'dateDelivered' to today's date ", () => {
           const activateOrder = Meteor.server.method_handlers['order.delivered'];
           // Set up a fake method invocation that looks like what the method expects
           const invocation = { userId };
 
-          activateOrder.apply(invocation, [mockOrderId]);
+          activateOrder.apply(invocation, [bobOrderId]);
 
-          const { dateDelivered } = OrderApi.Order.findOne({ _id: mockOrderId });
+          const { dateDelivered } = OrderApi.Order.findOne({ _id: bobOrderId });
 
           assert.equal(moment(dateDelivered).format('LL'), moment(new Date()).format('LL'));
+        });
+
+        describe('sends an email', () => {
+          it('calls Email.send', () => {
+            // Running function
+            const orderDelivered = Meteor.server.method_handlers['order.delivered'];
+            const invocation = {};
+            orderDelivered.apply(invocation, [bobOrderId]);
+
+            assert.isTrue(emailSendStub.called);
+          });
         });
       });
 
