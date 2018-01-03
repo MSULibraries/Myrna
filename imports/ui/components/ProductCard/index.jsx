@@ -3,23 +3,8 @@ import PropTypes from 'prop-types';
 import { Card, CardActions, CardMedia, CardTitle, CardText } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import Paper from 'material-ui/Paper';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-
-const DescriptionContainer = styled.div`padding: 10px;`;
-
-const ProductImage = styled.img`
-  min-height: 250px;
-  filter: ${({ isAvailible }) => {
-    if (isAvailible === false) {
-      return 'grayscale(100%)';
-    }
-    return 'grayscale(0%)';
-  }};
-`;
-
-const CardMediaContainer = styled(CardMedia)`max-width: 320px;`;
-
-const PageDetailLink = styled.a`text-decoration: none;`;
 
 export const ProductCard = ({
   _id,
@@ -35,32 +20,38 @@ export const ProductCard = ({
 }) => (
   <Paper zDepth={3}>
     <Card>
-      <PageDetailLink>
+      <DetailLink to={`/products/details/${_id}`}>
         {!isAvailible ? (
           <CardMediaContainer overlay={<CardTitle subtitle="Out Of Stock" />}>
             <ProductImage
               disabled={!isAvailible}
-              src={`images/clothing/${category.toLowerCase()}/${oldId}/small/${JSON.parse(description).picture_1}`}
-              alt={`images/clothing/${category}/${oldId}/small/${JSON.parse(description)
-                .picture_1}`}
+              src={`images/clothing/${category.toLowerCase()}/${oldId}/small/${
+                JSON.parse(description).picture_1
+              }`}
+              alt={`images/clothing/${category}/${oldId}/small/${
+                JSON.parse(description).picture_1
+              }`}
             />
           </CardMediaContainer>
         ) : (
           <CardMediaContainer>
             <ProductImage
               disabled={!isAvailible}
-              src={`images/clothing/${category.toLowerCase()}/${oldId}/small/${JSON.parse(description).picture_1}`}
-              alt={`images/clothing/${category}/${oldId}/small/${JSON.parse(description)
-                .picture_1}`}
+              src={`images/clothing/${category.toLowerCase()}/${oldId}/small/${
+                JSON.parse(description).picture_1
+              }`}
+              alt={`images/clothing/${category}/${oldId}/small/${
+                JSON.parse(description).picture_1
+              }`}
             />
           </CardMediaContainer>
         )}
-      </PageDetailLink>
+      </DetailLink>
 
       <DescriptionContainer>
-        <PageDetailLink href="#">
+        <DetailLink to={`/products/details/${_id}`}>
           <CardText dangerouslySetInnerHTML={{ __html: shortDescription }} />
-        </PageDetailLink>
+        </DetailLink>
       </DescriptionContainer>
       <CardActions>
         {isAuthed && (
@@ -87,5 +78,27 @@ ProductCard.propTypes = {
   oldId: PropTypes.number,
   shortDescription: PropTypes.string,
 };
+
+const DescriptionContainer = styled.div`
+  padding: 10px;
+`;
+
+const ProductImage = styled.img`
+  min-height: 250px;
+  filter: ${({ isAvailible }) => {
+    if (isAvailible === false) {
+      return 'grayscale(100%)';
+    }
+    return 'grayscale(0%)';
+  }};
+`;
+
+const CardMediaContainer = styled(CardMedia)`
+  max-width: 320px;
+`;
+
+const DetailLink = styled(Link)`
+  text-decoration: none;
+`;
 
 export default ProductCard;

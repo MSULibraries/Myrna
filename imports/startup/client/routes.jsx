@@ -20,7 +20,7 @@ import NotFoundPage from './../../ui/pages/NotFoundPage/index';
 import PaymentSuccess from './../../ui/pages/PaymentSuccess/index';
 import PoliciesPage from './../../ui/pages/PoliciesPage/index';
 import ProductsContainer from './../../ui/pages/Products/ProductsContainer';
-import ProductsDetails from './../../ui/pages/ProductsDetails/index';
+import ProductsDetails from './../../ui/pages/Products/ProductsDetails/index';
 import ProfilePage from './../../ui/pages/ProfilePage/index';
 import RestrictedPage from './../../ui/pages/RestrictedPage/index';
 
