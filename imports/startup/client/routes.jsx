@@ -20,6 +20,7 @@ import NotFoundPage from './../../ui/pages/NotFoundPage/index';
 import PaymentSuccess from './../../ui/pages/PaymentSuccess/index';
 import PoliciesPage from './../../ui/pages/PoliciesPage/index';
 import ProductsContainer from './../../ui/pages/Products/ProductsContainer';
+import ProductsDetails from './../../ui/pages/Products/ProductsDetails/index';
 import ProfilePage from './../../ui/pages/ProfilePage/index';
 import RestrictedPage from './../../ui/pages/RestrictedPage/index';
 
@@ -64,6 +65,7 @@ const Routes = ({ userLoggedIn }) => (
           <Route exact path="/login" component={LoginPage} />
           <Route exact path="/policies" component={PoliciesPage} />
           <Route exact path="/products" component={ProductsContainer} />
+          <Route exact path="/products/details/:productId" component={ProductsDetails} />
           <Route exact path="/restricted" component={RestrictedPage} />
 
           <Route component={NotFoundPage} />
