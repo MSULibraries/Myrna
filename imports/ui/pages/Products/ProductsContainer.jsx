@@ -81,13 +81,20 @@ class ProductsContainer extends Component {
       this.setState({ paginationOffset: 0 });
       this.getCurrentItems();
     }
+    if (
+      // If there is a new filter
+      this.state.searchQuery !== prevState.searchQuery
+    ) {
+      this.setState({ paginationOffset: 0 });
+      this.getCurrentItems();
+    }
   }
 
   /**
    * Adds item to cart in DB
    * @param {String} productId
    */
-  addProductToCart( productId) {
+  addProductToCart(productId) {
     Meteor.call('cart.insert', productId);
   }
 
@@ -103,6 +110,9 @@ class ProductsContainer extends Component {
    * Parses the url search string and updates state
    * so that one could link to page with filters or searches
    * already made
+   *
+   * Example:
+   *   Search URL :http://localhost:3000/products?searchQuery=green%20silk
    */
   checkUrlParams() {
     if (this.state.urlParams.searchQuery) {
@@ -113,9 +123,15 @@ class ProductsContainer extends Component {
       this.setState({ paginationOffset: +this.state.urlParams.paginationOffset });
     }
 
-    if (this.state.urlParams.activeFilters) {
-      this.setState({ activeFilters: this.state.urlParams.activeFilters });
+    if (this.state.urlParams.categories) {
+      const category = String(this.state.urlParams.categories).toLowerCase();
+
+      // If the category is one that we have info for
+      if (category in Object.keys(this.state.activeFilters)) {
+        this.setState({ activeFilters: { ...this.state.activeFilters, [category]: true } });
+      }
     }
+    this.getCurrentItems();
   }
 
   clearFilters() {
@@ -132,10 +148,10 @@ class ProductsContainer extends Component {
     const { activeFilters } = this.state;
 
     /**
-       * The data for the collection is from a legacy project
-       * All the categories start  with a capital letter
-       * @example: 'dress' would be 'Dress' in the category field
-       */
+     * The data for the collection is from a legacy project
+     * All the categories start  with a capital letter
+     * @example: 'dress' would be 'Dress' in the category field
+     */
     const activeFiltersArray = Object.keys(activeFilters)
       .filter(category => activeFilters[category] === true)
       .map(category => this.capFirstLetter(category));
@@ -188,7 +204,8 @@ class ProductsContainer extends Component {
               ...this.state.activeFilters,
               [category]: !this.state.activeFilters[category],
             },
-          })}
+          })
+        }
       />
     ));
   }
@@ -267,7 +284,7 @@ class ProductsContainer extends Component {
               {this.state.currentProducts.length <= this.state.itemsPerPage ? (
                 this.state.currentProducts.map(clothing => (
                   <ProductCard
-                    addProductToCart={()=> this.addProductToCart(clothing._id)}
+                    addProductToCart={() => this.addProductToCart(clothing._id)}
                     isAuthed={Meteor.userId() !== null}
                     key={clothing._id}
                     {...clothing}
