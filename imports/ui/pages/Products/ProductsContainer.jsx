@@ -14,7 +14,7 @@ import { parse } from 'query-string';
 import { media } from './../../breakpoints';
 import ProductCard from './../../components/ProductCard/index';
 import Cart from './../../../api/cart';
-import Dress from './../../../api/dresses';
+import Dress from './../../../api/clothing/dresses/index';
 import ItemDesc from './../../../api/ItemDesc/index';
 
 const { fadeUp } = transitions;
