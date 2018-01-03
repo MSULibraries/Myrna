@@ -23,8 +23,8 @@ class MobileMainNav extends Component {
   /**
    * Handles when something tries to change the draw's
    * open or close status
-   * @param {Bool} open 
-   * @param {String} reason 
+   * @param {Bool} open
+   * @param {String} reason
    */
   handleRequestChange(open, reason) {
     this.setState({ drawerOpen: !this.state.drawerOpen });
@@ -43,6 +43,13 @@ class MobileMainNav extends Component {
           open={this.state.drawerOpen}
           onRequestChange={() => this.handleRequestChange()}
         >
+          <Link to="/">
+            <img
+              src={`${document.location.origin}/images/main_logo.png`}
+              alt="Myrna Colley-Lee Costume Collection Logo"
+              style={{ width: '100%' }}
+            />
+          </Link>
           <MainLink to="/">
             <MenuItem
               onClick={() => {
@@ -114,7 +121,9 @@ const MainLink = styled(Link)`
   text-decoration: none;
 `;
 
-const MobileNavContainer = styled.div`${media.desktop`  display: flex !important;`} display: none;`;
+const MobileNavContainer = styled.div`
+  ${media.desktop`  display: flex !important;`} display: none;
+`;
 
 export default withTracker(() => ({
   userLoggedIn: Meteor.userId(),
