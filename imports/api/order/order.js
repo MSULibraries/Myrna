@@ -12,6 +12,11 @@ import { Payment } from './../../../lib/payment';
 import { setAvailible } from './../ItemDesc/methods/setAvailible/index';
 import { removeOrderCost } from './bridges/orderCost/methods/removeOrderCost/index';
 import { getOrderCost } from './bridges/orderCost/methods/getOrderCost/index';
+import { removeParcelDimensions } from './bridges/orderParcelDimensions/methods/removeParcelDimensions/index';
+import { OrderParcelDimensions } from './bridges/orderParcelDimensions/index';
+
+import { emailOrderedDelivered } from './methods/emails/orderDelivered/index';
+import { emailOrderedApproved } from './methods/emails/orderApproved/index';
 
 const EasyPost = new EasyPostInterface();
 export const Order = new Mongo.Collection('orders');
@@ -153,10 +158,12 @@ export function createShipment(orderId) {
         company, street1, city, state, zip,
       } = Order.findOne({ _id: orderId }).address(orderId);
 
+      const packageDimensions = OrderParcelDimensions.findOne({ orderId });
+
       // Creating Shipment
       const fromAddress = await EasyPost.createFromAddress();
       const toAddress = await EasyPost.createToAddress(company, street1, city, state, zip);
-      const parcel = await EasyPost.createParcel(10, 10, 10, 10);
+      const parcel = await EasyPost.createParcel(packageDimensions);
       const shipment = await EasyPost.createShipment(fromAddress, toAddress, parcel);
 
       try {
@@ -212,6 +219,9 @@ Meteor.methods({
       }
 
       Order.update({ _id: orderId }, { $set: { status: 'Approved' } });
+
+      // Emailing order's owner to notify
+      emailOrderedApproved.call({ orderId });
     }
   },
 
@@ -279,9 +289,11 @@ Meteor.methods({
   /**
    * Updates the status of an order to 'Delivered'
    */
+
   'order.delivered': function orderDelivered(orderId) {
     if (!this.isSimulation) {
       Order.update({ _id: orderId }, { $set: { status: 'Delivered', dateDelivered: new Date() } });
+      emailOrderedDelivered.call({ orderId });
     }
   },
 
@@ -303,6 +315,7 @@ Meteor.methods({
       Meteor.call('order.trackingId.remove.by.orderId', orderId);
       Meteor.call('order.payment.remove.by.orderId', orderId);
       removeOrderCost._execute({ userId: this.userId }, { orderId });
+      removeParcelDimensions._execute({ userId: this.userId }, { orderId });
     }
   },
 

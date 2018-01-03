@@ -9,7 +9,7 @@ import {
   createMockUsers,
 } from './../../../../../../../../lib/server/testUtil/createMockRoles';
 
-describe('Order', () => {
+describe('OrderCost', () => {
   describe('methods', () => {
     let mockOrder;
 
