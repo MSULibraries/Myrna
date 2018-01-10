@@ -132,7 +132,7 @@ export function saveTrackingId(orderId, shipmentId, rate) {
  * @param {Number} currentAmountDue - dollar amount
  */
 export function createPaymentUrl(orderId, amountDue) {
-  const payment = new Payment(process.env.SECRET);
+  const payment = new Payment(Meteor.settings.private.payment.secret);
   const orderNumber = orderId;
   const timestamp = Date.now();
 
@@ -220,8 +220,8 @@ Meteor.methods({
 
       Order.update({ _id: orderId }, { $set: { status: 'Approved' } });
 
-        // Emailing order's owner to notify
-        emailOrderedApproved.call({ orderId });
+      // Emailing order's owner to notify
+      emailOrderedApproved.call({ orderId });
     }
   },
 

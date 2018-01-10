@@ -25,13 +25,13 @@ export const emailOrderedApproved = new ValidatedMethod({
          *  Stopping actual email from being sent until we are
          *  allowed to send email
          */
-        if (Meteor.isProduction) {
+        if (Meteor.isProduction || Meteor.isTest) {
           email.default.Email.send({
-            from: process.env.SITE_EMAIL,
+            from: Meteor.settings.public.siteEmail,
             to: userEmail,
             subject: 'Myrna Costume Order Approved | Myrna Colley Lee Costume Collection',
             text: `Your order has been approved! This means you can now purchase your order. Go to:  '${
-              process.env.BASE_URL
+              Meteor.settings.public.baseUrl
             }/orders' and click 'BUY' on the order that has the 'Approved' Status`,
           });
         }
