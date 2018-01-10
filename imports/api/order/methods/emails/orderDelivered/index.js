@@ -27,7 +27,7 @@ export const emailOrderedDelivered = new ValidatedMethod({
          */
         if (Meteor.isProduction || Meteor.isTest) {
           email.default.Email.send({
-            from: process.env.SITE_EMAIL,
+            from: Meteor.settings.public.siteEmail,
             to: userEmail,
             subject: 'Myrna Costume Order Delivered | Myrna Colley Lee Costume Collection',
             text: 'Your order has been delivered!',
