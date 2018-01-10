@@ -12,19 +12,25 @@ The Myrna costume website allows users to browse costume pieces and learn more a
 ## [Functionality](#functionality)
 
 * **User Accounts**
+
   * Users can create accounts and have a persisted experience within the app
 
 * **Browse Costumes**
+
   * None Auth'd users can still browse costumes
 
 * **Cart**
+
   * There is a cart system that will allow users to add product to cart. The cart will ignore duplicate entries.
+
     * Flow
+
       1. Go to `/products`
-      1. Add Products to Cart (*Must be signed in*)
+      1. Add Products to Cart (_Must be signed in_)
       1. Go to `/cart`
 
-    * **Submit Order** - A user can submit the items in their cart to be ordered. This will create an entry to be approved by a maintainer. 
+    * **Submit Order** - A user can submit the items in their cart to be ordered. This will create an entry to be approved by a maintainer.
+
       * Flow
 
         1. Click Submit Order
@@ -35,6 +41,7 @@ The Myrna costume website allows users to browse costume pieces and learn more a
         1. Select whether the order needs to be picked up or shipped
 
     * **Create a Show** - Creating a show saves all of the product id's in a user's cart as a show. This will allows users who run similar shows to easily pull costumes between each show.
+
       * Flow
         1. Click 'Create a Show'
         1. Enter the name of the show
@@ -46,12 +53,14 @@ The Myrna costume website allows users to browse costume pieces and learn more a
         1. Click 'Pull Show'
 
   * **Order**
+
     * A user can view different aspects of their current or previous orders such as products from that order, when the order was placed, what address the order was sent to, and the status of each order.
 
     * **Statuses** - There are various different 'statuses' of orders. Below are explainations of what each mean.
-      * **Active** - The order has been paid for. 
+
+      * **Active** - The order has been paid for.
       * **Approved** - The order has been approved and is availible for purchase. Once approved, a customer will have the option to 'buy' the order. When a user clicks 'Buy' they will receive a link that will expire in 5 minutes. When they visit the link, they will be sent to the payment system. After completing their payment, they will be redirected back to a success page. This page will validate the response from the payment system. If valid, the order's shipment will be bought and started.
-      * **Cancelled** - *Not in use*
+      * **Cancelled** - _Not in use_
       * **Complete** - The order has shipped, returned, and processed
       * **Delivered** - The shipment has reached it's destination. This is handled by am [EasyPost Webhook](https://www.easypost.com/webhooks-guide.html)
       * **Un-Approved** - The order has been made, but has not been approved by a maintainer
@@ -67,28 +76,37 @@ The Myrna costume website allows users to browse costume pieces and learn more a
 * Pull Code & Change to that directory
 * Create a `settings.json` in the root of the folder
 * Example
+
   ```json
   {
     "public": {
-      // API Key for EasyPost
-      "EASYPOST_TEST_API_KEY": ""
+      "EASYPOST_TEST_API_KEY": "",
+      "baseUrl": "",
+      "siteEmail": ""
     },
     "private": {
-      // Read payment docs for more info
       "payment": {
         "endpoint": "",
         "orderType": "",
         "paymentMethod": "",
         "redirectUrl": "",
         "redirectUrlParameters": "",
-        "secret": ""
+        "secret": "",
+        "prod": {
+          "endpoint": "",
+          "orderType": "",
+          "paymentMethod": "",
+          "redirectUrl": "",
+          "redirectUrlParameters": "",
+          "secret": "s"
+        }
       }
     }
   }
   ```
 
-* Install Dependencies *(command: `npm i`)*
-* Start Server *(command: `meteor --settings settings.json`)*
+* Install Dependencies _(command: `npm i`)_
+* Start Server _(command: `meteor --settings settings.json`)_
 
 ## [Technology](#technology)
 
