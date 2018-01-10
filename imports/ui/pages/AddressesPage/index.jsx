@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Container } from 'react-grid-system';
+import { Col, Container, Row } from 'react-grid-system';
 import Helmet from 'react-helmet';
 import FlatButton from 'material-ui/FlatButton';
 import {
@@ -16,6 +16,7 @@ import { createContainer } from 'meteor/react-meteor-data';
 import NewAddressForm from './NewAddressForm';
 import Addresses from './../../../api/addresses';
 import BreadCrumbs from './../../components/BreadCrumbs/index';
+import LeftNav from '../../components/LeftNav/LeftNav';
 
 // Adjusted contrast to help with a11y
 const darkerTableHeaders = {
@@ -89,58 +90,64 @@ export class AddressesPage extends Component {
           ]}
         />
         <h1>Addresses</h1>
-        <BreadCrumbs crumbs={['/Profile', 'Addresses']} />
 
-        {!this.state.addingNewAddress && (
-          <div>
-            <Table>
-              <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
-                <TableRow>
-                  <TableHeaderColumn style={darkerTableHeaders}>Company</TableHeaderColumn>
-                  <TableHeaderColumn style={darkerTableHeaders}>Name </TableHeaderColumn>
-                  <TableHeaderColumn style={darkerTableHeaders}>Street </TableHeaderColumn>
-                  <TableHeaderColumn style={darkerTableHeaders}>City</TableHeaderColumn>
-                  <TableHeaderColumn style={darkerTableHeaders}>State </TableHeaderColumn>
-                  <TableHeaderColumn style={darkerTableHeaders}>Zip </TableHeaderColumn>
+        <Row>
+          <Col sm={3}>
+            <LeftNav />
+          </Col>
+          <Col sm={8}>
+            <BreadCrumbs crumbs={['/Profile', 'Addresses']} />
+            {!this.state.addingNewAddress && (
+              <div>
+                <Table>
+                  <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
+                    <TableRow>
+                      <TableHeaderColumn style={darkerTableHeaders}>Company</TableHeaderColumn>
+                      <TableHeaderColumn style={darkerTableHeaders}>Name </TableHeaderColumn>
+                      <TableHeaderColumn style={darkerTableHeaders}>Street </TableHeaderColumn>
+                      <TableHeaderColumn style={darkerTableHeaders}>City</TableHeaderColumn>
+                      <TableHeaderColumn style={darkerTableHeaders}>State </TableHeaderColumn>
+                      <TableHeaderColumn style={darkerTableHeaders}>Zip </TableHeaderColumn>
 
-                  <TableHeaderColumn style={{ darkerTableHeaders, ...alignCenter }}>
-                    Remove
-                  </TableHeaderColumn>
-                </TableRow>
-              </TableHeader>
-              <TableBody displayRowCheckbox={false}>
-                {this.props.addresses.map(address => (
-                  <TableRow key={address.company}>
-                    <TableRowColumn>{address.company}</TableRowColumn>
-                    <TableRowColumn>{address.name}</TableRowColumn>
-                    <TableRowColumn>{address.street1}</TableRowColumn>
-                    <TableRowColumn>{address.city}</TableRowColumn>
-                    <TableRowColumn>{address.state}</TableRowColumn>
-                    <TableRowColumn>{address.zip}</TableRowColumn>
-                    <TableRowColumn style={centerColumn}>
-                      <FlatButton
-                        onClick={() => this.removeAddress(address._id)}
-                        secondary
-                        label="X"
-                      />
-                    </TableRowColumn>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                      <TableHeaderColumn style={{ darkerTableHeaders, ...alignCenter }}>
+                        Remove
+                      </TableHeaderColumn>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody displayRowCheckbox={false}>
+                    {this.props.addresses.map(address => (
+                      <TableRow key={address.company}>
+                        <TableRowColumn>{address.company}</TableRowColumn>
+                        <TableRowColumn>{address.name}</TableRowColumn>
+                        <TableRowColumn>{address.street1}</TableRowColumn>
+                        <TableRowColumn>{address.city}</TableRowColumn>
+                        <TableRowColumn>{address.state}</TableRowColumn>
+                        <TableRowColumn>{address.zip}</TableRowColumn>
+                        <TableRowColumn style={centerColumn}>
+                          <FlatButton
+                            onClick={() => this.removeAddress(address._id)}
+                            secondary
+                            label="X"
+                          />
+                        </TableRowColumn>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
 
-            <FlatButton onClick={() => this.toggleAddingNewAddress()} label="New Address" />
-          </div>
-        )}
-
-        {this.state.addingNewAddress && (
-          <div>
-            <NewAddressForm
-              submitForm={newAddress => this.addNewAddress(newAddress)}
-              cancelForm={() => this.toggleAddingNewAddress()}
-            />
-          </div>
-        )}
+                <FlatButton onClick={() => this.toggleAddingNewAddress()} label="New Address" />
+              </div>
+            )}
+            {this.state.addingNewAddress && (
+              <div>
+                <NewAddressForm
+                  submitForm={newAddress => this.addNewAddress(newAddress)}
+                  cancelForm={() => this.toggleAddingNewAddress()}
+                />
+              </div>
+            )}
+          </Col>
+        </Row>
       </Container>
     );
   }

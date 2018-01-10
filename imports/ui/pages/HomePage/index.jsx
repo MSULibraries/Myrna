@@ -2,19 +2,36 @@ import React from 'react';
 import { Container } from 'react-grid-system';
 import Helmet from 'react-helmet';
 
+import CategoriesSection from './CategoriesSection';
+import HeroSection from './HeroSection';
+import Search from './Search';
+import TriInfo from './TriInfo';
+
 export const HomePage = () => (
-  <Container>
+  <div>
     <Helmet
       title="Welcome"
       meta={[
         {
           name: 'description',
-          content: 'Landing page for the Myrna Colley Lee rental site',
+          content: 'Welcome page for the Myrna Colley Lee rental site',
         },
       ]}
     />
-    <h1>Welcome</h1>
-  </Container>
+    <Container>
+      <h1>Welcome</h1>
+    </Container>
+
+    <HeroSection />
+
+    <Container>
+      <Search />
+    </Container>
+    <TriInfo />
+    <Container>
+      <CategoriesSection />
+    </Container>
+  </div>
 );
 
 export default HomePage;
