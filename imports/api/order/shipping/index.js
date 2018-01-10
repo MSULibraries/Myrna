@@ -9,10 +9,14 @@
  */
 
 import Easypost from '@easypost/api';
+import dotenv from 'dotenv';
 
+dotenv.config({ path: `${process.env.PWD}/.env` });
 export class EasyPostInterface {
   constructor() {
-    this.api = new Easypost(Meteor.settings.public.EASYPOST_TEST_API_KEY);
+    if (Meteor.isServer) {
+      this.api = new Easypost(process.env.EASYPOST_TEST_API_KEY);
+    }
   }
 
   /**
