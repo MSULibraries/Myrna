@@ -27,7 +27,6 @@ class ProductsDetails extends Component {
   parseMeasurments = () => {
     const { Measurements } = JSON.parse(this.props.product.description);
     const measurements = Measurements.split(';');
-    console.log(measurements);
     this.setState({ measurements });
   };
 
@@ -58,7 +57,6 @@ class ProductsDetails extends Component {
               <h2>{this.props.product.shortDescription}</h2>
               <p>Quality: {this.props.product.itemStatus}</p>
               <p>Measurments</p>
-              {console.log(this.state)}
               <ul>
                 {this.state.measurements &&
                   this.state.measurements.map(measurement => (
