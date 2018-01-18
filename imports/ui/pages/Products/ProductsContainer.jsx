@@ -14,8 +14,6 @@ import { parse } from 'query-string';
 import { media } from './../../breakpoints';
 import ProductCard from './../../components/ProductCard/index';
 import Cart from './../../../api/cart';
-import Dress from './../../../api/clothing/dresses/index';
-import ItemDesc from './../../../api/ItemDesc/index';
 
 const { fadeUp } = transitions;
 
@@ -173,6 +171,13 @@ class ProductsContainer extends Component {
   }
 
   /**
+   * Returns whether a given productId is in the user's cart
+   * @param {String} productId 
+   * @returns {Bool}
+   */
+  itemInCart = (productId) => this.props.itemsInCart.indexOf(productId) > -1
+
+  /**
    * Decrements the  pagination offset by current states itemsPerPage
    */
   paginateBackwards() {
@@ -284,6 +289,7 @@ class ProductsContainer extends Component {
               {this.state.currentProducts.length <= this.state.itemsPerPage ? (
                 this.state.currentProducts.map(clothing => (
                   <ProductCard
+                    itemInCart={this.itemInCart(clothing._id)}
                     addProductToCart={() => this.addProductToCart(clothing._id)}
                     isAuthed={Meteor.userId() !== null}
                     key={clothing._id}
@@ -303,13 +309,25 @@ class ProductsContainer extends Component {
 
 ProductsContainer.defaultProps = {
   itemDesc: {},
+  itemsInCart: [],
 };
 
 ProductsContainer.proptypes = {
   itemDesc: PropTypes.object,
+  itemsInCart: PropTypes.array,
 };
 
-export default ProductsContainer;
+
+export default withTracker(props => {
+  Meteor.subscribe('cart');
+
+  return {
+    itemsInCart: Cart.find({ userId: Meteor.userId() }, {
+      fields: { productId: 1 },
+    }).fetch().map(product => product.productId),
+  };
+})(ProductsContainer);
+
 
 const SideNav = styled(Col)`
   ${media.desktop`position: initial !important;`} position: sticky !important;
