@@ -125,7 +125,7 @@ class ProductsContainer extends Component {
       const category = String(this.state.urlParams.categories).toLowerCase();
 
       // If the category is one that we have info for
-      if (category in Object.keys(this.state.activeFilters)) {
+      if (Object.keys(this.state.activeFilters).indexOf(category) > -1) {
         this.setState({ activeFilters: { ...this.state.activeFilters, [category]: true } });
       }
     }
@@ -297,8 +297,8 @@ class ProductsContainer extends Component {
                   />
                 ))
               ) : (
-                <p>No more product</p>
-              )}
+                  <p>No more product</p>
+                )}
             </StackGrid>
           </Col>
         </Row>
@@ -329,7 +329,7 @@ export default withTracker(props => {
 })(ProductsContainer);
 
 
-const SideNav = styled(Col)`
+const SideNav = styled(Col) `
   ${media.desktop`position: initial !important;`} position: sticky !important;
   top: 10px;
 `;

@@ -13,7 +13,7 @@ class Search extends Component {
   constructor() {
     super();
 
-    this.possibleCategories = ['Categories', 'Dress', 'Pants', 'Shirts', 'Skirt'];
+    this.possibleCategories = ['Categories', 'Dress', 'Pants', 'Shirt', 'Skirt'];
     this.state = {
       activeCategory: this.possibleCategories[0],
       query: '',
