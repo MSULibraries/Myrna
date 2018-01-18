@@ -14,57 +14,58 @@ export const ProductCard = ({
   name,
   oldId,
   description,
+  itemInCart,
   isAvailible = false,
   imgSrc,
   shortDescription,
 }) => (
-  <Paper zDepth={3}>
-    <Card>
-      <DetailLink to={`/products/details/${_id}`}>
-        {!isAvailible ? (
-          <CardMediaContainer overlay={<CardTitle subtitle="Out Of Stock" />}>
-            <ProductImage
-              disabled={!isAvailible}
-              src={`images/clothing/${category.toLowerCase()}/${oldId}/small/${
-                JSON.parse(description).picture_1
-              }`}
-              alt={`images/clothing/${category}/${oldId}/small/${
-                JSON.parse(description).picture_1
-              }`}
-            />
-          </CardMediaContainer>
-        ) : (
-          <CardMediaContainer>
-            <ProductImage
-              disabled={!isAvailible}
-              src={`images/clothing/${category.toLowerCase()}/${oldId}/small/${
-                JSON.parse(description).picture_1
-              }`}
-              alt={`images/clothing/${category}/${oldId}/small/${
-                JSON.parse(description).picture_1
-              }`}
-            />
-          </CardMediaContainer>
-        )}
-      </DetailLink>
-
-      <DescriptionContainer>
+    <Paper zDepth={3}>
+      <Card>
         <DetailLink to={`/products/details/${_id}`}>
-          <CardText dangerouslySetInnerHTML={{ __html: shortDescription }} />
+          {!isAvailible ? (
+            <CardMediaContainer overlay={<CardTitle subtitle="Out Of Stock" />}>
+              <ProductImage
+                disabled={!isAvailible}
+                src={`images/clothing/${category.toLowerCase()}/${oldId}/small/${
+                  JSON.parse(description).picture_1
+                  }`}
+                alt={`images/clothing/${category}/${oldId}/small/${
+                  JSON.parse(description).picture_1
+                  }`}
+              />
+            </CardMediaContainer>
+          ) : (
+              <CardMediaContainer>
+                <ProductImage
+                  disabled={!isAvailible}
+                  src={`images/clothing/${category.toLowerCase()}/${oldId}/small/${
+                    JSON.parse(description).picture_1
+                    }`}
+                  alt={`images/clothing/${category}/${oldId}/small/${
+                    JSON.parse(description).picture_1
+                    }`}
+                />
+              </CardMediaContainer>
+            )}
         </DetailLink>
-      </DescriptionContainer>
-      <CardActions>
-        {isAuthed && (
-          <FlatButton
-            disabled={!isAvailible}
-            label="Add To Cart"
-            onClick={() => addProductToCart(_id)}
-          />
-        )}
-      </CardActions>
-    </Card>
-  </Paper>
-);
+
+        <DescriptionContainer>
+          <DetailLink to={`/products/details/${_id}`}>
+            <CardText dangerouslySetInnerHTML={{ __html: shortDescription }} />
+          </DetailLink>
+        </DescriptionContainer>
+        <CardActions>
+          {isAuthed && (
+            <FlatButton
+              disabled={!isAvailible || itemInCart}
+              label={itemInCart ? "In Cart" : "Add To Cart"}
+              onClick={() => addProductToCart(_id)}
+            />
+          )}
+        </CardActions>
+      </Card>
+    </Paper>
+  );
 
 ProductCard.propTypes = {
   _id: PropTypes.string,
@@ -74,6 +75,7 @@ ProductCard.propTypes = {
   isAvailible: PropTypes.bool,
   imgSrc: PropTypes.string,
   isAuthed: PropTypes.bool,
+  itemInCart: PropTypes.bool,
   name: PropTypes.string,
   oldId: PropTypes.number,
   shortDescription: PropTypes.string,
@@ -93,11 +95,11 @@ const ProductImage = styled.img`
   }};
 `;
 
-const CardMediaContainer = styled(CardMedia)`
+const CardMediaContainer = styled(CardMedia) `
   max-width: 320px;
 `;
 
-const DetailLink = styled(Link)`
+const DetailLink = styled(Link) `
   text-decoration: none;
 `;
 

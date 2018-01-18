@@ -14,8 +14,6 @@ import { parse } from 'query-string';
 import { media } from './../../breakpoints';
 import ProductCard from './../../components/ProductCard/index';
 import Cart from './../../../api/cart';
-import Dress from './../../../api/clothing/dresses/index';
-import ItemDesc from './../../../api/ItemDesc/index';
 
 const { fadeUp } = transitions;
 
@@ -127,7 +125,7 @@ class ProductsContainer extends Component {
       const category = String(this.state.urlParams.categories).toLowerCase();
 
       // If the category is one that we have info for
-      if (category in Object.keys(this.state.activeFilters)) {
+      if (Object.keys(this.state.activeFilters).indexOf(category) > -1) {
         this.setState({ activeFilters: { ...this.state.activeFilters, [category]: true } });
       }
     }
@@ -171,6 +169,13 @@ class ProductsContainer extends Component {
   handleNewSearch(searchQuery) {
     this.setState({ searchQuery });
   }
+
+  /**
+   * Returns whether a given productId is in the user's cart
+   * @param {String} productId 
+   * @returns {Bool}
+   */
+  itemInCart = (productId) => this.props.itemsInCart.indexOf(productId) > -1
 
   /**
    * Decrements the  pagination offset by current states itemsPerPage
@@ -284,6 +289,7 @@ class ProductsContainer extends Component {
               {this.state.currentProducts.length <= this.state.itemsPerPage ? (
                 this.state.currentProducts.map(clothing => (
                   <ProductCard
+                    itemInCart={this.itemInCart(clothing._id)}
                     addProductToCart={() => this.addProductToCart(clothing._id)}
                     isAuthed={Meteor.userId() !== null}
                     key={clothing._id}
@@ -291,8 +297,8 @@ class ProductsContainer extends Component {
                   />
                 ))
               ) : (
-                <p>No more product</p>
-              )}
+                  <p>No more product</p>
+                )}
             </StackGrid>
           </Col>
         </Row>
@@ -303,15 +309,27 @@ class ProductsContainer extends Component {
 
 ProductsContainer.defaultProps = {
   itemDesc: {},
+  itemsInCart: [],
 };
 
 ProductsContainer.proptypes = {
   itemDesc: PropTypes.object,
+  itemsInCart: PropTypes.array,
 };
 
-export default ProductsContainer;
 
-const SideNav = styled(Col)`
+export default withTracker(props => {
+  Meteor.subscribe('cart');
+
+  return {
+    itemsInCart: Cart.find({ userId: Meteor.userId() }, {
+      fields: { productId: 1 },
+    }).fetch().map(product => product.productId),
+  };
+})(ProductsContainer);
+
+
+const SideNav = styled(Col) `
   ${media.desktop`position: initial !important;`} position: sticky !important;
   top: 10px;
 `;
