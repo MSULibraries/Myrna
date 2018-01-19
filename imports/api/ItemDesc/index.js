@@ -148,7 +148,7 @@ Meteor.methods({
       selector = { ...selector, category: { $in: clothingFilters } };
     }
     if (searchQuery !== '') {
-      selector = { ...selector, shortDescription: { $regex: `.*${searchQuery}.*` } };
+      selector = { ...selector, shortDescription: { $regex: `.*${searchQuery}.*`, $options: 'i' } };
     }
     return ItemDesc.find(selector, { skip: offset, limit }).fetch();
   },

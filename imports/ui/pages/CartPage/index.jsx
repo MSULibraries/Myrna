@@ -90,15 +90,8 @@ export class CartPage extends Component {
    * @returns bool
    */
   cartHasUnAvailibleItems() {
-    if (Object.keys(this.state.itemsAvailible).length > 0) {
-      let cartHasUnAvailibleItems = false;
-      Object.keys(this.state.itemsAvailible).forEach(productId => {
-        cartHasUnAvailibleItems = !this.state.itemsAvailible[productId];
-      });
-      return cartHasUnAvailibleItems;
-    } else {
-      return false;
-    }
+    const itemAvailibility = Object.keys(this.state.itemsAvailible).map(itemId => this.state.itemsAvailible[itemId])
+    return !itemAvailibility.every(itemAvailible => itemAvailible === true)
   }
 
   clearCart = () => {
@@ -397,8 +390,8 @@ export class CartPage extends Component {
                       {this.state.itemsAvailible && this.state.itemsAvailible[item.productId] ? (
                         <span> Availible</span>
                       ) : (
-                        <span> Un-Availible</span>
-                      )}
+                          <span> Un-Availible</span>
+                        )}
                     </TableRowColumn>
                     <TableRowColumn>
                       {new Date(item.dateAdded).toLocaleDateString('en-US')}

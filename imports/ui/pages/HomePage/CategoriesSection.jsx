@@ -22,21 +22,21 @@ const CategoriesSection = () => (
       <img src="http://via.placeholder.com/150x150" alt="" />
       <p>Capes</p>
     </CategoryLinkContainer>
-    <CategoryLinkContainer to="/products?categories=Dress">
+    <CategoryLinkContainer to="/products?categories=Jacket">
       <img src="http://via.placeholder.com/150x150" alt="" />
-      <p>Dresses</p>
+      <p>Jackets</p>
     </CategoryLinkContainer>
-    <CategoryLinkContainer to="/products?categories=Shirt">
+    <CategoryLinkContainer to="/products?categories=Jumpsuit">
       <img src="http://via.placeholder.com/150x150" alt="" />
-      <p>Shirts</p>
+      <p>Jumpsuits</p>
     </CategoryLinkContainer>
-    <CategoryLinkContainer to="/products?categories=Pants">
+    <CategoryLinkContainer to="/products?categories=Shawl">
       <img src="http://via.placeholder.com/150x150" alt="" />
-      <p>Pants</p>
+      <p>Shawls</p>
     </CategoryLinkContainer>
-    <CategoryLinkContainer to="/products?categories=Cape">
+    <CategoryLinkContainer to="/products?categories=Robe">
       <img src="http://via.placeholder.com/150x150" alt="" />
-      <p>Capes</p>
+      <p>Robe</p>
     </CategoryLinkContainer>
   </Container>
 );
@@ -50,7 +50,7 @@ const Container = styled.div`
   justify-content: space-around;
 `;
 
-const CategoryLinkContainer = styled(Link)`
+const CategoryLinkContainer = styled(Link) `
   ${media.giant`
     width: 25%;
   `};
