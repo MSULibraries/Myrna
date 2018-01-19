@@ -397,8 +397,8 @@ export class CartPage extends Component {
                       {this.state.itemsAvailible && this.state.itemsAvailible[item.productId] ? (
                         <span> Availible</span>
                       ) : (
-                        <span> Un-Availible</span>
-                      )}
+                          <span> Un-Availible</span>
+                        )}
                     </TableRowColumn>
                     <TableRowColumn>
                       {new Date(item.dateAdded).toLocaleDateString('en-US')}
