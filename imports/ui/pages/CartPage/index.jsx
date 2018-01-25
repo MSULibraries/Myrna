@@ -6,14 +6,7 @@
 
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn,
-} from 'material-ui/Table';
+
 import Toggle from 'material-ui/Toggle';
 import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
@@ -22,6 +15,7 @@ import { Col, Container, Row } from 'react-grid-system';
 import Helmet from 'react-helmet';
 import { Link } from 'react-router-dom';
 
+import CartTable from './CartTable';
 import InputSpecialInstructions from './InputSpecialInstructions';
 import NewShowPrompt from './NewShowPrompt';
 import PickAddress from './PickAddress';
@@ -33,19 +27,6 @@ import Toast from './../../components/Toast/index';
 import Cart from './../../../api/cart';
 import { getProductAvailibility } from './../../../api/ItemDesc/methods/getProductAvailibility/index';
 import Show from './../../../api/show';
-// Adjusted contrast to help with a11y
-const darkerTableHeaders = {
-  color: '#575757',
-};
-
-const alignCenter = {
-  textAlign: 'center',
-};
-
-const centerColumn = {
-  display: 'flex',
-  alignItems: 'center',
-};
 
 export class CartPage extends Component {
   constructor() {
@@ -90,8 +71,10 @@ export class CartPage extends Component {
    * @returns bool
    */
   cartHasUnAvailibleItems() {
-    const itemAvailibility = Object.keys(this.state.itemsAvailible).map(itemId => this.state.itemsAvailible[itemId])
-    return !itemAvailibility.every(itemAvailible => itemAvailible === true)
+    const itemAvailibility = Object.keys(this.state.itemsAvailible).map(
+      itemId => this.state.itemsAvailible[itemId],
+    );
+    return !itemAvailibility.every(itemAvailible => itemAvailible === true);
   }
 
   clearCart = () => {
@@ -174,13 +157,6 @@ export class CartPage extends Component {
 
   pullShow = () => {
     this.setState({ pullShowModalOpen: true });
-  };
-
-  /**
-   * Removes product from user's cart collection
-   */
-  removeProductFromCart = id => {
-    Meteor.call('cart.remove', id);
   };
 
   /**
@@ -372,42 +348,10 @@ export class CartPage extends Component {
           </Col>
           <Col sm={8}>
             <BreadCrumbs crumbs={['Profile', 'Cart']} />
-            <Table>
-              <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
-                <TableRow>
-                  <TableHeaderColumn style={darkerTableHeaders}>Status</TableHeaderColumn>
-                  <TableHeaderColumn style={darkerTableHeaders}>Added On </TableHeaderColumn>
-
-                  <TableHeaderColumn style={{ darkerTableHeaders, ...alignCenter }}>
-                    Remove
-                  </TableHeaderColumn>
-                </TableRow>
-              </TableHeader>
-              <TableBody displayRowCheckbox={false}>
-                {this.props.cartItems.map(item => (
-                  <TableRow key={item._id}>
-                    <TableRowColumn>
-                      {this.state.itemsAvailible && this.state.itemsAvailible[item.productId] ? (
-                        <span> Availible</span>
-                      ) : (
-                          <span> Un-Availible</span>
-                        )}
-                    </TableRowColumn>
-                    <TableRowColumn>
-                      {new Date(item.dateAdded).toLocaleDateString('en-US')}
-                    </TableRowColumn>
-                    <TableRowColumn style={centerColumn}>
-                      <FlatButton
-                        onClick={() => this.removeProductFromCart(item._id)}
-                        secondary
-                        style={{ margin: 'auto' }}
-                        label="X"
-                      />
-                    </TableRowColumn>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <CartTable
+              itemsAvailible={this.state.itemsAvailible}
+              cartItems={this.props.cartItems}
+            />
             <p>
               <em>
                 By placing an order, you are agreeing to our <Link to="policies">policies</Link>
