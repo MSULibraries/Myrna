@@ -23,6 +23,7 @@ import PickOrderDates from './PickOrderDates';
 import PullShowPrompt from './PullShowPrompt';
 import LeftNav from './../../components/LeftNav/LeftNav';
 import BreadCrumbs from './../../components/BreadCrumbs/index';
+import Loader from './../../components/Loader/index';
 import Toast from './../../components/Toast/index';
 import Cart from './../../../api/cart';
 import { getProductAvailibility } from './../../../api/ItemDesc/methods/getProductAvailibility/index';
@@ -36,6 +37,7 @@ export class CartPage extends Component {
       dateToShipBack: undefined,
       isPickupOrder: false,
       itemsAvailible: {},
+      itemsAvailibleLoading: true,
       newShowModalOpen: false, // modal for entering a new show is open
       orderModalOpen: false, // modal for new order is open
       pullShowModalOpen: false,
@@ -116,6 +118,7 @@ export class CartPage extends Component {
       (error, result) => {
         this.setState({
           itemsAvailible: result,
+          itemsAvailibleLoading: false,
         });
       },
     );
@@ -347,11 +350,14 @@ export class CartPage extends Component {
             <LeftNav />
           </Col>
           <Col sm={8}>
-            <BreadCrumbs crumbs={['Profile', 'Cart']} />
-            <CartTable
-              itemsAvailible={this.state.itemsAvailible}
-              cartItems={this.props.cartItems}
-            />
+            {!this.state.itemsAvailibleLoading ? (
+              <CartTable
+                itemsAvailible={this.state.itemsAvailible}
+                cartItems={this.props.cartItems}
+              />
+            ) : (
+              <Loader />
+            )}
             <p>
               <em>
                 By placing an order, you are agreeing to our <Link to="policies">policies</Link>
