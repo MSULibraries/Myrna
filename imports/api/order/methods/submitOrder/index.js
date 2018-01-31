@@ -11,6 +11,7 @@ import { LoggedInMixin } from 'meteor/tunifight:loggedin-mixin';
 import { Order } from './../../order';
 import { getProductAvailibility } from './../../../ItemDesc/methods/getProductAvailibility/index';
 import { setAvailible } from './../../../ItemDesc/methods/setAvailible/index';
+import { emailOrderedPlaced } from './../emails/orderPlaced/';
 
 export const submitOrder = new ValidatedMethod({
   name: 'order.insert',
@@ -75,7 +76,11 @@ export const submitOrder = new ValidatedMethod({
         }
       },
     );
+    // Clearing cart after the order has been placed
     Meteor.call('cart.clear');
+
+    // Emailing maintainers to let them know there is a new order to be 'Approved'
+    emailOrderedPlaced.call({ orderId });
 
     // Making items unavailible since they are part of an order now
     setAvailible.call({ itemIds: cartProductIds, isAvailible: false });

@@ -1,9 +1,12 @@
 import { withTracker } from 'meteor/react-meteor-data';
 import React, { Component } from 'react';
 import { Container } from 'react-grid-system';
+import ReactImageMagnify from 'react-image-magnify';
 import Helmet from 'react-helmet';
 import ItemDesc from './../../../../api/ItemDesc/index';
 import { linear } from 'react-stack-grid/lib/animations/easings';
+
+import styled from 'styled-components';
 
 class ProductsDetails extends Component {
   constructor() {
@@ -46,26 +49,42 @@ class ProductsDetails extends Component {
         {this.props.product && (
           <div>
             <h1>Products Detail</h1>
-            <div>
-              <img
-                src={`/images/clothing/${this.props.product.category.toLowerCase()}/${
-                  this.props.product.oldId
-                }/small/${JSON.parse(this.props.product.description).picture_1}`}
-                alt={this.props.product.shortDescription}
-              />
-            </div>
-            <div>
-              <h2>{this.props.product.shortDescription}</h2>
-              <p>Quality: {this.props.product.itemStatus}</p>
-              <p>Measurments</p>
-              {console.log(this.state)}
-              <ul>
-                {this.state.measurements &&
-                  this.state.measurements.map(measurement => (
-                    <li key={measurement}>{measurement}</li>
-                  ))}
-              </ul>
-            </div>
+            <ProductContainer>
+              <ProductContainerChild>
+                <ReactImageMagnify
+                  imageStyle={{ width: '50%' }}
+                  {...{
+                    smallImage: {
+                      src: `/images/clothing/${this.props.product.category.toLowerCase()}/${
+                        this.props.product.oldId
+                      }/large/${JSON.parse(this.props.product.description).picture_1}`,
+                      alt: this.props.product.shortDescription,
+                      isFluidWidth: true,
+                    },
+                    largeImage: {
+                      src: `/images/clothing/${this.props.product.category.toLowerCase()}/${
+                        this.props.product.oldId
+                      }/large/${JSON.parse(this.props.product.description).picture_1}`,
+                      alt: this.props.product.shortDescription,
+                      width: 1500,
+                      height: 1500,
+                    },
+                  }}
+                />
+              </ProductContainerChild>
+              <ProductContainerChild>
+                <h2>{this.props.product.shortDescription}</h2>
+                <p>Quality: {this.props.product.itemStatus}</p>
+                <p>Measurments</p>
+                {console.log(this.state)}
+                <ul>
+                  {this.state.measurements &&
+                    this.state.measurements.map(measurement => (
+                      <li key={measurement}>{measurement}</li>
+                    ))}
+                </ul>
+              </ProductContainerChild>
+            </ProductContainer>
           </div>
         )}
       </Container>
@@ -82,3 +101,14 @@ export default withTracker(({ match: { params: { productId } } }) => {
     }),
   };
 })(ProductsDetails);
+
+const ProductContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+`;
+
+const ProductContainerChild = styled.div`
+  width: 50%;
+  padding: 2%;
+`;
