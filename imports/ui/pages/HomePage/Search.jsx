@@ -59,7 +59,7 @@ class Search extends Component {
                 value={this.state.activeCategory}
                 onChange={(e, t, newCategory) => this.handleNewCategory(newCategory)}
                 selectedMenuItemStyle={{
-                  color: '#9e52c7',
+                  color: '#642F6C',
                 }}
                 style={{ width: '100%' }}
               >
@@ -80,7 +80,7 @@ class Search extends Component {
                 style={{ marginTop: '8px' }}
                 hintStyle={{ paddingBottom: '3px' }}
                 underlineFocusStyle={{
-                  borderColor: '#9e52c7',
+                  borderColor: '#642F6C',
                 }}
                 fullWidth
               />
@@ -119,6 +119,6 @@ const SearchFieldContainer = styled.div`
 `;
 
 const SubmitButtonContainer = styled.div`
-  ${media.tablet` width: 90%; padding-right: 0px; !important;`}width: auto; padding-right: 24px;
-  
+  ${media.tablet` width: 90%; padding-right: 0px; !important;`}width: auto;
+  padding-right: 24px;
 `;

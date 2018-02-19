@@ -8,6 +8,7 @@ The Myrna costume website allows users to browse costume pieces and learn more a
 * [Setup](#setup)
 * [Technology](#technology)
 * [Clothing](#clothing-types)
+* [Colors](#colors)
 
 ## [Functionality](#functionality)
 
@@ -105,23 +106,20 @@ The Myrna costume website allows users to browse costume pieces and learn more a
     }
   }
   ```
+
 * Set Up Database
   1. Install [MongoDB](https://www.mongodb.com/)
   1. Download [itemDesc.json](https://raw.githubusercontent.com/MSULibraries/Myrna/240256e97d620fe68632f9298cf19b68efe30519/itemDesc.json)
   1. Start Myrna (`meteor`)
   1. Run: `mongoimport -h localhost:3001 -d meteor -c itemDesc --drop --file C://.../.../PATH_TO_ITEMDESC.JSON/itemDesc.json`
-    * Env Var Note: Make sure MONGO_URL env variable is **NOT** set.
-    * mongoimport Note: mongoimport may not be on your PATH so you may have to navigate to the folder where it is installed and run the command or add it to your PATH
-    
+  * Env Var Note: Make sure MONGO_URL env variable is **NOT** set.
+  * mongoimport Note: mongoimport may not be on your PATH so you may have to navigate to the folder where it is installed and run the command or add it to your PATH
 * Add Product Images
   1. [Get Images From Master Branch](https://github.com/MSULibraries/Myrna/tree/master/public/images/clothing)
-  2. Change to develp, *Or any branch that is a descendant of `develop`*
+  2. Change to develp, _Or any branch that is a descendant of `develop`_
   3. Put the `clothing/` folder in `public/images`
-    * We are ignoring clothing images in develop to keep the src code small. 
-    * Please **Do Not** commit images into the develop branch
- 
-  
-    
+  * We are ignoring clothing images in develop to keep the src code small.
+  * Please **Do Not** commit images into the develop branch
 * Start Server _(command: `meteor --settings settings.json`)_
 
 ## [Technology](#technology)
@@ -152,3 +150,7 @@ The possible cltohing types are
 * Suit
 * Sweater
 * Vest
+
+### [Colors](#colors)
+
+The color palette for this project can be found here: http://paletton.com/palette.php?uid=14S0u0kiqkF9euje9oVmpgQrzbQ

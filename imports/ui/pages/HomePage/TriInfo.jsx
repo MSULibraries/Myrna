@@ -30,7 +30,7 @@ const Container = styled.div`
 `};
 
   align-items: center;
-  background-color: #9e52c7;
+  background-color: #642f6c;
   color: white;
   font-weight: bold;
 `;

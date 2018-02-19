@@ -36,7 +36,7 @@ class MobileMainNav extends Component {
         <AppBar
           title="Myrna"
           onLeftIconButtonTouchTap={() => this.handleToggle()}
-          style={{ backgroundColor: '#9e52c7', position: 'fixed', top: '0' }}
+          style={{ backgroundColor: '#642F6C', position: 'fixed', top: '0' }}
         />
         <Drawer
           docked={false}

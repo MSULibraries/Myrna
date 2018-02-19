@@ -1,8 +1,8 @@
 /**
-*
-* MainNav
-*
-*/
+ *
+ * MainNav
+ *
+ */
 
 import { withTracker } from 'meteor/react-meteor-data';
 import React from 'react';
@@ -42,7 +42,7 @@ const LogoContainer = styled.div`
   width: 100%;
 `;
 const LinkListContainer = styled.div`
-  background-color: #9e52c7;
+  background-color: #642f6c;
   display: flex;
   flex-direction: row;
   height: 40px;
