@@ -1,7 +1,9 @@
 import AppBar from 'material-ui/AppBar';
 import Drawer from 'material-ui/Drawer';
+import IconButton from 'material-ui/IconButton';
 import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
+import NavigationMenu from 'material-ui/svg-icons/navigation/menu';
 import { withTracker } from 'meteor/react-meteor-data';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
@@ -35,6 +37,11 @@ class MobileMainNav extends Component {
       <MobileNavContainer>
         <AppBar
           title="Myrna"
+          iconElementLeft={
+            <IconButton aria-label="menu">
+              <NavigationMenu />
+            </IconButton>
+          }
           onLeftIconButtonTouchTap={() => this.handleToggle()}
           style={{ backgroundColor: '#642F6C', position: 'fixed', top: '0' }}
         />

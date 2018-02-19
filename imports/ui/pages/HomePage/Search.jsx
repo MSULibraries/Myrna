@@ -2,6 +2,7 @@ import DropDownMenu from 'material-ui/DropDownMenu';
 import FlatButton from 'material-ui/FlatButton';
 import MenuItem from 'material-ui/MenuItem';
 import Paper from 'material-ui/Paper';
+import NavigationArrowDropDown from 'material-ui/svg-icons/navigation/arrow-drop-down';
 import TextField from 'material-ui/TextField';
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
@@ -21,6 +22,17 @@ class Search extends Component {
       submitQuery: false,
     };
   }
+
+  componentDidMount() {
+    this.addLabelToDropDownArrow();
+  }
+
+  addLabelToDropDownArrow = () => {
+    const dropDownIcon = document.getElementById('dropDownIcon');
+    const dropDownButton = dropDownIcon.parentNode.parentNode;
+
+    dropDownButton.setAttribute('aria-label', 'Expand Search Categories');
+  };
 
   handleNewCategory = newCategory => {
     // If the new category isn't the one telling a user to pick something
@@ -62,6 +74,7 @@ class Search extends Component {
                   color: '#642F6C',
                 }}
                 style={{ width: '100%' }}
+                iconButton={<NavigationArrowDropDown id="dropDownIcon" />}
               >
                 {this.state.possibleCategories.map(category => (
                   <MenuItem key={category} value={category} primaryText={category} />
@@ -74,6 +87,7 @@ class Search extends Component {
                 ref={input => {
                   this.nameInput = input;
                 }}
+                aria-label="Search"
                 label="Search"
                 hintText="Search"
                 onChange={(e, newQuery) => this.handleNewSearch(newQuery)}

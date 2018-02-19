@@ -5,7 +5,7 @@ import styled from 'styled-components';
 const HeroSection = () => (
   <HeroContainer>
     <HeroImageContainer>
-      <HeroImage src="images/hero.png" />
+      <HeroImage src="images/hero.png" alt="Man with spear looks as person dressed as ram." />
       <HeroRightImage>
         <a
           className="twitter-timeline"
