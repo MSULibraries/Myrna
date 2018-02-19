@@ -27,8 +27,9 @@ export const HomePage = () => (
     <Container>
       <Search />
     </Container>
-    <TriInfo />
+
     <Container>
+      <h2>Search By Category</h2>
       <CategoriesSection />
     </Container>
   </div>
