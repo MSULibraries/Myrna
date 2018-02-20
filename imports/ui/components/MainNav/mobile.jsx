@@ -52,7 +52,7 @@ class MobileMainNav extends Component {
         >
           <Link to="/">
             <img
-              src={`${document.location.origin}/images/main_logo.png`}
+              src={`${document.location.origin}/images/main_logo.jpg`}
               alt="Myrna Colley-Lee Costume Collection Logo"
               style={{ width: '100%' }}
             />

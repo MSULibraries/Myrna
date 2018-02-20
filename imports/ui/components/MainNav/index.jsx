@@ -16,7 +16,7 @@ export const MainNav = ({ userLoggedIn }) => (
     <LogoContainer>
       <Link to="/">
         <img
-          src={`${document.location.origin}/images/main_logo.png`}
+          src={`${document.location.origin}/images/main_logo.jpg`}
           alt="Myrna Colley-Lee Costume Collection Logo"
         />
       </Link>
