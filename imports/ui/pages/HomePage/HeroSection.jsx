@@ -3,10 +3,20 @@ import { media } from './../../breakpoints';
 import styled from 'styled-components';
 
 class HeroSection extends Component {
-  componentDidMount() {
-    // This is re-initing twitter widget when the page loads
-    // twttr is a variable from their cdn's script
-    twttr.widgets.load(document.getElementById('heroRight'));
+  constructor() {
+    super();
+
+    this.state = {
+      twitterFeedLoading: true,
+    };
+  }
+
+  componentWillMount() {
+    const script = document.createElement('script');
+
+    script.src = 'https://platform.twitter.com/widgets.js';
+
+    document.body.appendChild(script);
   }
 
   render() {
@@ -21,9 +31,7 @@ class HeroSection extends Component {
               data-height="300"
               data-theme="light"
               href="https://twitter.com/TheatreMSU?ref_src=twsrc%5Etfw"
-            >
-              Tweets by TheatreMSU
-            </a>{' '}
+            />
           </HeroRight>
         </HeroImageContainer>
       </HeroContainer>
@@ -62,9 +70,10 @@ const HeroRight = styled.div`
   ${media.giant`
   display: none;
 `};
+  background-color: white;
   display: flex;
   height: 100%;
-  width: 100%;
+  width: 400px;
 `;
 
 export default HeroSection;
