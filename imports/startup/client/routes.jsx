@@ -3,6 +3,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import AuthRoute from './AuthRoute';
+import ScrollToTop from './ScrollToTop/index';
 
 // Main UI components
 import MainNav from './../../ui/components/MainNav/index';
@@ -26,7 +27,7 @@ import RestrictedPage from './../../ui/pages/RestrictedPage/index';
 
 const Routes = ({ userLoggedIn }) => (
   <Router>
-    <div>
+    <ScrollToTop>
       <MainNav />
       <MobileMainNav />
       {/* Making room for content covered by bottom nav */}
@@ -72,7 +73,7 @@ const Routes = ({ userLoggedIn }) => (
         </Switch>
       </div>
       <BottomNav />
-    </div>
+    </ScrollToTop>
   </Router>
 );
 
