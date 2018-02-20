@@ -58,5 +58,5 @@ const CategoryLinkContainer = styled(Link)`
   margin: 2%;
   text-align: center;
   text-decoration: none;
-  width: 40%;
+  width: 23%;
 `;
