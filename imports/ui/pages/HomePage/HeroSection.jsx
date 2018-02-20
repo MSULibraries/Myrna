@@ -1,25 +1,35 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { media } from './../../breakpoints';
 import styled from 'styled-components';
 
-const HeroSection = () => (
-  <HeroContainer>
-    <HeroImageContainer>
-      <HeroImage src="images/hero.png" alt="Man with spear looks as person dressed as ram." />
-      <HeroRightImage>
-        <a
-          className="twitter-timeline"
-          data-width="400"
-          data-height="300"
-          data-theme="light"
-          href="https://twitter.com/TheatreMSU?ref_src=twsrc%5Etfw"
-        >
-          Tweets by TheatreMSU
-        </a>{' '}
-      </HeroRightImage>
-    </HeroImageContainer>
-  </HeroContainer>
-);
+class HeroSection extends Component {
+  componentDidMount() {
+    // This is re-initing twitter widget when the page loads
+    // twttr is a variable from their cdn's script
+    twttr.widgets.load(document.getElementById('heroRight'));
+  }
+
+  render() {
+    return (
+      <HeroContainer>
+        <HeroImageContainer>
+          <HeroImage src="images/hero.png" alt="Man with spear looks as person dressed as ram." />
+          <HeroRight id="heroRight">
+            <a
+              className="twitter-timeline"
+              data-width="400"
+              data-height="300"
+              data-theme="light"
+              href="https://twitter.com/TheatreMSU?ref_src=twsrc%5Etfw"
+            >
+              Tweets by TheatreMSU
+            </a>{' '}
+          </HeroRight>
+        </HeroImageContainer>
+      </HeroContainer>
+    );
+  }
+}
 
 const HeroImageContainer = styled.div`
   ${media.desktop`
@@ -48,7 +58,7 @@ const HeroImage = styled.img`
   width: 100%;
 `;
 
-const HeroRightImage = styled.div`
+const HeroRight = styled.div`
   ${media.giant`
   display: none;
 `};
