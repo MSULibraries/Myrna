@@ -13,6 +13,10 @@ import { media } from './../../breakpoints';
 
 export const MainNav = ({ userLoggedIn }) => (
   <MainNavContainer>
+    <MsStateBrand
+      src={`${document.location.origin}/images/msstate_brand.png`}
+      alt="Mississippi State University Logo"
+    />
     <LogoContainer>
       <Link to="/">
         <img
@@ -33,6 +37,13 @@ export const MainNav = ({ userLoggedIn }) => (
     </LinkListContainer>
   </MainNavContainer>
 );
+
+const MsStateBrand = styled.img`
+  width: 400px;
+  position: absolute;
+  top: 15px;
+  left: 15px;
+`;
 
 const LogoContainer = styled.div`
   display: flex;
