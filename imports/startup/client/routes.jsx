@@ -9,6 +9,7 @@ import ScrollToTop from './ScrollToTop/index';
 import MainNav from './../../ui/components/MainNav/index';
 import MobileMainNav from './../../ui/components/MainNav/mobile';
 import BottomNav from './../../ui/components/BottomNav/index';
+import Footer from './../../ui/components/Footer/index';
 // Pages
 import AboutPage from './../../ui/pages/AboutPage/index';
 import AddressesPage from './../../ui/pages/AddressesPage/index';
@@ -73,6 +74,7 @@ const Routes = ({ userLoggedIn }) => (
         </Switch>
       </div>
       <BottomNav />
+      <Footer />
     </ScrollToTop>
   </Router>
 );
