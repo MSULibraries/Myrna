@@ -50,13 +50,13 @@ const CategoryLinkContainer = styled(Link)`
     width: 40%;
   `};
   ${media.phone`
-    width: 98%;
+    width: 40%;
   `};
 
-  border: 1px solid black;
   color: black;
   margin: 2%;
   text-align: center;
   text-decoration: none;
   width: 23%;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 10px, rgba(0, 0, 0, 0.23) 0px 3px 10px;
 `;
