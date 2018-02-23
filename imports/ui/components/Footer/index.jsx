@@ -5,7 +5,7 @@ import styled from 'styled-components';
 const Footer = ({ userLoggedIn }) => (
   <FooterContainer userLoggedIn={userLoggedIn}>
     <a href="//www.comm.msstate.edu/">
-      <img
+      <CommLogo
         src="images/msstate_dept_comm_logo.png"
         alt="Mississippi State Department of Communications Logo"
       />
@@ -24,12 +24,17 @@ const Footer = ({ userLoggedIn }) => (
   </FooterContainer>
 );
 
+const CommLogo = styled.img`
+  width: 320px;
+  padding: 3%;
+`;
+
 const FooterContainer = styled.div`
   background-color: #99729e;
-  height: 200px;
   text-align: center;
   padding: 3%;
   margin-bottom: ${props => (props.userLoggedIn ? '64px' : '0px')};
+  word-wrap: break-word;
 `;
 
 const LinkContainer = styled.div`

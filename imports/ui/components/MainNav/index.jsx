@@ -13,10 +13,12 @@ import { media } from './../../breakpoints';
 
 export const MainNav = ({ userLoggedIn }) => (
   <MainNavContainer>
-    <MsStateBrand
-      src={`${document.location.origin}/images/msstate_brand.png`}
-      alt="Mississippi State University Logo"
-    />
+    <a href="//www.library.msstate.edu/">
+      <MsStateBrand
+        src={`${document.location.origin}/images/lib_logo.png`}
+        alt="Mississippi State University Logo"
+      />
+    </a>
     <LogoContainer>
       <Link to="/">
         <img
@@ -40,7 +42,9 @@ export const MainNav = ({ userLoggedIn }) => (
 
 const MsStateBrand = styled.img`
   width: 400px;
-  position: absolute;
+  ${media.desktop`  display: none !important;`} display: flex;
+
+  ${media.giant` position: static;`}position: absolute;
   top: 15px;
   left: 15px;
 `;
@@ -78,6 +82,7 @@ const MainLink = styled(Link)`
 const MainNavContainer = styled.header`
   align-items: center;
   ${media.desktop`  display: none !important;`} display: flex;
+
   flex-direction: column;
   justify-content: space-around;
   padding-top: 10px;

@@ -28,7 +28,7 @@ class HeroSection extends Component {
             <a
               className="twitter-timeline"
               data-width="400"
-              data-height="300"
+              data-height="343"
               data-theme="light"
               href="https://twitter.com/TheatreMSU?ref_src=twsrc%5Etfw"
             />

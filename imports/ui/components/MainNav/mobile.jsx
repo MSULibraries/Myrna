@@ -36,18 +36,25 @@ class MobileMainNav extends Component {
     return (
       <MobileNavContainer>
         <AppBar
-          title="Myrna"
-          iconElementLeft={
+          title={
+            <a href="//library.msstate.edu">
+              {' '}
+              <LibLogo src="images/lib_logo_white.png" />
+            </a>
+          }
+          iconElementRight={
             <IconButton aria-label="menu">
               <NavigationMenu />
             </IconButton>
           }
-          onLeftIconButtonTouchTap={() => this.handleToggle()}
+          onRightIconButtonTouchTap={() => this.handleToggle()}
+          showMenuIconButton={false}
           style={{ backgroundColor: '#642F6C', position: 'fixed', top: '0' }}
         />
         <Drawer
           docked={false}
           open={this.state.drawerOpen}
+          openSecondary
           onRequestChange={() => this.handleRequestChange()}
         >
           <Link to="/">
@@ -126,6 +133,11 @@ class MobileMainNav extends Component {
 const MainLink = styled(Link)`
   color: black;
   text-decoration: none;
+`;
+
+const LibLogo = styled.img`
+  margin-top: 9px;
+  width: 300px;
 `;
 
 const MobileNavContainer = styled.div`
