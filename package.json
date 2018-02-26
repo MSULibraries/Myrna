@@ -8,8 +8,7 @@
     "pretest": "npm run lint --silent",
     "start": "meteor --settings settings.json",
     "test": "meteor --settings settings.json test --once --driver-package dispatch:mocha",
-    "test:watch":
-      "meteor --settings settings.json test --driver-package practicalmeteor:mocha --port 3100"
+    "test:watch": "meteor --settings settings.json test --driver-package practicalmeteor:mocha --port 3100"
   },
   "dependencies": {
     "@easypost/api": "^3.0.12",
@@ -49,5 +48,4 @@
     "react-test-renderer": "^15.6.2",
     "regenerator-runtime": "^0.11.0"
   }
-
 }
