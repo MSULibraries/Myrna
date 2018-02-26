@@ -8,6 +8,6 @@ const LoadingIcon = styled(CircularProgress)`
   margin: auto;
 `;
 
-export const Loader = () => <LoadingIcon color="#9e52c7" />;
+export const Loader = () => <LoadingIcon color="#642F6C" />;
 
 export default Loader;

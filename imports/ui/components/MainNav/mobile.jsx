@@ -1,7 +1,9 @@
 import AppBar from 'material-ui/AppBar';
 import Drawer from 'material-ui/Drawer';
+import IconButton from 'material-ui/IconButton';
 import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
+import NavigationMenu from 'material-ui/svg-icons/navigation/menu';
 import { withTracker } from 'meteor/react-meteor-data';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
@@ -34,18 +36,30 @@ class MobileMainNav extends Component {
     return (
       <MobileNavContainer>
         <AppBar
-          title="Myrna"
-          onLeftIconButtonTouchTap={() => this.handleToggle()}
-          style={{ backgroundColor: '#9e52c7', position: 'fixed', top: '0' }}
+          title={
+            <a href="//library.msstate.edu">
+              {' '}
+              <LibLogo src="images/lib_logo_white.png" />
+            </a>
+          }
+          iconElementRight={
+            <IconButton aria-label="menu">
+              <NavigationMenu />
+            </IconButton>
+          }
+          onRightIconButtonTouchTap={() => this.handleToggle()}
+          showMenuIconButton={false}
+          style={{ backgroundColor: '#642F6C', position: 'fixed', top: '0' }}
         />
         <Drawer
           docked={false}
           open={this.state.drawerOpen}
+          openSecondary
           onRequestChange={() => this.handleRequestChange()}
         >
           <Link to="/">
             <img
-              src={`${document.location.origin}/images/main_logo.png`}
+              src={`${document.location.origin}/images/main_logo.jpg`}
               alt="Myrna Colley-Lee Costume Collection Logo"
               style={{ width: '100%' }}
             />
@@ -119,6 +133,11 @@ class MobileMainNav extends Component {
 const MainLink = styled(Link)`
   color: black;
   text-decoration: none;
+`;
+
+const LibLogo = styled.img`
+  margin-top: 9px;
+  width: 300px;
 `;
 
 const MobileNavContainer = styled.div`

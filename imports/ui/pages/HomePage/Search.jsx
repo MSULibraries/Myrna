@@ -2,6 +2,7 @@ import DropDownMenu from 'material-ui/DropDownMenu';
 import FlatButton from 'material-ui/FlatButton';
 import MenuItem from 'material-ui/MenuItem';
 import Paper from 'material-ui/Paper';
+import NavigationArrowDropDown from 'material-ui/svg-icons/navigation/arrow-drop-down';
 import TextField from 'material-ui/TextField';
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
@@ -21,6 +22,17 @@ class Search extends Component {
       submitQuery: false,
     };
   }
+
+  componentDidMount() {
+    this.addLabelToDropDownArrow();
+  }
+
+  addLabelToDropDownArrow = () => {
+    const dropDownIcon = document.getElementById('dropDownIcon');
+    const dropDownButton = dropDownIcon.parentNode.parentNode;
+
+    dropDownButton.setAttribute('aria-label', 'Expand Search Categories');
+  };
 
   handleNewCategory = newCategory => {
     // If the new category isn't the one telling a user to pick something
@@ -59,9 +71,10 @@ class Search extends Component {
                 value={this.state.activeCategory}
                 onChange={(e, t, newCategory) => this.handleNewCategory(newCategory)}
                 selectedMenuItemStyle={{
-                  color: '#9e52c7',
+                  color: '#642F6C',
                 }}
                 style={{ width: '100%' }}
+                iconButton={<NavigationArrowDropDown id="dropDownIcon" />}
               >
                 {this.state.possibleCategories.map(category => (
                   <MenuItem key={category} value={category} primaryText={category} />
@@ -74,13 +87,14 @@ class Search extends Component {
                 ref={input => {
                   this.nameInput = input;
                 }}
+                aria-label="Search"
                 label="Search"
                 hintText="Search"
                 onChange={(e, newQuery) => this.handleNewSearch(newQuery)}
                 style={{ marginTop: '8px' }}
                 hintStyle={{ paddingBottom: '3px' }}
                 underlineFocusStyle={{
-                  borderColor: '#9e52c7',
+                  borderColor: '#642F6C',
                 }}
                 fullWidth
               />
@@ -119,6 +133,6 @@ const SearchFieldContainer = styled.div`
 `;
 
 const SubmitButtonContainer = styled.div`
-  ${media.tablet` width: 90%; padding-right: 0px; !important;`}width: auto; padding-right: 24px;
-  
+  ${media.tablet` width: 90%; padding-right: 0px; !important;`}width: auto;
+  padding-right: 24px;
 `;

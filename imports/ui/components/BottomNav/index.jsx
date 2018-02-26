@@ -36,7 +36,7 @@ export const BottomNav = ({ userLoggedIn }) =>
 
 const BottomNavContainer = styled.nav`
   align-items: center;
-  background-color: #9e52c7;
+  background-color: #642f6c;
   bottom: 0px;
   display: flex;
   height: 64px;
@@ -45,7 +45,9 @@ const BottomNavContainer = styled.nav`
   width: 100%;
   z-index: 2;
 `;
-const Item = styled.div`flex-grow: 1;`;
+const Item = styled.div`
+  flex-grow: 1;
+`;
 
 const BottomNavLink = styled(Link)`
   align-items: center;

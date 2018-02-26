@@ -1,21 +1,49 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { media } from './../../breakpoints';
 import styled from 'styled-components';
 
-const HeroSection = () => (
-  <HeroContainer>
-    <HeroImageContainer>
-      <HeroImage src="http://via.placeholder.com/750x300" alt="" />
-      <HeroRightImage src="http://via.placeholder.com/400x300" alt="" />
-    </HeroImageContainer>
-  </HeroContainer>
-);
+class HeroSection extends Component {
+  constructor() {
+    super();
+
+    this.state = {
+      twitterFeedLoading: true,
+    };
+  }
+
+  componentWillMount() {
+    const script = document.createElement('script');
+
+    script.src = 'https://platform.twitter.com/widgets.js';
+
+    document.body.appendChild(script);
+  }
+
+  render() {
+    return (
+      <HeroContainer>
+        <HeroImageContainer>
+          <HeroImage src="images/hero.png" alt="Man with spear looks as person dressed as ram." />
+          <HeroRight id="heroRight">
+            <a
+              className="twitter-timeline"
+              data-width="400"
+              data-height="343"
+              data-theme="light"
+              href="https://twitter.com/TheatreMSU?ref_src=twsrc%5Etfw"
+            />
+          </HeroRight>
+        </HeroImageContainer>
+      </HeroContainer>
+    );
+  }
+}
 
 const HeroImageContainer = styled.div`
   ${media.desktop`
 `};
 
-  background-color: #bca6ca;
+  background-color: #7b4a82;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -24,7 +52,7 @@ const HeroImageContainer = styled.div`
 `;
 
 const HeroContainer = styled.div`
-  background-color: #cbbbd6;
+  background-color: #99729e;
   display: flex;
   justify-content: center;
 `;
@@ -38,13 +66,14 @@ const HeroImage = styled.img`
   width: 100%;
 `;
 
-const HeroRightImage = styled.img`
+const HeroRight = styled.div`
   ${media.giant`
   display: none;
 `};
+  background-color: white;
   display: flex;
   height: 100%;
-  width: 100%;
+  width: 400px;
 `;
 
 export default HeroSection;

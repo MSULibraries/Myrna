@@ -12,6 +12,7 @@
     "no-underscore-dangle": ["error", { "allow": ["_execute"] }]
   },
   "globals": {
+    "window": false,
     "Meteor": false,
     "Roles": false,
     "SimpleSchema": false

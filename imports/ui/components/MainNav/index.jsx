@@ -1,8 +1,8 @@
 /**
-*
-* MainNav
-*
-*/
+ *
+ * MainNav
+ *
+ */
 
 import { withTracker } from 'meteor/react-meteor-data';
 import React from 'react';
@@ -13,10 +13,16 @@ import { media } from './../../breakpoints';
 
 export const MainNav = ({ userLoggedIn }) => (
   <MainNavContainer>
+    <a href="//www.library.msstate.edu/">
+      <MsStateBrand
+        src={`${document.location.origin}/images/lib_logo.png`}
+        alt="Mississippi State University Logo"
+      />
+    </a>
     <LogoContainer>
       <Link to="/">
         <img
-          src={`${document.location.origin}/images/main_logo.png`}
+          src={`${document.location.origin}/images/main_logo.jpg`}
           alt="Myrna Colley-Lee Costume Collection Logo"
         />
       </Link>
@@ -34,6 +40,15 @@ export const MainNav = ({ userLoggedIn }) => (
   </MainNavContainer>
 );
 
+const MsStateBrand = styled.img`
+  width: 400px;
+  ${media.desktop`  display: none !important;`} display: flex;
+
+  ${media.giant` position: static;`}position: absolute;
+  top: 15px;
+  left: 15px;
+`;
+
 const LogoContainer = styled.div`
   display: flex;
   min-height: 141px;
@@ -42,7 +57,7 @@ const LogoContainer = styled.div`
   width: 100%;
 `;
 const LinkListContainer = styled.div`
-  background-color: #9e52c7;
+  background-color: #642f6c;
   display: flex;
   flex-direction: row;
   height: 40px;
@@ -67,6 +82,7 @@ const MainLink = styled(Link)`
 const MainNavContainer = styled.header`
   align-items: center;
   ${media.desktop`  display: none !important;`} display: flex;
+
   flex-direction: column;
   justify-content: space-around;
   padding-top: 10px;
