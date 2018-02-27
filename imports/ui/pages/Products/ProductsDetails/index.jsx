@@ -56,14 +56,14 @@ class ProductsDetails extends Component {
                     smallImage: {
                       src: `/images/clothing/${this.props.product.category.toLowerCase()}/${
                         this.props.product.oldId
-                      }/large/${JSON.parse(this.props.product.description).picture_1}`,
+                        }/large/${JSON.parse(this.props.product.description).picture_1}`,
                       alt: this.props.product.shortDescription,
                       isFluidWidth: true,
                     },
                     largeImage: {
                       src: `/images/clothing/${this.props.product.category.toLowerCase()}/${
                         this.props.product.oldId
-                      }/large/${JSON.parse(this.props.product.description).picture_1}`,
+                        }/large/${JSON.parse(this.props.product.description).picture_1}`,
                       alt: this.props.product.shortDescription,
                       width: 1500,
                       height: 1500,

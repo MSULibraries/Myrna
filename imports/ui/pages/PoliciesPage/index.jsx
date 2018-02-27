@@ -77,7 +77,7 @@ export class PoliciesPage extends React.PureComponent {
         <div>
           <h2>RENTAL</h2>
           <p>
-            All costumes are released for two week period. MAKE SURE we have your correct first
+            All costumes are released for a two week period. MAKE SURE we have your correct first
             dress date so that we can get them to you on time. If you need them for longer, let us
             know up front and we can work out an extended rate.
           </p>

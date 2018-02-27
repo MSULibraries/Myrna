@@ -388,9 +388,9 @@ export class CartPage extends Component {
                   <TableRow key={item._id}>
                     <TableRowColumn>
                       {this.state.itemsAvailible && this.state.itemsAvailible[item.productId] ? (
-                        <span> Availible</span>
+                        <span> Available</span>
                       ) : (
-                          <span> Un-Availible</span>
+                          <span> Un-Available</span>
                         )}
                     </TableRowColumn>
                     <TableRowColumn>
@@ -434,7 +434,7 @@ export class CartPage extends Component {
             {/* Displaying warning if a user has 'Un-Availible' items in their cart */}
             {this.cartHasUnAvailibleItems() && (
               <div>
-                <em>Please remove the 'Un-Availible' items from your cart before ordering</em>
+                <em>Please remove the 'Un-Available' items from your cart before ordering</em>
               </div>
             )}
 

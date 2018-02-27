@@ -55,7 +55,7 @@ export class AboutPage extends React.PureComponent {
         <p>
           Colley Lee{"'"}s work has been featured on both stage and screen. She has done costume
           design for theatre productions such as
-          <em>Relativity</em>, <em>The Piano Lesson</em>, and
+          <em> Relativity</em>, <em>The Piano Lesson</em>, and
           <em>Wedding Band: A Love/Hate Story in Black and White</em>. She has acted as costume
           designer, art director, and set designer for film and television. Lately Colley-Lee has
           branched out further into interior design, completing interiors for production company
