@@ -5,21 +5,17 @@
     "siteEmail": ""
   },
   "private": {
+    "master": {
+      "email": "",
+      "password": ""
+    },
     "payment": {
       "endpoint": "",
       "orderType": "",
       "paymentMethod": "",
       "redirectUrl": "",
       "redirectUrlParameters": "",
-      "secret": "",
-      "prod": {
-        "endpoint": "",
-        "orderType": "",
-        "paymentMethod": "",
-        "redirectUrl": "",
-        "redirectUrlParameters": "",
-        "secret": "s"
-      }
+      "secret": ""
     }
   }
 }

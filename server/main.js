@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { Accounts } from 'meteor/accounts-base';
 
 import '../imports/api/addresses';
 import '../imports/api/cart';
@@ -28,7 +29,14 @@ import '../imports/api/show/methods/pullShow/index';
 import { roles } from './../lib/roles';
 
 Meteor.startup(() => {
-  // Adding account 'broabect' to maintainers group for testing
-  Roles.addUsersToRoles('WNbqBXZ6xnceSfW72', [roles.maintainers]);
+  let masterUid = Accounts.findUserByEmail(Meteor.settings.private.master.email);
+  if (!masterUid) {
+    masterUid = Accounts.createUser({
+      email: Meteor.settings.private.master.email,
+      password: Meteor.settings.private.master.password,
+    });
+  }
+
+  Roles.addUsersToRoles(masterUid, [roles.maintainers]);
   // code to run on server at startup
 });
