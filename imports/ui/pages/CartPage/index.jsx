@@ -72,6 +72,10 @@ export class CartPage extends Component {
     };
   }
 
+  componentDidMount() {
+    this.getProductAvailibility();
+  }
+
   componentDidUpdate(prevProps, prevState) {
     if (this.props.cartItems !== prevProps.cartItems) {
       this.getProductAvailibility();
@@ -90,8 +94,10 @@ export class CartPage extends Component {
    * @returns bool
    */
   cartHasUnAvailibleItems() {
-    const itemAvailibility = Object.keys(this.state.itemsAvailible).map(itemId => this.state.itemsAvailible[itemId])
-    return !itemAvailibility.every(itemAvailible => itemAvailible === true)
+    const itemAvailibility = Object.keys(this.state.itemsAvailible).map(
+      itemId => this.state.itemsAvailible[itemId],
+    );
+    return !itemAvailibility.every(itemAvailible => itemAvailible === true);
   }
 
   clearCart = () => {
@@ -390,8 +396,8 @@ export class CartPage extends Component {
                       {this.state.itemsAvailible && this.state.itemsAvailible[item.productId] ? (
                         <span> Available</span>
                       ) : (
-                          <span> Un-Available</span>
-                        )}
+                        <span> Un-Available</span>
+                      )}
                     </TableRowColumn>
                     <TableRowColumn>
                       {new Date(item.dateAdded).toLocaleDateString('en-US')}
