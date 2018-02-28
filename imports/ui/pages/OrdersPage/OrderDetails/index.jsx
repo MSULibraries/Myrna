@@ -10,8 +10,8 @@ import styled from 'styled-components';
 
 import Loader from './../../../components/Loader/index';
 import { Order } from './../../../../api/order/order';
-import { OrderTrackingId } from './../../../../api/order/bridges/orderTrackingId'
-import OrderCost from './../../../../api/order/bridges/orderCost/'
+import { OrderTrackingId } from './../../../../api/order/bridges/orderTrackingId';
+import OrderCost from './../../../../api/order/bridges/orderCost/';
 import { checkIn } from './../../../../api/order/methods/checkIn/index';
 import { getProductsInfo } from './../../../../api/ItemDesc/methods/getProductsInfo/index';
 import { isMaintainer } from './../../../../../lib/roles';
@@ -68,11 +68,11 @@ class OrderDetails extends Component {
     let costumeCost = 0;
     let shippingCost = 0;
     let total = 0;
-    if (this.props.orderCost && this.props.orderTracking.rate) {
-      costumeCost = this.props.orderCost.costumeCost.toFixed(2)
-      shippingCost = this.props.orderTracking.rate
-      total = parseFloat(costumeCost) + parseFloat(shippingCost)
-      total = total.toFixed(2)
+    if (this.props.orderCost) {
+      costumeCost = this.props.orderCost.costumeCost.toFixed(2);
+      shippingCost = this.props.order.isPickUp ? 0 : this.props.orderTracking.rate;
+      total = parseFloat(costumeCost) + parseFloat(shippingCost);
+      total = total.toFixed(2);
     }
 
     return (
@@ -82,21 +82,28 @@ class OrderDetails extends Component {
           <div>
             <p>Status: {this.props.order.status}</p>
             {//Only show the cost of the order if it has a cost
-              this.props.order.status !== "Un-Approved" &&
+            this.props.order.status !== 'Un-Approved' && (
               <div>
                 <br />
                 <p>Costume Cost: ${costumeCost}</p>
                 <p>Shipping Cost: ${shippingCost}</p>
                 <p>Total: ${total}</p>
               </div>
-            }
+            )}
             <br />
-            <p>Special Instructions: {this.props.order.specialInstr || <em>No Special Instructions</em>}</p>
-            <p>Is Pick Up Order: {this.props.order.isPickUp ? "True" : "False"}</p>
+            <p>
+              Special Instructions:{' '}
+              {this.props.order.specialInstr || <em>No Special Instructions</em>}
+            </p>
+            <p>Is Pick Up Order: {this.props.order.isPickUp ? 'True' : 'False'}</p>
             <br />
             <p>
               {// Only show shipping info it the order has any
-                this.props.orderTracking && <a href={this.props.orderTracking.labelImageUrl} target="_blank" >Order Label</a>}
+              this.props.orderTracking && (
+                <a href={this.props.orderTracking.labelImageUrl} target="_blank">
+                  Order Label
+                </a>
+              )}
             </p>
             <FlatButton
               disabled={this.props.order.status !== 'Delivered'}
@@ -113,7 +120,7 @@ class OrderDetails extends Component {
                         id
                       ].category.toLowerCase()}/${this.state.itemDesc[id].oldId}/small/${
                         JSON.parse(this.state.itemDesc[id].description).picture_1
-                        }`}
+                      }`}
                       showExpandableButton
                       onClick={() => this.handleToggle(!this.expanded[id], id)}
                     />
@@ -129,7 +136,7 @@ class OrderDetails extends Component {
                           id
                         ].category.toLowerCase()}/${this.state.itemDesc[id].oldId}/small/${
                           JSON.parse(this.state.itemDesc[id].description).picture_1
-                          }`}
+                        }`}
                         alt={this.state.itemDesc[id].shortDescription || ''}
                       />
                     </CardMedia>
@@ -139,8 +146,8 @@ class OrderDetails extends Component {
             </div>
           </div>
         ) : (
-            <Loader />
-          )}
+          <Loader />
+        )}
 
         {!this.state.orderIdValid && this.state.itemDescLoaded && <p>Invalid Order Id</p>}
       </Container>
@@ -157,6 +164,6 @@ export default withTracker(({ match: { params: { orderId } } }) => {
   return {
     order: Order.findOne({ _id: orderId }),
     orderTracking: OrderTrackingId.findOne({ orderId }),
-    orderCost: OrderCost.findOne({ orderId })
+    orderCost: OrderCost.findOne({ orderId }),
   };
 })(OrderDetails);
