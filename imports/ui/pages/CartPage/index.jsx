@@ -28,6 +28,7 @@ import PickAddress from './PickAddress';
 import PickOrderDates from './PickOrderDates';
 import PullShowPrompt from './PullShowPrompt';
 import LeftNav from './../../components/LeftNav/LeftNav';
+import Loader from './../../components/Loader/';
 import BreadCrumbs from './../../components/BreadCrumbs/index';
 import Toast from './../../components/Toast/index';
 import Cart from './../../../api/cart';
@@ -57,6 +58,7 @@ export class CartPage extends Component {
       itemsAvailible: {},
       newShowModalOpen: false, // modal for entering a new show is open
       orderModalOpen: false, // modal for new order is open
+      processingModalOpen: false,
       pullShowModalOpen: false,
       selectedAddressId: undefined, // Id of order to ship to
       specialInstr: '', // Special Instr. for Order
@@ -240,6 +242,7 @@ export class CartPage extends Component {
    * Inserts order information into order and order.address collections
    */
   submitOrder = (dateToArriveBy, dateToShipBack, isPickUp, specialInstr, selectedAddressId) => {
+    this.setState({ processingModalOpen: true });
     this.closeNewOrderModal();
     Meteor.call(
       'order.insert',
@@ -255,6 +258,7 @@ export class CartPage extends Component {
         } else {
           Meteor.call('order.address.insert', orderId, selectedAddressId, (err, result) => {
             if (!err) {
+              this.setState({ processingModalOpen: false });
               this.setState({
                 steps: 0,
               });
@@ -265,6 +269,12 @@ export class CartPage extends Component {
       },
     );
   };
+
+  renderProcessingModal = () => (
+    <Dialog title="Processing Order" open={this.state.processingModalOpen}>
+      <Loader />
+    </Dialog>
+  );
 
   renderPullShow = () => {
     return (
@@ -449,6 +459,7 @@ export class CartPage extends Component {
             {this.renderStep()}
 
             {this.renderNewShowPrompt()}
+            {this.renderProcessingModal()}
             {this.state.toasting && (
               <Toast
                 open={this.state.toasting}
