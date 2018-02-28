@@ -176,9 +176,8 @@ export function createShipment(orderId) {
 
       resolve(shipment);
       saveTrackingId(orderId, shipmentId, rate);
-    }
-    else{
-      resolve("No Shipping needed on pick ups")
+    } else {
+      resolve('No Shipping needed on pick ups');
     }
   });
 }
@@ -225,12 +224,11 @@ Meteor.methods({
   },
 
   'order.buy': function orderBuy(orderId) {
-
     if (userLoggedIn() && !this.isSimulation) {
       const costumeCost = getOrderCost._execute({ userId: this.userId }, { orderId });
       const { isPickUp } = Order.findOne({ _id: orderId });
-      console.log(isPickUp)
-      const shippingCost = isPickUp ? 0:  Meteor.call('order.trackingId.read.rate', orderId);
+      console.log(isPickUp);
+      const shippingCost = isPickUp ? 0 : Meteor.call('order.trackingId.read.rate', orderId);
       const balanceDue = costumeCost + shippingCost;
       const paymentUrl = createPaymentUrl(orderId, balanceDue);
 
