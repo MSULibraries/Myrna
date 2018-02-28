@@ -28,7 +28,7 @@ import PickAddress from './PickAddress';
 import PickOrderDates from './PickOrderDates';
 import PullShowPrompt from './PullShowPrompt';
 import LeftNav from './../../components/LeftNav/LeftNav';
-import Loader from './../../components/Loader/';
+import Loader from './../../components/Loader/index';
 import BreadCrumbs from './../../components/BreadCrumbs/index';
 import Toast from './../../components/Toast/index';
 import Cart from './../../../api/cart';
