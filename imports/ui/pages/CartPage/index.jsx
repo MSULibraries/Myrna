@@ -390,7 +390,7 @@ export class CartPage extends Component {
           </Col>
           <Col sm={8}>
             <BreadCrumbs crumbs={['Profile', 'Cart']} />
-            <CartTable cartItems={this.props.cartItems} />
+            <CartTable  cartItems={this.props.cartItems} itemsAvailible={this.state.itemsAvailible} />
             <p>
               <em>
                 By placing an order, you are agreeing to our <Link to="policies">policies</Link>
