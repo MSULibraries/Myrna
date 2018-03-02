@@ -227,7 +227,6 @@ Meteor.methods({
     if (userLoggedIn() && !this.isSimulation) {
       const costumeCost = getOrderCost._execute({ userId: this.userId }, { orderId });
       const { isPickUp } = Order.findOne({ _id: orderId });
-      console.log(isPickUp);
       const shippingCost = isPickUp ? 0 : Meteor.call('order.trackingId.read.rate', orderId);
       const balanceDue = costumeCost + shippingCost;
       const paymentUrl = createPaymentUrl(orderId, balanceDue);

@@ -22,6 +22,7 @@ import { Col, Container, Row } from 'react-grid-system';
 import Helmet from 'react-helmet';
 import { Link } from 'react-router-dom';
 
+import CartTable from './CartTable';
 import InputSpecialInstructions from './InputSpecialInstructions';
 import NewShowPrompt from './NewShowPrompt';
 import PickAddress from './PickAddress';
@@ -34,6 +35,7 @@ import Toast from './../../components/Toast/index';
 import Cart from './../../../api/cart';
 import { getProductAvailibility } from './../../../api/ItemDesc/methods/getProductAvailibility/index';
 import Show from './../../../api/show';
+
 // Adjusted contrast to help with a11y
 const darkerTableHeaders = {
   color: '#575757',
@@ -388,49 +390,13 @@ export class CartPage extends Component {
           </Col>
           <Col sm={8}>
             <BreadCrumbs crumbs={['Profile', 'Cart']} />
-            <Table>
-              <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
-                <TableRow>
-                  <TableHeaderColumn style={darkerTableHeaders}>Status</TableHeaderColumn>
-                  <TableHeaderColumn style={darkerTableHeaders}>Added On </TableHeaderColumn>
-
-                  <TableHeaderColumn style={{ darkerTableHeaders, ...alignCenter }}>
-                    Remove
-                  </TableHeaderColumn>
-                </TableRow>
-              </TableHeader>
-              <TableBody displayRowCheckbox={false}>
-                {this.props.cartItems.map(item => (
-                  <TableRow key={item._id}>
-                    <TableRowColumn>
-                      {this.state.itemsAvailible && this.state.itemsAvailible[item.productId] ? (
-                        <span> Available</span>
-                      ) : (
-                        <span> Un-Available</span>
-                      )}
-                    </TableRowColumn>
-                    <TableRowColumn>
-                      {new Date(item.dateAdded).toLocaleDateString('en-US')}
-                    </TableRowColumn>
-                    <TableRowColumn style={centerColumn}>
-                      <FlatButton
-                        onClick={() => this.removeProductFromCart(item._id)}
-                        secondary
-                        style={{ margin: 'auto' }}
-                        label="X"
-                      />
-                    </TableRowColumn>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <CartTable cartItems={this.props.cartItems} />
             <p>
               <em>
                 By placing an order, you are agreeing to our <Link to="policies">policies</Link>
               </em>
             </p>
             <FlatButton onClick={() => this.pullShow()} label="Pull a Show" />
-
             {/*
           Only allow submit or create show 
           if there are items in the cart  
@@ -446,18 +412,15 @@ export class CartPage extends Component {
                 <FlatButton secondary onClick={() => this.clearCart()} label="Clear Cart" />
               </span>
             )}
-
             {/* Displaying warning if a user has 'Un-Availible' items in their cart */}
             {this.cartHasUnAvailibleItems() && (
               <div>
                 <em>Please remove the 'Un-Available' items from your cart before ordering</em>
               </div>
             )}
-
             {this.renderPullShow()}
             {/* Rendering the current step if availible */}
             {this.renderStep()}
-
             {this.renderNewShowPrompt()}
             {this.renderProcessingModal()}
             {this.state.toasting && (
