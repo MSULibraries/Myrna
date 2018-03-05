@@ -28,7 +28,7 @@ import NewShowPrompt from './NewShowPrompt';
 import PickAddress from './PickAddress';
 import PickOrderDates from './PickOrderDates';
 import PullShowPrompt from './PullShowPrompt';
-import LeftNav from './../../components/LeftNav/LeftNav';
+import LeftNav from './../../components/LeftNav/index';
 import Loader from './../../components/Loader/index';
 import BreadCrumbs from './../../components/BreadCrumbs/index';
 import Toast from './../../components/Toast/index';
@@ -390,7 +390,10 @@ export class CartPage extends Component {
           </Col>
           <Col sm={8}>
             <BreadCrumbs crumbs={['Profile', 'Cart']} />
-            <CartTable  cartItems={this.props.cartItems} itemsAvailible={this.state.itemsAvailible} />
+            <CartTable
+              cartItems={this.props.cartItems}
+              itemsAvailible={this.state.itemsAvailible}
+            />
             <p>
               <em>
                 By placing an order, you are agreeing to our <Link to="policies">policies</Link>

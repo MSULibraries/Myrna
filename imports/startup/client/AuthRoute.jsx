@@ -1,3 +1,7 @@
+/**
+ * Creates a React Router route that auth'd users can visit
+ */
+
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
 
@@ -15,7 +19,8 @@ export const AuthRoute = ({ userLoggedIn = '', component: Component, ...rest }) 
               state: { from: props.location },
             }}
           />
-        ))}
+        ))
+      }
     />
   );
 

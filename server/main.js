@@ -25,6 +25,7 @@ import '../imports/api/order/bridges/orderTrackingId';
 import '../imports/api/public/api';
 import '../imports/api/show/index';
 import '../imports/api/show/methods/pullShow/index';
+import '../imports/api/user/createUser/index';
 
 import { roles } from './../lib/roles';
 

@@ -3,6 +3,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import AuthRoute from './AuthRoute';
+import MaintainerRoute from './MaintainerRoute';
 import ScrollToTop from './ScrollToTop/index';
 
 // Main UI components
@@ -18,6 +19,7 @@ import HomePage from './../../ui/pages/HomePage/index';
 import LoginPage from './../../ui/pages/LoginPage/index';
 import OrdersPage from './../../ui/pages/OrdersPage/index';
 import OrderDetails from './../../ui/pages/OrdersPage/OrderDetails/index';
+import NewUserPage from './../../ui/pages/NewUserPage/index';
 import NotFoundPage from './../../ui/pages/NotFoundPage/index';
 import PaymentSuccess from './../../ui/pages/PaymentSuccess/index';
 import PoliciesPage from './../../ui/pages/PoliciesPage/index';
@@ -53,6 +55,7 @@ const Routes = ({ userLoggedIn }) => (
             exact
             path="/orders/details/:orderId"
             component={OrderDetails}
+            MaintainerRoute
           />
           <AuthRoute
             userLoggedIn={userLoggedIn}
@@ -64,12 +67,14 @@ const Routes = ({ userLoggedIn }) => (
 
           <Route exact path="/" component={HomePage} />
           <Route exact path="/about" component={AboutPage} />
+          <Route exact path="/home" component={HomePage} />
           <Route exact path="/login" component={LoginPage} />
           <Route exact path="/policies" component={PoliciesPage} />
           <Route exact path="/products" component={ProductsContainer} />
           <Route exact path="/products/details/:productId" component={ProductsDetails} />
           <Route exact path="/restricted" component={RestrictedPage} />
 
+          <MaintainerRoute exaxt path="/user/new" component={NewUserPage} />
           <Route component={NotFoundPage} />
         </Switch>
       </div>

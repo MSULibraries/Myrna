@@ -9,7 +9,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Col, Container, Row } from 'react-grid-system';
 import Helmet from 'react-helmet';
-import LeftNav from '../../components/LeftNav/LeftNav';
+import LeftNav from '../../components/LeftNav/index';
 
 export class ProfilePage extends React.PureComponent {
   constructor() {

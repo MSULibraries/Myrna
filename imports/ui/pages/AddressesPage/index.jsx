@@ -16,7 +16,7 @@ import { createContainer } from 'meteor/react-meteor-data';
 import NewAddressForm from './NewAddressForm';
 import Addresses from './../../../api/addresses';
 import BreadCrumbs from './../../components/BreadCrumbs/index';
-import LeftNav from '../../components/LeftNav/LeftNav';
+import LeftNav from '../../components/LeftNav/index';
 
 // Adjusted contrast to help with a11y
 const darkerTableHeaders = {
