@@ -11,7 +11,7 @@ import {
   TableRow,
   TableRowColumn,
 } from 'material-ui/Table';
-import { createContainer } from 'meteor/react-meteor-data';
+import { withTracker } from 'meteor/react-meteor-data';
 
 import NewAddressForm from './NewAddressForm';
 import Addresses from './../../../api/addresses';
@@ -161,9 +161,10 @@ AddressesPage.proptypes = {
   addresses: PropTypes.array,
 };
 
-export default (AddressesPage = createContainer(() => {
+export default withTracker(props => {
   Meteor.subscribe('addresses');
+
   return {
-    addresses: Addresses.find({}, { sort: { createdAt: -1 } }).fetch(),
+    addresses: Addresses.find({}).fetch(),
   };
-}, AddressesPage));
+})(AddressesPage);

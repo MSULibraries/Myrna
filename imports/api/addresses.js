@@ -19,7 +19,7 @@ Addresses.attachSchema(addressSchema);
 
 if (Meteor.isServer) {
   // This code only runs on the server
-  Meteor.publish('addresses', () => Addresses.find({ userId: Meteor.userId() }));
+  Meteor.publish('addresses', () => Addresses.find({ owner: Meteor.userId() }));
 }
 
 Meteor.methods({
