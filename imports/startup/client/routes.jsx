@@ -1,5 +1,6 @@
 import { withTracker } from 'meteor/react-meteor-data';
 import React from 'react';
+import Loadable from 'react-loadable';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import AuthRoute from './AuthRoute';
@@ -7,26 +8,102 @@ import MaintainerRoute from './MaintainerRoute';
 import ScrollToTop from './ScrollToTop/index';
 
 // Main UI components
-import MainNav from './../../ui/components/MainNav/index';
-import MobileMainNav from './../../ui/components/MainNav/mobile';
 import BottomNav from './../../ui/components/BottomNav/index';
 import Footer from './../../ui/components/Footer/index';
+import Loader from './../../ui/components/Loader/index';
+import MainNav from './../../ui/components/MainNav/index';
+import MobileMainNav from './../../ui/components/MainNav/mobile';
+
 // Pages
-import AboutPage from './../../ui/pages/AboutPage/index';
-import AddressesPage from './../../ui/pages/AddressesPage/index';
-import CartPage from './../../ui/pages/CartPage/index';
-import HomePage from './../../ui/pages/HomePage/index';
-import LoginPage from './../../ui/pages/LoginPage/index';
-import OrdersPage from './../../ui/pages/OrdersPage/index';
-import OrderDetails from './../../ui/pages/OrdersPage/OrderDetails/index';
-import NewUserPage from './../../ui/pages/NewUserPage/index';
-import NotFoundPage from './../../ui/pages/NotFoundPage/index';
-import PaymentSuccess from './../../ui/pages/PaymentSuccess/index';
-import PoliciesPage from './../../ui/pages/PoliciesPage/index';
-import ProductsContainer from './../../ui/pages/Products/ProductsContainer';
-import ProductsDetails from './../../ui/pages/Products/ProductsDetails/index';
-import ProfilePage from './../../ui/pages/ProfilePage/index';
-import RestrictedPage from './../../ui/pages/RestrictedPage/index';
+const AboutPage = Loadable({
+  loader: () => import('./../../ui/pages/AboutPage/index'),
+  delay: 500,
+  loading: Loader,
+});
+
+const AddressesPage = Loadable({
+  loader: () => import('./../../ui/pages/AddressesPage/index'),
+  delay: 500,
+  loading: Loader,
+});
+
+const CartPage = Loadable({
+  loader: () => import('./../../ui/pages/CartPage/index'),
+  delay: 500,
+  loading: Loader,
+});
+
+const HomePage = Loadable({
+  loader: () => import('./../../ui/pages/HomePage/index'),
+  delay: 500,
+  loading: Loader,
+});
+
+const LoginPage = Loadable({
+  loader: () => import('./../../ui/pages/LoginPage/index'),
+  delay: 500,
+  loading: Loader,
+});
+
+const OrdersPage = Loadable({
+  loader: () => import('./../../ui/pages/OrdersPage/index'),
+  delay: 500,
+  loading: Loader,
+});
+
+const OrderDetails = Loadable({
+  loader: () => import('./../../ui/pages/OrdersPage/OrderDetails/index'),
+  delay: 500,
+  loading: Loader,
+});
+
+const NewUserPage = Loadable({
+  loader: () => import('./../../ui/pages/NewUserPage/index'),
+  delay: 500,
+  loading: Loader,
+});
+
+const NotFoundPage = Loadable({
+  loader: () => import('./../../ui/pages/NotFoundPage/index'),
+  delay: 500,
+  loading: Loader,
+});
+
+const PaymentSuccess = Loadable({
+  loader: () => import('./../../ui/pages/PaymentSuccess/index'),
+  delay: 500,
+  loading: Loader,
+});
+
+const PoliciesPage = Loadable({
+  loader: () => import('./../../ui/pages/PoliciesPage/index'),
+  delay: 500,
+  loading: Loader,
+});
+
+const ProductsContainer = Loadable({
+  loader: () => import('./../../ui/pages/Products/ProductsContainer'),
+  delay: 500,
+  loading: Loader,
+});
+
+const ProductsDetails = Loadable({
+  loader: () => import('./../../ui/pages/Products/ProductsDetails/index'),
+  delay: 500,
+  loading: Loader,
+});
+
+const ProfilePage = Loadable({
+  loader: () => import('./../../ui/pages/ProfilePage/index'),
+  delay: 500,
+  loading: Loader,
+});
+
+const RestrictedPage = Loadable({
+  loader: () => import('./../../ui/pages/RestrictedPage/index'),
+  delay: 500,
+  loading: Loader,
+});
 
 const Routes = ({ userLoggedIn }) => (
   <Router>

@@ -52,8 +52,6 @@ class NewUserForm extends Component {
         if (!error) {
           this.clearForm();
           this.setState({ createUserSuccess: true });
-        } else {
-          console.log(error);
         }
       });
     } else {
