@@ -51,7 +51,6 @@ class ProductsDetails extends Component {
             <ProductContainer>
               <ProductContainerChild>
                 <ReactImageMagnify
-                  imageStyle={{ width: '50%' }}
                   {...{
                     smallImage: {
                       src: `/images/clothing/${this.props.product.category.toLowerCase()}/${
@@ -65,8 +64,8 @@ class ProductsDetails extends Component {
                         this.props.product.oldId
                         }/large/${JSON.parse(this.props.product.description).picture_1}`,
                       alt: this.props.product.shortDescription,
-                      width: 1500,
-                      height: 1500,
+                      width: "1500",
+                      height: "2000",
                     },
                   }}
                 />
