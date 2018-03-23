@@ -21,6 +21,10 @@ const LeftNav = ({ isMaintainer }) => (
       <LinkText primaryText="Cart" />
     </Link>
 
+    <Link style={LinkStyle} to="/shows">
+      <LinkText primaryText="Shows" />
+    </Link>
+
     {isMaintainer() && (
       <Link style={LinkStyle} to="/user/new">
         <LinkText primaryText="New User" />

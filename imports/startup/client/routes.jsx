@@ -105,6 +105,12 @@ const RestrictedPage = Loadable({
   loading: Loader,
 });
 
+const ShowsPage = Loadable({
+  loader: () => import('./../../ui/pages/ShowsPage/index'),
+  delay: 500,
+  loading: Loader,
+});
+
 const Routes = ({ userLoggedIn }) => (
   <Router>
     <ScrollToTop>
@@ -141,6 +147,7 @@ const Routes = ({ userLoggedIn }) => (
             component={PaymentSuccess}
           />
           <AuthRoute userLoggedIn={userLoggedIn} exact path="/profile" component={ProfilePage} />
+          <AuthRoute userLoggedIn={userLoggedIn} exact path="/shows/" component={ShowsPage} />
 
           <Route exact path="/" component={HomePage} />
           <Route exact path="/about" component={AboutPage} />
