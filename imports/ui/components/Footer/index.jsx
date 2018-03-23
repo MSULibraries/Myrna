@@ -25,7 +25,8 @@ const Footer = ({ userLoggedIn }) => (
 );
 
 const CommLogo = styled.img`
-  width: 320px;
+  width: 100%;
+  max-width: 320px;
   padding: 3%;
 `;
 

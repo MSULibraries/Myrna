@@ -13,7 +13,7 @@ import { media } from './../../breakpoints';
 
 export const MainNav = ({ userLoggedIn }) => (
   <MainNavContainer>
-    <a href="//www.library.msstate.edu/">
+    <a href="//library.msstate.edu/">
       <MsStateBrand
         src={`${document.location.origin}/images/lib_logo.png`}
         alt="Mississippi State University Logo"
