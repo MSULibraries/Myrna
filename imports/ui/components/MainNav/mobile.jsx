@@ -137,7 +137,8 @@ const MainLink = styled(Link)`
 
 const LibLogo = styled.img`
   margin-top: 9px;
-  width: 300px;
+  max-width: 300px;
+  width: 74vw; 
 `;
 
 const MobileNavContainer = styled.div`
