@@ -27,6 +27,7 @@ import OrderTrackingId from './../../../api/order/bridges/orderTrackingId';
 import { Loader } from './../../components/Loader/index';
 import insertOrderCost from './../../../api/order/bridges/orderCost/methods/insertOrderCost/index';
 import insertParcelDimensions from './../../../api/order/bridges/orderParcelDimensions/methods/insertParcelDimensions/index';
+import findUserById from './../../../api/user/findUserById/index';
 
 // Adjusted contrast to help with a11y
 const darkerTableHeaders = {
@@ -55,6 +56,7 @@ export class OrdersPage extends Component {
       modalOrderCostOpen: false,
       modalOpen: false,
       orderAddresses: {},
+      orderOwners: {},
       packageHeight: '',
       packageLength: '',
       packageWeight: '',
@@ -77,6 +79,7 @@ export class OrdersPage extends Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.orders !== nextProps.orders && nextProps.orders.length > 0) {
       this.getOrderAddresses(nextProps.orders);
+      this.getOrderOwner(nextProps.orders);
     }
   }
 
@@ -119,7 +122,7 @@ export class OrdersPage extends Component {
           },
         );
       });
-
+    this.getOrderOwner(order.id, order.userId);
     const updateStatus = () =>
       new Promise((resolve, reject) => {
         Meteor.call('order.approve', this.state.orderId, error => {
@@ -218,6 +221,25 @@ export class OrdersPage extends Component {
     } else return true;
   }
 
+  getOrderOwner = orders => {
+    // Pull the order's owner from each order
+    orders.map(({ _id: orderId, userId }) => {
+      let email;
+      if (isMaintainer()) {
+        findUserById.call({ id: userId }, (error, resp) => {
+          if (!error && resp) {
+            email = resp.emails[0].address;
+            this.setState({ orderOwners: { [orderId]: email } });
+          }
+        });
+      } else {
+        // Just use the current user's email
+        email = Meteor.user().emails[0].address;
+        this.setState({ orderOwners: { [orderId]: email } });
+      }
+    });
+  };
+
   render() {
     return (
       <Container>
@@ -271,7 +293,7 @@ export class OrdersPage extends Component {
             {this.props.orders.filter(order => this.filterInactive(order)).map(order => (
               <TableRow key={order._id}>
                 {/* Order Owner */}
-                <TableRowColumn>{Meteor.user(order.userId).emails[0].address}</TableRowColumn>
+                <TableRowColumn> {this.state.orderOwners[order._id]}</TableRowColumn>
 
                 {/* Tracking Link */}
                 <TableRowColumn>{this.renderOrderTrackingLink(order)}</TableRowColumn>

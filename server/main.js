@@ -26,6 +26,7 @@ import '../imports/api/public/api';
 import '../imports/api/show/index';
 import '../imports/api/show/methods/pullShow/index';
 import '../imports/api/user/createUser/index';
+import '../imports/api/user/findUserById/index';
 
 import { roles } from './../lib/roles';
 
