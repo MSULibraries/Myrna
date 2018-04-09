@@ -1,3 +1,4 @@
+import { capitalize, trim } from 'lodash';
 import { withTracker } from 'meteor/react-meteor-data';
 import React, { Component } from 'react';
 import { Container } from 'react-grid-system';
@@ -21,7 +22,7 @@ class ProductsDetails extends Component {
   }
 
   /**
-   * The costume measurments are within a description (json)
+   * The costume measurements are within a description (json)
    * The measuremnts are a string, but each measurment is seperated
    * by a semicolon.
    *
@@ -55,17 +56,17 @@ class ProductsDetails extends Component {
                     smallImage: {
                       src: `/images/clothing/${this.props.product.category.toLowerCase()}/${
                         this.props.product.oldId
-                        }/large/${JSON.parse(this.props.product.description).picture_1}`,
+                      }/large/${JSON.parse(this.props.product.description).picture_1}`,
                       alt: this.props.product.shortDescription,
                       isFluidWidth: true,
                     },
                     largeImage: {
                       src: `/images/clothing/${this.props.product.category.toLowerCase()}/${
                         this.props.product.oldId
-                        }/large/${JSON.parse(this.props.product.description).picture_1}`,
+                      }/large/${JSON.parse(this.props.product.description).picture_1}`,
                       alt: this.props.product.shortDescription,
-                      width: "1500",
-                      height: "2000",
+                      width: '1500',
+                      height: '2000',
                     },
                   }}
                 />
@@ -73,12 +74,13 @@ class ProductsDetails extends Component {
               <ProductContainerChild>
                 <h2>{this.props.product.shortDescription}</h2>
                 <p>Quality: {this.props.product.itemStatus}</p>
-                <p>Measurments</p>
+                <p>Measurement</p>
                 <ul>
                   {this.state.measurements &&
-                    this.state.measurements.map(measurement => (
-                      <li key={measurement}>{measurement}</li>
-                    ))}
+                    this.state.measurements
+                      .filter(m => trim(m).length > 0)
+                      .map(m => capitalize(m))
+                      .map(measurement => <li key={measurement}>{measurement}</li>)}
                 </ul>
               </ProductContainerChild>
             </ProductContainer>

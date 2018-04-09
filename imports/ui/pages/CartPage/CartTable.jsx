@@ -108,9 +108,9 @@ class CartTable extends Component {
                 <MobileHiddenColumn>{item._id}</MobileHiddenColumn>
                 <TableRowColumn>
                   {this.props.itemsAvailible && this.props.itemsAvailible[item.productId] ? (
-                    <span> Availible</span>
+                    <span> Available</span>
                   ) : (
-                    <span> Un-Availible</span>
+                    <span> Un-Available</span>
                   )}
                 </TableRowColumn>
                 {/* <TableRowColumn>

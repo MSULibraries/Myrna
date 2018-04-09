@@ -19,53 +19,53 @@ export const ProductCard = ({
   imgSrc,
   shortDescription,
 }) => (
-    <Paper zDepth={3}>
-      <Card>
-        <DetailLink to={`/products/details/${_id}`}>
-          {!isAvailible ? (
-            <CardMediaContainer overlay={<CardTitle subtitle="Out Of Stock" />}>
-              <ProductImage
-                disabled={!isAvailible}
-                src={`images/clothing/${category.toLowerCase()}/${oldId}/small/${
-                  JSON.parse(description).picture_1
-                  }`}
-                alt={`images/clothing/${category}/${oldId}/small/${
-                  JSON.parse(description).picture_1
-                  }`}
-              />
-            </CardMediaContainer>
-          ) : (
-              <CardMediaContainer>
-                <ProductImage
-                  disabled={!isAvailible}
-                  src={`images/clothing/${category.toLowerCase()}/${oldId}/small/${
-                    JSON.parse(description).picture_1
-                    }`}
-                  alt={`images/clothing/${category}/${oldId}/small/${
-                    JSON.parse(description).picture_1
-                    }`}
-                />
-              </CardMediaContainer>
-            )}
-        </DetailLink>
-
-        <DescriptionContainer>
-          <DetailLink to={`/products/details/${_id}`}>
-            <CardText dangerouslySetInnerHTML={{ __html: shortDescription }} />
-          </DetailLink>
-        </DescriptionContainer>
-        <CardActions>
-          {isAuthed && (
-            <FlatButton
-              disabled={!isAvailible || itemInCart}
-              label={itemInCart ? "In Cart" : "Add To Cart"}
-              onClick={() => addProductToCart(_id)}
+  <Paper zDepth={3}>
+    <Card>
+      <DetailLink to={`/products/details/${_id}`}>
+        {!isAvailible ? (
+          <CardMediaContainer overlay={<CardTitle subtitle="Out Of Stock" />}>
+            <ProductImage
+              disabled={!isAvailible}
+              src={`images/clothing/${category.toLowerCase()}/${oldId}/small/${
+                JSON.parse(description).picture_1
+              }`}
+              alt={`images/clothing/${category}/${oldId}/small/${
+                JSON.parse(description).picture_1
+              }`}
             />
-          )}
-        </CardActions>
-      </Card>
-    </Paper>
-  );
+          </CardMediaContainer>
+        ) : (
+          <CardMediaContainer>
+            <ProductImage
+              disabled={!isAvailible}
+              src={`images/clothing/${category.toLowerCase()}/${oldId}/small/${
+                JSON.parse(description).picture_1
+              }`}
+              alt={`images/clothing/${category}/${oldId}/small/${
+                JSON.parse(description).picture_1
+              }`}
+            />
+          </CardMediaContainer>
+        )}
+      </DetailLink>
+
+      <DescriptionContainer>
+        <DetailLink to={`/products/details/${_id}`}>
+          <CardText dangerouslySetInnerHTML={{ __html: shortDescription }} />
+        </DetailLink>
+      </DescriptionContainer>
+      <CardActions>
+        {isAuthed && (
+          <FlatButton
+            disabled={!isAvailible || itemInCart}
+            label={itemInCart ? 'In Cart' : 'Add To Cart'}
+            onClick={() => addProductToCart(_id)}
+          />
+        )}
+      </CardActions>
+    </Card>
+  </Paper>
+);
 
 ProductCard.propTypes = {
   _id: PropTypes.string,
@@ -95,11 +95,11 @@ const ProductImage = styled.img`
   }};
 `;
 
-const CardMediaContainer = styled(CardMedia) `
+const CardMediaContainer = styled(CardMedia)`
   max-width: 320px;
 `;
 
-const DetailLink = styled(Link) `
+const DetailLink = styled(Link)`
   text-decoration: none;
 `;
 
