@@ -6,6 +6,7 @@ import ReactImageMagnify from 'react-image-magnify';
 import Helmet from 'react-helmet';
 import ItemDesc from './../../../../api/ItemDesc/index';
 import { linear } from 'react-stack-grid/lib/animations/easings';
+import { Link } from 'react-router-dom';
 
 import styled from 'styled-components';
 
@@ -82,6 +83,7 @@ class ProductsDetails extends Component {
                       .map(m => capitalize(m))
                       .map(measurement => <li key={measurement}>{measurement}</li>)}
                 </ul>
+                <Link to={`/item/${this.props.product._id}/update`}>Edit </Link>
               </ProductContainerChild>
             </ProductContainer>
           </div>

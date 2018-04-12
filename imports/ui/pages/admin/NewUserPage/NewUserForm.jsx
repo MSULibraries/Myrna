@@ -4,7 +4,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import React, { Component } from 'react';
 
-import createUser from './../../../api/user/createUser/index';
+import createUser from './../../../../api/user/createUser/index';
 
 class NewUserForm extends Component {
   constructor() {

@@ -58,7 +58,7 @@ const OrderDetails = Loadable({
 });
 
 const NewUserPage = Loadable({
-  loader: () => import('./../../ui/pages/NewUserPage/index'),
+  loader: () => import('./../../ui/pages/admin/NewUserPage/index'),
   delay: 500,
   loading: Loader,
 });
@@ -111,6 +111,18 @@ const ShowsPage = Loadable({
   loading: Loader,
 });
 
+const CreateItemPage = Loadable({
+  loader: () => import('./../../ui/pages/admin/itemCrudPages/CreateItem/index'),
+  delay: 500,
+  loading: Loader,
+});
+
+const UpdateItemPage = Loadable({
+  loader: () => import('./../../ui/pages/admin/itemCrudPages/UpdateItem/index'),
+  delay: 500,
+  loading: Loader,
+});
+
 const Routes = ({ userLoggedIn }) => (
   <Router>
     <ScrollToTop>
@@ -159,6 +171,8 @@ const Routes = ({ userLoggedIn }) => (
           <Route exact path="/restricted" component={RestrictedPage} />
 
           <MaintainerRoute exaxt path="/user/new" component={NewUserPage} />
+          <MaintainerRoute exaxt path="/item/:productId/update" component={UpdateItemPage} />
+          <MaintainerRoute exaxt path="/item/new" component={CreateItemPage} />
           <Route component={NotFoundPage} />
         </Switch>
       </div>

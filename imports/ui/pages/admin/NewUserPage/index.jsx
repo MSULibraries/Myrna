@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Col, Container, Row } from 'react-grid-system';
-import LeftNav from './../../components/LeftNav/index';
+
 import NewUserForm from './NewUserForm';
+import LeftNav from './../../../components/LeftNav/index';
 
 class NewUserPage extends Component {
   render() {

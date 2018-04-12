@@ -29,10 +29,12 @@ const ItemDescSchema = new SimpleSchema({
   expectedReturn: {
     type: String,
     label: 'Legacy',
+    defaultValue: '',
   },
   isAvailible: {
     type: Boolean,
     label: 'Item is Availible to add to Cart',
+    defaultValue: true,
   },
   itemStatus: {
     type: String,
@@ -41,22 +43,27 @@ const ItemDescSchema = new SimpleSchema({
   maxTimeframe: {
     type: String,
     label: 'Legacy',
+    defaultValue: '',
   },
   minimumTimeframe: {
     type: String,
     label: 'Legacy',
+    defaultValue: '',
   },
   name: {
     type: String,
     label: 'Legacy',
+    defaultValue: '',
   },
   oldId: {
     type: String,
     label: 'Legacy ID of the product from Symfony',
+    defaultValue: '',
   },
   shippingRate: {
     type: String,
     label: 'Legacy',
+    defaultValue: '',
   },
   shortDescription: {
     type: String,
@@ -65,10 +72,12 @@ const ItemDescSchema = new SimpleSchema({
   timeframe: {
     type: String,
     label: 'Legacy',
+    defaultValue: '',
   },
   uniqueIdentifier: {
     type: String,
     label: 'Legacy',
+    defaultValue: '',
   },
 });
 
