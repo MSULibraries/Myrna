@@ -229,7 +229,7 @@ export class OrdersPage extends Component {
         findUserById.call({ id: userId }, (error, resp) => {
           if (!error && resp) {
             email = resp.emails[0].address;
-            this.setState({ orderOwners: { [orderId]: email } });
+            this.setState({ orderOwners: { [orderId]: email, ...this.state.orderOwners } });
           }
         });
       } else {
