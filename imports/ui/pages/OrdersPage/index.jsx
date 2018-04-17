@@ -122,7 +122,6 @@ export class OrdersPage extends Component {
           },
         );
       });
-    this.getOrderOwner(order.id, order.userId);
     const updateStatus = () =>
       new Promise((resolve, reject) => {
         Meteor.call('order.approve', this.state.orderId, error => {
