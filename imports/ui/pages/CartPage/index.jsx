@@ -56,7 +56,7 @@ export class CartPage extends Component {
     this.state = {
       dateToArrive: undefined,
       dateToShipBack: undefined,
-      isPickupOrder: false,
+      isPickupOrder: true,
       itemsAvailible: {},
       newShowModalOpen: false, // modal for entering a new show is open
       orderModalOpen: false, // modal for new order is open
@@ -72,7 +72,7 @@ export class CartPage extends Component {
        * @example: We need toAddress, dates, and specialInstr
        *           So there would be three steps
        */
-      totalSteps: 4,
+      totalSteps: 3,
     };
   }
 
@@ -346,28 +346,36 @@ export class CartPage extends Component {
           </Dialog>
         );
       }
-      case 4: {
-        return (
-          <Dialog
-            title="Shipment"
-            modal={false}
-            open={this.state.orderModalOpen}
-            onRequestClose={this.closeNewOrderModal}
-          >
-            <div style={{ width: '50%' }}>
-              <p>Are you going to pick up the order in person? </p>
-              <Toggle
-                label={this.state.isPickupOrder ? 'Yes' : 'No'}
-                defaultToggled={false}
-                onToggle={(event, checked) => {
-                  this.setState({ isPickupOrder: checked });
-                }}
-              />
-              <FlatButton label="Continue" onClick={() => this.incStep()} />
-            </div>
-          </Dialog>
-        );
-      }
+      /**
+       * Because we were unable to put a card on any account we can't
+       * ship through easyPost currently
+       *
+       * To add back:
+       *  - un comment the case bellow
+       *
+       */
+      // case 4: {
+      //   return (
+      //     <Dialog
+      //       title="Shipment"
+      //       modal={false}
+      //       open={this.state.orderModalOpen}
+      //       onRequestClose={this.closeNewOrderModal}
+      //     >
+      //       <div style={{ width: '50%' }}>
+      //         <p>Are you going to pick up the order in person? </p>
+      //         <Toggle
+      //           label={this.state.isPickupOrder ? 'Yes' : 'No'}
+      //           defaultToggled={false}
+      //           onToggle={(event, checked) => {
+      //             this.setState({ isPickupOrder: checked });
+      //           }}
+      //         />
+      //         <FlatButton label="Continue" onClick={() => this.incStep()} />
+      //       </div>
+      //     </Dialog>
+      //   );
+      // }
     }
   };
 
