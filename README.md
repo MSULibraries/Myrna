@@ -1,6 +1,6 @@
-# Myrna Colley Lee Costume Collection
+# Myrna Colley-Lee Costume Collection
 
-The Myrna costume website allows users to browse costume pieces and learn more about actual pieces of the Myrna Colley Lee costume collection. User accounts can get approved so that they can rent pieces from the collection.
+The Myrna costume website allows users to browse costume pieces and learn more about actual pieces of the Myrna Colley-Lee costume collection. User accounts can get approved so that they can rent pieces from the collection.
 
 ## Contents
 
@@ -26,32 +26,32 @@ The Myrna costume website allows users to browse costume pieces and learn more a
 
     * Flow
 
-      1. Go to `/products`
-      1. Add Products to Cart (_Must be signed in_)
-      1. Go to `/cart`
+      1.  Go to `/products`
+      1.  Add Products to Cart (_Must be signed in_)
+      1.  Go to `/cart`
 
     * **Submit Order** - A user can submit the items in their cart to be ordered. This will create an entry to be approved by a maintainer.
 
       * Flow
 
-        1. Click Submit Order
-        1. Pick an address to ship to
-        1. Select the date that the shipment needs to arrive by
-        1. Select the date that the shipment will be shipped back by
-        1. Enter any 'Special Instructions' if needed
-        1. Select whether the order needs to be picked up or shipped
+        1.  Click Submit Order
+        1.  Pick an address to ship to
+        1.  Select the date that the shipment needs to arrive by
+        1.  Select the date that the shipment will be shipped back by
+        1.  Enter any 'Special Instructions' if needed
+        1.  Select whether the order needs to be picked up or shipped
 
     * **Create a Show** - Creating a show saves all of the product id's in a user's cart as a show. This will allows users who run similar shows to easily pull costumes between each show.
 
       * Flow
-        1. Click 'Create a Show'
-        1. Enter the name of the show
+        1.  Click 'Create a Show'
+        1.  Enter the name of the show
 
     * **Pull a Show** - Pulls all product Id's from saved 'show', clears the cart, and then adds those product Id's to the cart.
       * Flow
-        1. Click 'Pull a Show'
-        1. Select a Show From the Dropdown
-        1. Click 'Pull Show'
+        1.  Click 'Pull a Show'
+        1.  Select a Show From the Dropdown
+        1.  Click 'Pull Show'
 
   * **Order**
 
@@ -108,16 +108,16 @@ The Myrna costume website allows users to browse costume pieces and learn more a
   ```
 
 * Set Up Database
-  1. Install [MongoDB](https://www.mongodb.com/)
-  1. Download [itemDesc.json](https://raw.githubusercontent.com/MSULibraries/Myrna/240256e97d620fe68632f9298cf19b68efe30519/itemDesc.json)
-  1. Start Myrna (`meteor`)
-  1. Run: `mongoimport -h localhost:3001 -d meteor -c itemDesc --drop --file C://.../.../PATH_TO_ITEMDESC.JSON/itemDesc.json`
+  1.  Install [MongoDB](https://www.mongodb.com/)
+  1.  Download [itemDesc.json](https://raw.githubusercontent.com/MSULibraries/Myrna/240256e97d620fe68632f9298cf19b68efe30519/itemDesc.json)
+  1.  Start Myrna (`meteor`)
+  1.  Run: `mongoimport -h localhost:3001 -d meteor -c itemDesc --drop --file C://.../.../PATH_TO_ITEMDESC.JSON/itemDesc.json`
   * Env Var Note: Make sure MONGO_URL env variable is **NOT** set.
   * mongoimport Note: mongoimport may not be on your PATH so you may have to navigate to the folder where it is installed and run the command or add it to your PATH
 * Add Product Images
-  1. [Get Images From Master Branch](https://github.com/MSULibraries/Myrna/tree/master/public/images/clothing)
-  2. Change to develp, _Or any branch that is a descendant of `develop`_
-  3. Put the `clothing/` folder in `public/images`
+  1.  [Get Images From Master Branch](https://github.com/MSULibraries/Myrna/tree/master/public/images/clothing)
+  2.  Change to develp, _Or any branch that is a descendant of `develop`_
+  3.  Put the `clothing/` folder in `public/images`
   * We are ignoring clothing images in develop to keep the src code small.
   * Please **Do Not** commit images into the develop branch
 * Start Server _(command: `meteor --settings settings.json`)_

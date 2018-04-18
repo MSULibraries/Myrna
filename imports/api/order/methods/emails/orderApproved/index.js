@@ -29,7 +29,7 @@ export const emailOrderedApproved = new ValidatedMethod({
           email.default.Email.send({
             from: Meteor.settings.public.siteEmail,
             to: userEmail,
-            subject: 'Myrna Costume Order Approved | Myrna Colley Lee Costume Collection',
+            subject: 'Myrna Costume Order Approved | Myrna Colley-Lee Costume Collection',
             text:
               "Your order has been approved! This means you can now purchase your order. Go to:  'costumes.library.msstate.edu/orders' and click 'BUY' on the order that has the 'Approved' Status",
           });

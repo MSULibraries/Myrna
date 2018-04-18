@@ -14,7 +14,7 @@ export const HomePage = () => (
       meta={[
         {
           name: 'description',
-          content: 'Welcome page for the Myrna Colley Lee rental site',
+          content: 'Welcome page for the Myrna Colley-Lee rental site',
         },
       ]}
     />

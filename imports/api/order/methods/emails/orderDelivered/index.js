@@ -29,7 +29,7 @@ export const emailOrderedDelivered = new ValidatedMethod({
           email.default.Email.send({
             from: Meteor.settings.public.siteEmail,
             to: userEmail,
-            subject: 'Myrna Costume Order Delivered | Myrna Colley Lee Costume Collection',
+            subject: 'Myrna Costume Order Delivered | Myrna Colley-Lee Costume Collection',
             text: 'Your order has been delivered!',
           });
         }

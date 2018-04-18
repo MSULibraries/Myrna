@@ -29,7 +29,7 @@ export const emailOrderedPlaced = new ValidatedMethod({
           email.default.Email.send({
             from: Meteor.settings.public.siteEmail,
             to: Meteor.settings.public.siteEmail,
-            subject: 'Myrna Costume Order Placed | Myrna Colley Lee Costume Collection',
+            subject: 'Myrna Costume Order Placed | Myrna Colley-Lee Costume Collection',
             text: `${userEmail} has placed an new order. Go to: costumes.library.msstate.edu/orders to review the order and 'Approve'`,
           });
         }

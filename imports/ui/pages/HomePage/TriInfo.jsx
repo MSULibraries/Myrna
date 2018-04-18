@@ -7,7 +7,7 @@ import { media } from './../../breakpoints';
 const TriInfo = () => (
   <Container>
     <WhiteLink to="/about">
-      <p>About Myrna Colley Lee</p>{' '}
+      <p>About Myrna Colley-Lee</p>{' '}
     </WhiteLink>
     <WhiteLink to="/policies">
       <p>Our Policies</p>
