@@ -10,24 +10,32 @@ const Footer = ({ userLoggedIn }) => (
         alt="Mississippi State Department of Communications Logo"
       />
     </a>
+
+    <div>
+      <p>The Myrna Colley-Lee collection is maintained by Melanie Harris.</p>
+      <p>
+        All inquiries about be made to her at:{' '}
+        <a href="mailto:mharris@comm.msstate.edu">mharris@comm.msstate.edu</a>
+      </p>
+    </div>
+
     <LinkContainer>
       <a href="//lib.msstate.edu/problem/">Report a Problem</a>
       <a href="//www.msstate.edu/legal/">Legal</a>
     </LinkContainer>
-    <p>
+    <LegalStatement>
       Mississippi State University is an equal opportunity institution. Discrimination in university
       employment, programs or activities based on race, color, ethnicity, sex, pregnancy, religion,
       national origin, disability, age, sexual orientation, genetic information, status as a U.S.
       veteran, or any other status protected by applicable law is prohibited. For more information,
       please contact the Office of Compliance and Integrity.
-    </p>
+    </LegalStatement>
   </FooterContainer>
 );
 
 const CommLogo = styled.img`
   width: 100%;
   max-width: 320px;
-  padding: 3%;
 `;
 
 const FooterContainer = styled.div`
@@ -36,18 +44,22 @@ const FooterContainer = styled.div`
   padding: 3%;
   margin-bottom: ${props => (props.userLoggedIn ? '64px' : '0px')};
   word-wrap: break-word;
-`;
-
-const LinkContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
 
   a {
     color: black;
     text-decoration: none;
     margin: 10px;
   }
+`;
+
+const LinkContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const LegalStatement = styled.p`
+  font-size: 11px;
 `;
 
 export default withTracker(() => ({
