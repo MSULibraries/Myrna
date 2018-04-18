@@ -22,21 +22,17 @@ export class PoliciesPage extends React.PureComponent {
             },
           ]}
         />
-        <h1>Rental from the Myrna Colley-Lee Costume Collection</h1>
+        <h1>Rental Policies</h1>
         <div>
           <h2>SHOPPING</h2>
           <ol>
             <li>
               You may pick costumes one of two ways. You may “shop” online or you may make an
               appointment to pull pieces onsite at MSU. All rentals must be paid through this site.
+              To make an appointment, contact Melanie Harris at{' '}
+              <a href="mailto:mharris@comm.msstate.edu">mharris@comm.msstate.edu</a>
             </li>
-            <li>
-              Unfortunately, we do not have the staff do alterations or pull your show for you.
-            </li>
-            <li>
-              We have done our best to provide accurate information about the pieces online. If you
-              find any errors, let us know.
-            </li>
+            <li>We do not have the staff do alterations or pull your show for you.</li>
             <li>
               Many of these pieces are truly vintage pieces. Please take that into consideration.
               Expect some minor flaws with any piece older than 20 years. If we are aware of it, we
@@ -47,6 +43,10 @@ export class PoliciesPage extends React.PureComponent {
               flat. Please note that these are actual garment measurements and no ease has been
               added. You will need to calculate appropriate ease before ordering. Take this into
               consideration when choosing garments.
+            </li>
+            <li>
+              We have done our best to provide accurate information about the pieces online. If you
+              find any errors, let us know.
             </li>
           </ol>
         </div>
