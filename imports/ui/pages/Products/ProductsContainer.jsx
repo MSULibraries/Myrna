@@ -194,6 +194,7 @@ class ProductsContainer extends Component {
         checked={this.state.activeFilters[category]}
         key={category}
         label={this.capFirstLetter(category)}
+        aria-label={`${category} filter`}
         onCheck={() =>
           this.setState({
             activeFilters: {
@@ -230,6 +231,7 @@ class ProductsContainer extends Component {
               <TextField
                 onChange={({ target: { value: newQuery } }) => this.handleNewSearch(newQuery)}
                 hintText="Search"
+                aria-label="Search Products"
                 style={{ width: '100%', marginBottom: '10px' }}
                 value={this.state.searchQuery}
               />
