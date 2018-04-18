@@ -17,7 +17,7 @@ export const ProductCard = ({
   itemInCart,
   isAvailible = false,
   imgSrc,
-  shortDescription,
+  shortDescription = '',
 }) => (
   <Paper zDepth={3}>
     <Card>
@@ -29,9 +29,7 @@ export const ProductCard = ({
               src={`images/clothing/${category.toLowerCase()}/${oldId}/small/${
                 JSON.parse(description).picture_1
               }`}
-              alt={`images/clothing/${category}/${oldId}/small/${
-                JSON.parse(description).picture_1
-              }`}
+              alt={shortDescription}
             />
           </CardMediaContainer>
         ) : (
@@ -41,9 +39,7 @@ export const ProductCard = ({
               src={`images/clothing/${category.toLowerCase()}/${oldId}/small/${
                 JSON.parse(description).picture_1
               }`}
-              alt={`images/clothing/${category}/${oldId}/small/${
-                JSON.parse(description).picture_1
-              }`}
+              alt={shortDescription}
             />
           </CardMediaContainer>
         )}
