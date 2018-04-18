@@ -49,15 +49,6 @@ class ProductsContainer extends Component {
     };
 
     this.state = this.defaultState;
-
-    this.addProductToCart = this.addProductToCart.bind(this);
-    this.capFirstLetter = this.capFirstLetter.bind(this);
-    this.checkUrlParams = this.checkUrlParams.bind(this);
-    this.clearFilters = this.clearFilters.bind(this);
-    this.getCurrentItems = this.getCurrentItems.bind(this);
-    this.paginateBackwards = this.paginateBackwards.bind(this);
-    this.paginateForwards = this.paginateForwards.bind(this);
-    this.renderCategoryFilters = this.renderCategoryFilters.bind(this);
   }
 
   componentDidMount() {
@@ -92,17 +83,17 @@ class ProductsContainer extends Component {
    * Adds item to cart in DB
    * @param {String} productId
    */
-  addProductToCart(productId) {
+  addProductToCart = productId => {
     Meteor.call('cart.insert', productId);
-  }
+  };
 
   /**
    * Capitalizes and returns a word
    * @param {String} word
    */
-  capFirstLetter(word) {
+  capFirstLetter = word => {
     return word[0].toUpperCase() + word.slice(1);
-  }
+  };
 
   /**
    * Parses the url search string and updates state
@@ -112,7 +103,7 @@ class ProductsContainer extends Component {
    * Example:
    *   Search URL :http://localhost:3000/products?searchQuery=green%20silk
    */
-  checkUrlParams() {
+  checkUrlParams = () => {
     if (this.state.urlParams.searchQuery) {
       this.setState({ searchQuery: this.state.urlParams.searchQuery });
     }
@@ -130,18 +121,18 @@ class ProductsContainer extends Component {
       }
     }
     this.getCurrentItems();
-  }
+  };
 
-  clearFilters() {
+  clearFilters = () => {
     this.setState(this.defaultState);
     this.getCurrentItems();
-  }
+  };
 
   /**
    * Fetches product based on the components state
    * such as offset, filters, and search query
    */
-  getCurrentItems() {
+  getCurrentItems = () => {
     this.setState({ loading: true });
     const { activeFilters } = this.state;
 
@@ -164,40 +155,40 @@ class ProductsContainer extends Component {
         this.setState({ currentProducts, loading: false });
       },
     );
-  }
+  };
 
-  handleNewSearch(searchQuery) {
+  handleNewSearch = searchQuery => {
     this.setState({ searchQuery });
-  }
+  };
 
   /**
    * Returns whether a given productId is in the user's cart
-   * @param {String} productId 
+   * @param {String} productId
    * @returns {Bool}
    */
-  itemInCart = (productId) => this.props.itemsInCart.indexOf(productId) > -1
+  itemInCart = productId => this.props.itemsInCart.indexOf(productId) > -1;
 
   /**
    * Decrements the  pagination offset by current states itemsPerPage
    */
-  paginateBackwards() {
+  paginateBackwards = () => {
     if (this.state.paginationOffset > 0) {
       window.scrollTo(0, 0);
       this.setState({ paginationOffset: this.state.paginationOffset - this.state.itemsPerPage });
     }
-  }
+  };
 
   /**
    * Decrements the  pagination offset by current states itemsPerPage
    */
-  paginateForwards() {
+  paginateForwards = () => {
     if (this.state.paginationOffset >= 0) {
       window.scrollTo(0, 0);
       this.setState({ paginationOffset: this.state.paginationOffset + this.state.itemsPerPage });
     }
-  }
+  };
 
-  renderCategoryFilters() {
+  renderCategoryFilters = () => {
     return Object.keys(this.state.activeFilters).map(category => (
       <Checkbox
         checked={this.state.activeFilters[category]}
@@ -213,7 +204,7 @@ class ProductsContainer extends Component {
         }
       />
     ));
-  }
+  };
 
   render() {
     return (
@@ -230,50 +221,48 @@ class ProductsContainer extends Component {
         <h1>Products</h1>
         <Row>
           <SideNav lg={2}>
-            <div style={{ padding: '20px' }}>
-              <form
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  this.getCurrentItems();
-                }}
-              >
-                <TextField
-                  onChange={({ target: { value: newQuery } }) => this.handleNewSearch(newQuery)}
-                  hintText="Search"
-                  style={{ width: '100%', marginBottom: '10px' }}
-                  value={this.state.searchQuery}
-                />
-                <br />
-              </form>
-              {this.renderCategoryFilters()}
+            <form
+              onSubmit={event => {
+                event.preventDefault();
+                this.getCurrentItems();
+              }}
+            >
+              <TextField
+                onChange={({ target: { value: newQuery } }) => this.handleNewSearch(newQuery)}
+                hintText="Search"
+                style={{ width: '100%', marginBottom: '10px' }}
+                value={this.state.searchQuery}
+              />
+              <br />
+            </form>
+            {this.renderCategoryFilters()}
 
+            <ResetButton
+              label="RESET"
+              onClick={() => {
+                this.clearFilters();
+              }}
+            />
+
+            <PaginateButtonsContainer>
               <RaisedButton
-                label="RESET"
+                disabled={this.state.paginationOffset === 0}
+                fullWidth
+                label="<"
+                style={{ display: 'inline' }}
                 onClick={() => {
-                  this.clearFilters();
+                  this.paginateBackwards();
                 }}
               />
-
-              <div>
-                <RaisedButton
-                  disabled={this.state.paginationOffset === 0}
-                  fullWidth
-                  label="<"
-                  style={{ display: 'inline' }}
-                  onClick={() => {
-                    this.paginateBackwards();
-                  }}
-                />
-                <RaisedButton
-                  disabled={this.state.currentProducts.length < this.state.itemsPerPage}
-                  label=">"
-                  style={{ display: 'inline' }}
-                  onClick={() => {
-                    this.paginateForwards();
-                  }}
-                />
-              </div>
-            </div>
+              <RaisedButton
+                disabled={this.state.currentProducts.length < this.state.itemsPerPage}
+                label=">"
+                style={{ display: 'inline' }}
+                onClick={() => {
+                  this.paginateForwards();
+                }}
+              />
+            </PaginateButtonsContainer>
             {this.state.loading && <p>Loading</p>}
           </SideNav>
           <Col lg={10}>
@@ -297,8 +286,8 @@ class ProductsContainer extends Component {
                   />
                 ))
               ) : (
-                  <p>No more product</p>
-                )}
+                <p>No more product</p>
+              )}
             </StackGrid>
           </Col>
         </Row>
@@ -317,19 +306,38 @@ ProductsContainer.proptypes = {
   itemsInCart: PropTypes.array,
 };
 
-
 export default withTracker(props => {
   Meteor.subscribe('cart');
 
   return {
-    itemsInCart: Cart.find({ userId: Meteor.userId() }, {
-      fields: { productId: 1 },
-    }).fetch().map(product => product.productId),
+    itemsInCart: Cart.find(
+      { userId: Meteor.userId() },
+      {
+        fields: { productId: 1 },
+      },
+    )
+      .fetch()
+      .map(product => product.productId),
   };
 })(ProductsContainer);
 
-
-const SideNav = styled(Col) `
+const SideNav = styled(Col)`
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  padding: 20px;
   ${media.desktop`position: initial !important;`} position: sticky !important;
   top: 10px;
+`;
+
+const PaginateButtonsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin: 10px;
+  padding: 20px;
+`;
+
+const ResetButton = styled(RaisedButton)`
+  margin-top: 20px;
 `;

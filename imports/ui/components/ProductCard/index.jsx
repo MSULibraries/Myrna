@@ -51,7 +51,7 @@ export const ProductCard = ({
 
       <DescriptionContainer>
         <DetailLink to={`/products/details/${_id}`}>
-          <CardText dangerouslySetInnerHTML={{ __html: shortDescription }} />
+          <ProductDescription dangerouslySetInnerHTML={{ __html: shortDescription }} />
         </DetailLink>
       </DescriptionContainer>
       <CardActions>
@@ -101,6 +101,10 @@ const CardMediaContainer = styled(CardMedia)`
 
 const DetailLink = styled(Link)`
   text-decoration: none;
+`;
+
+const ProductDescription = styled(CardText)`
+  text-transform: capitalize;
 `;
 
 export default ProductCard;
