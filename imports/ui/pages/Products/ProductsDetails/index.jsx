@@ -72,7 +72,7 @@ class ProductsDetails extends Component {
                 />
               </ProductContainerChild>
               <ProductContainerChild>
-                <h2>{this.props.product.shortDescription}</h2>
+                <ShortDescription>{this.props.product.shortDescription}</ShortDescription>
                 <p>Quality: {this.props.product.itemStatus}</p>
                 <p>Measurement</p>
                 <ul>
@@ -110,4 +110,8 @@ const ProductContainer = styled.div`
 const ProductContainerChild = styled.div`
   width: 50%;
   padding: 2%;
+`;
+
+const ShortDescription = styled.h2`
+  text-transform: capitalize;
 `;
