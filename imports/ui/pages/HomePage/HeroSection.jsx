@@ -48,7 +48,7 @@ const HeroImageContainer = styled.div`
   flex-direction: row;
   justify-content: center;
 
-  padding: 1%;
+  padding: 1vw;
 `;
 
 const HeroContainer = styled.div`

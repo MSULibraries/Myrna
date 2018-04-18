@@ -54,7 +54,7 @@ const CategoryLinkContainer = styled(Link)`
   `};
 
   color: black;
-  margin: 2%;
+  margin: 1vw;
   text-align: center;
   text-decoration: none;
   width: 23%;
