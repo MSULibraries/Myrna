@@ -16,7 +16,7 @@ export const MainNav = ({ userLoggedIn }) => (
     <a href="//library.msstate.edu/">
       <MsStateBrand
         src={`${document.location.origin}/images/lib_logo.png`}
-        alt="Mississippi State University Logo"
+        alt="Mississippi State University Libraries Logo"
       />
     </a>
     <LogoContainer>

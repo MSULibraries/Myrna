@@ -39,7 +39,10 @@ class MobileMainNav extends Component {
           title={
             <a href="//library.msstate.edu">
               {' '}
-              <LibLogo src="images/lib_logo_white.png" />
+              <LibLogo
+                src="images/lib_logo_white.png"
+                alt="Mississippi State University Libraries Logo"
+              />
             </a>
           }
           iconElementRight={
@@ -138,7 +141,7 @@ const MainLink = styled(Link)`
 const LibLogo = styled.img`
   margin-top: 9px;
   max-width: 300px;
-  width: 74vw; 
+  width: 74vw;
 `;
 
 const MobileNavContainer = styled.div`
