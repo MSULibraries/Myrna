@@ -12,15 +12,15 @@ const Footer = ({ userLoggedIn }) => (
     </a>
 
     <div>
-      <p>The Myrna Colley-Lee collection is maintained by Melanie Harris.</p>
       <p>
-        All inquiries about be made to her at:{' '}
-        <a href="mailto:mharris@comm.msstate.edu">mharris@comm.msstate.edu</a>
+        The Myrna Colley-Lee collection is maintained by<a href="mailto:mharris@comm.msstate.edu">
+          Melanie Harris
+                                                        </a>.
       </p>
     </div>
 
     <LinkContainer>
-      <a href="//lib.msstate.edu/problem/">Report a Problem</a>
+      <a href="http://lib.msstate.edu/problem/">Report a Problem</a>
       <a href="//www.msstate.edu/legal/">Legal</a>
     </LinkContainer>
     <LegalStatement>
